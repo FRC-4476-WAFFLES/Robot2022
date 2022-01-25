@@ -2,7 +2,7 @@ package frc.robot.utils;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.MPUConstants;
 
 public class MPU {
