@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.IntakeConstants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -16,6 +17,10 @@ public class IntakeSubsystem extends SubsystemBase {
     private final CANSparkMax leftDeployIntakeMotor = new CANSparkMax(intakeConstants.INTAKE_DEPLOY_LEFT, MotorType.kBrushless);
     private final CANSparkMax rightDeployIntakeMotor = new CANSparkMax(intakeConstants.INTAKE_DEPLOY_RIGHT, MotorType.kBrushless);
 
+    private final DigitalInput firstIR = new DigitalInput(intakeConstants.firstIR);
+    private final DigitalInput secondIR = new DigitalInput(intakeConstants.secondIR);
+    private final DigitalInput thirdIR = new DigitalInput(intakeConstants.thirdIR);
+
     /**
      * Creates a new IntakeSubsystem
      */
@@ -29,7 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
         
     }
 
-    public void intake(final double percent, boolean withConveyor) {
+    public void intake(final double percent) {
         // TODO: intake implementation
 
 

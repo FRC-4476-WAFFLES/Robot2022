@@ -86,6 +86,11 @@ public final class Constants {
         public final int INTAKE_ROLLER = 0;
         public final int INTAKE_DEPLOY_LEFT = 0;
         public final int INTAKE_DEPLOY_RIGHT = 0;
+
+        public final int firstIR = 0;
+        public final int secondIR = 0;
+        public final int thirdIR = 0;
+
         public IntakeConstants(){}
     }
 }
