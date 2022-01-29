@@ -80,4 +80,12 @@ public final class Constants {
         new SwerveConstants(new Translation2d(0.1715, 0.4191), 0, 5, 6),
         new SwerveConstants(new Translation2d(-0.1715, 0.4191), 0, 7, 8),
     };
+
+    public static final class IntakeConstants {
+        // TODO: set CAN ports of intake motor and motor controllers
+        public final int INTAKE_ROLLER = 0;
+        public final int INTAKE_DEPLOY_LEFT = 0;
+        public final int INTAKE_DEPLOY_RIGHT = 0;
+        public IntakeConstants(){}
+    }
 }
