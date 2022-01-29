@@ -22,6 +22,9 @@ public class IntakeSubsystem extends SubsystemBase {
   private final CANSparkMax deployFollower = new CANSparkMax(Constants.intakeDeploy2, MotorType.kBrushless);
 
   private final DigitalInput limit = new DigitalInput(Constants.intakeLimit);
+  private final DigitalInput lowIR = new DigitalInput(Constants.lowIR);
+  private final DigitalInput midIR = new DigitalInput(Constants.midIR);
+  private final DigitalInput highIR = new DigitalInput(Constants.highIR);
 
   private final RelativeEncoder encoder = deployLeader.getEncoder();
   
