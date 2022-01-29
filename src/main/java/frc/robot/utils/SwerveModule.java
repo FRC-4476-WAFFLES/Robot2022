@@ -8,8 +8,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -38,8 +38,8 @@ public class SwerveModule {
 
         driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        driveMotor.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_50Ms);
-        angleMotor.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_50Ms);
+        driveMotor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_50Ms);
+        angleMotor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_50Ms);
         driveMotor.configVelocityMeasurementWindow(4);
         angleMotor.configVelocityMeasurementWindow(4);
 

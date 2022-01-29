@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -16,8 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.utils.MPU;
 import frc.robot.utils.SwerveModule;
+import static frc.robot.RobotContainer.*;
 
 public class DriveSubsystem extends SubsystemBase {
   /** The array of swerve modules on the robot. */
@@ -26,8 +27,6 @@ public class DriveSubsystem extends SubsystemBase {
   /** Allows us to calculate the swerve module states from a chassis motion. */
   public final SwerveDriveKinematics kinematics;
   private final SwerveDriveOdometry odometry;
-
-  private MPU gyro = new MPU();
 
   public DriveSubsystem() {
     ArrayList<Translation2d> positions = new ArrayList<Translation2d>();
@@ -51,7 +50,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
     this.kinematics = new SwerveDriveKinematics(positionArry);
     this.modules = moduleArray;
-    this.odometry = new SwerveDriveOdometry(kinematics, gyro.getHeadingAsRotation2d());
+    this.odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(IMU.getRotations()[2]));
 
     // Set the default command to the teleoperated command.
     
@@ -64,10 +63,10 @@ public class DriveSubsystem extends SubsystemBase {
     for(int x=0; x<modules.length; x++){
       moduleStates[x] = modules[x].getState();
     }
-    odometry.update(gyro.getHeadingAsRotation2d(), moduleStates);
+    odometry.update(Rotation2d.fromDegrees(IMU.getRotations()[2]), moduleStates);
     SmartDashboard.putNumber("X location", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Y location", odometry.getPoseMeters().getY());
-    SmartDashboard.putNumber("Heading", gyro.getHeading());
+    SmartDashboard.putNumberArray("Gyro", IMU.getRotations());
   }
 
   public void robotDrive(double forward, double right, double rotation, boolean fieldCentric){
@@ -87,14 +86,14 @@ public class DriveSubsystem extends SubsystemBase {
     rotation /= -1;
 
     if (fieldCentric){
-      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, gyro.getHeadingAsRotation2d());
+      //chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, gyro.getHeadingAsRotation2d());
+      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, Rotation2d.fromDegrees(IMU.getRotations()[2]));
     } else {
       chassisSpeeds = new ChassisSpeeds(forward, right, rotation);
     }
     
     SwerveModuleState[] swerveModuleState = kinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleState, 1);
-    SmartDashboard.putNumber("Gyro", gyro.getHeading());
     setModuleStates(swerveModuleState);
   }
 

@@ -17,7 +17,42 @@ import edu.wpi.first.math.geometry.Translation2d;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    
+    // TODO: set ports of all motors and actuators
+    // PWM
+    public static final int shooterHoodAngle1 = 0; // am-3517 Linear Servo
+    public static final int shooterHoodAngle2 = 1; // am-3517 Linear Servo
+    // See https://andymark-weblinc.netdna-ssl.com/media/W1siZiIsIjIwMTkvMDMvMjIvMTAvMjcvNTgvMDMxOTQ4ODUtYmM5Yi00M2UyLWE1NDAtZGNiMWVhNzEzMDEzL1VzaW5nIEwxNiBMaW5lYXIgU2Vydm8gMDMtMjAxOS5wZGYiXV0/Using%20L16%20Linear%20Servo%2003-2019.pdf?sha=ee4c9607408cc835
+    // for information on calibrating the linear servos
+
+    // CAN bus
+    public static final int swerveModule1Angle = 1; // FX
+    public static final int swerveModule1Drive = 2; // FX
+    public static final int swerveModule2Angle = 3; // FX
+    public static final int swerveModule2Drive = 4; // FX
+    public static final int swerveModule3Angle = 5; // FX
+    public static final int swerveModule3Drive = 6; // FX
+    public static final int swerveModule4Angle = 7; // FX
+    public static final int swerveModule4Drive = 8; // FX
+    public static final int shooterSpin1 = 9; // FX
+    public static final int shooterSpin2 = 10; // FX
+    public static final int intakeSpin = 11; // SRX
+    public static final int intakeDeploy1 = 12; // Spark Max
+    public static final int intakeDeploy2 = 13; // Spark Max
+    public static final int conveyorSpin = 14; // SRX
+    public static final int kickerWheelSpin = 15; // SRX
+    public static final int climbLeft = 16; // FX
+    public static final int climbRight = 17; // FX
+    public static final int climbPivotLeft = 18; // FX
+    public static final int climbPivotRight = 19; // FX
+
+    // I2C Bus
+    public static final int MPUAddress = 0x68;
+
+    // Digital Input
+    public static final int intakeLimit = 0; //  am-3313 Hall Effect Sensor
+    public static final int lowIR = 1; // IR
+    public static final int midIR = 2; // IR
+    public static final int highIR = 3; // IR
 
     public static final class SwerveConstants {
         /** Represents the offset from the centre of the robot, in metres. */
@@ -67,18 +102,12 @@ public final class Constants {
         }
     }
 
-    public static final class MPUConstants{
-        public final double calibration = 0;
-        public final int address = 0x68;
-        public MPUConstants(){}
-    }
-
     public static final SwerveConstants swerveModules[] = new SwerveConstants[] {
-        // TODO: set CAN ports of motors
-        new SwerveConstants(new Translation2d(-0.1715, -0.4191), 0, 1, 2),
-        new SwerveConstants(new Translation2d(0.1715, -0.4191), 0, 3, 4),
-        new SwerveConstants(new Translation2d(0.1715, 0.4191), 0, 5, 6),
-        new SwerveConstants(new Translation2d(-0.1715, 0.4191), 0, 7, 8),
+        // Modules are in the order of Front Left, Back Left, Back Right, Front Right, when intake is front of robot
+        new SwerveConstants(new Translation2d(0.2921, 0.2921), 0, swerveModule1Angle, swerveModule1Drive),
+        new SwerveConstants(new Translation2d(-0.2921, 0.2921), 0, swerveModule2Angle, swerveModule2Drive),
+        new SwerveConstants(new Translation2d(-0.2921, -0.2921), 0, swerveModule3Angle, swerveModule3Drive),
+        new SwerveConstants(new Translation2d(0.2921, -0.2921), 0, swerveModule4Angle, swerveModule4Drive),
     };
 
     public static final class IntakeConstants {
