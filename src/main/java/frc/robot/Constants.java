@@ -45,8 +45,14 @@ public final class Constants {
     public static final int climbPivotLeft = 18; // FX
     public static final int climbPivotRight = 19; // FX
 
+    // I2C Bus
+    public static final int MPUAddress = 0x68;
+
     // Digital Input
     public static final int intakeLimit = 0; //  am-3313 Hall Effect Sensor
+    public static final int lowIR = 1; // IR
+    public static final int midIR = 2; // IR
+    public static final int highIR = 3; // IR
 
     public static final class SwerveConstants {
         /** Represents the offset from the centre of the robot, in metres. */
@@ -94,12 +100,6 @@ public final class Constants {
             this.angleMotor = angleMotor;
             this.driveMotor = driveMotor;
         }
-    }
-
-    public static final class MPUConstants{
-        public final double calibration = 0;
-        public final int address = 0x68;
-        public MPUConstants(){}
     }
 
     public static final SwerveConstants swerveModules[] = new SwerveConstants[] {
