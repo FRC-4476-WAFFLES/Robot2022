@@ -9,8 +9,11 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.conveyor.ConveyorStop;
 import frc.robot.commands.drive.DriveTeleop;
+import frc.robot.commands.intake.IntakeBalls;
+import frc.robot.commands.intake.IntakeIn;
 import frc.robot.commands.intake.IntakeStop;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -37,6 +40,8 @@ public class RobotContainer {
 
   public static final Joystick leftJoystick = new Joystick(0);
   public static final Joystick rightJoystick = new Joystick(1);
+  public static final XboxController operate = new XboxController(2);
+
   public static final RobotIMU IMU = new RobotIMU(GyroType.ADIS16448);
   public static final Camera vision = new Camera();
 
@@ -61,7 +66,14 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    final var x = new JoystickButton(operate, XboxController.Button.kX.value);
+    final var y = new JoystickButton(operate, XboxController.Button.kY.value);
+    final var a = new JoystickButton(operate, XboxController.Button.kA.value);
+    final var b = new JoystickButton(operate, XboxController.Button.kB.value);
+
+    x.whileHeld(new IntakeBalls());
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
