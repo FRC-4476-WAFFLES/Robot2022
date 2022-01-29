@@ -6,6 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
@@ -121,5 +124,19 @@ public final class Constants {
         public final int thirdIR = 0;
 
         public IntakeConstants(){}
+    }
+
+    public static final class ClimberConstants {
+        public final double leftRotatingSetpoints;
+        public final double leftExtendingSetpoints;
+        public final double rightRotatingSetpoints;
+        public final double rightExtendingSetpoints;
+        
+        public ClimberConstants(double leftRotatingSetpoints, double leftExtendingSetpoints, double rightExtendingSetpoints, double rightRotatingSetpoints) {
+            this.leftRotatingSetpoints = leftRotatingSetpoints;
+            this.leftExtendingSetpoints = leftExtendingSetpoints;
+            this.rightRotatingSetpoints = rightRotatingSetpoints;
+            this.rightExtendingSetpoints = rightExtendingSetpoints;
+        }
     }
 }
