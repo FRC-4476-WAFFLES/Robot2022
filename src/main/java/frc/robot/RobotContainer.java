@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.conveyor.ConveyorStop;
 import frc.robot.commands.drive.DriveTeleop;
-import frc.robot.commands.intake.IntakeBalls;
+import frc.robot.commands.intake.Intake2Balls;
 import frc.robot.commands.intake.IntakeIn;
 import frc.robot.commands.intake.IntakeStop;
 import frc.robot.subsystems.Camera;
@@ -72,7 +72,7 @@ public class RobotContainer {
     final var a = new JoystickButton(operate, XboxController.Button.kA.value);
     final var b = new JoystickButton(operate, XboxController.Button.kB.value);
 
-    x.whileHeld(new IntakeBalls());
+    x.whileHeld(new Intake2Balls());
   }
 
   /**
