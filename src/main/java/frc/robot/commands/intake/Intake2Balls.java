@@ -7,9 +7,9 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
-public class IntakeBalls extends CommandBase {
+public class Intake2Balls extends CommandBase {
   /** Creates a new IntakeIn. */
-  public IntakeBalls() {
+  public Intake2Balls() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intakeSubsystem, conveyorSubsystem);
   }
@@ -38,6 +38,7 @@ public class IntakeBalls extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.stopIntake();
+    conveyorSubsystem.stopConveyor();
   }
 
   // Returns true when the command should end.

@@ -57,15 +57,15 @@ public class RobotIMU extends SubsystemBase {
   }
 
   public double[] getAccelerations() {
-    return accelerations;
+    return accelerations; // Returns an array of 3 doubles, representing the accelerations along the x, y, and z axes
   }
 
   public double[] getRotations() {
-    return rotations;
+    return rotations; // Returns an array of 3 doubles, representing the amount the robot has rotated from its starting position along the x, y, and z axes
   }
 
   public double[] getRotationRates() {
-    return rotationRates;
+    return rotationRates; // Returns an array of 3 doubles, representing the rotation rates along the x, y, and z axes
   }
 
   private void updateMPU6050(){
@@ -87,7 +87,7 @@ public class RobotIMU extends SubsystemBase {
 
     // Store the values of rotation rates along the three axes in an array
     for (int x = 0; x < 3; x++) {
-      rotationRates[x] = (byteArray[x*2] << 8 | byteArray[x*2+1]) / 16384.0; // For a 250deg/s range we have to divide first the raw value by 131.0, according to the datasheet
+      rotationRates[x] = (byteArray[x*2] << 8 | byteArray[x*2+1]) / 131.0; // For a 250deg/s range we have to divide first the raw value by 131.0, according to the datasheet
     }
 
     for (int x = 0; x < 3; x++) {

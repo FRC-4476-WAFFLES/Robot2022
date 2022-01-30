@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;
@@ -26,7 +28,10 @@ public class IntakeSubsystem extends SubsystemBase {
   private final DigitalInput midIR = new DigitalInput(Constants.midIR);
   private final DigitalInput highIR = new DigitalInput(Constants.highIR);
 
-  private final RelativeEncoder encoder = deployLeader.getEncoder();
+  private final RelativeEncoder deployEncoder = deployLeader.getEncoder(Type.kHallSensor, 42);
+  private final SparkMaxPIDController deployPIDController = deployLeader.getPIDController();
+  private final double deployTarget = 21.25; // The approximate number of rotations of the deploy motors to deploy the intake
+  public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
@@ -35,17 +40,40 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeSpin.configPeakCurrentLimit(30);
     intakeSpin.enableCurrentLimit(true);
 
-    deployLeader.setSmartCurrentLimit(30);
+    deployLeader.restoreFactoryDefaults();
+    deployLeader.setSmartCurrentLimit(20);
     deployLeader.setIdleMode(IdleMode.kBrake);
 
-    deployFollower.setSmartCurrentLimit(30);
+    deployFollower.restoreFactoryDefaults();
+    deployFollower.setSmartCurrentLimit(20);
     deployFollower.setIdleMode(IdleMode.kBrake);
     deployFollower.follow(deployLeader, true);
+
+    // PID coefficients
+    // TODO: set these values to better values determined through testing. 
+    kP = 0.1; 
+    kI = 0;
+    kD = 1; 
+    kIz = 0; 
+    kFF = 0; 
+    kMaxOutput = 1; 
+    kMinOutput = -1;
+
+    // set PID coefficients
+    deployPIDController.setP(kP);
+    deployPIDController.setI(kI);
+    deployPIDController.setD(kD);
+    deployPIDController.setIZone(kIz);
+    deployPIDController.setFF(kFF);
+    deployPIDController.setOutputRange(kMinOutput, kMaxOutput);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (!limit.get()) {
+      deployEncoder.setPosition(0);
+    }
   }
 
   public boolean HighIR() {
@@ -81,8 +109,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void deployIntake() {
-    if (!limit.get()) {
-      deployLeader.getEncoder(Type.kHallSensor, 5);
-    }
+    deployPIDController.setReference(deployTarget, ControlType.kPosition);
+  }
+
+  public void retractIntake() {
+    deployPIDController.setReference(0, ControlType.kPosition);
   }
 }
