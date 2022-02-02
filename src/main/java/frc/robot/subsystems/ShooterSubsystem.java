@@ -4,14 +4,20 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterLeader = new TalonFX(Constants.shooterSpin1);
@@ -19,6 +25,18 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonSRX kickerWheel = new TalonSRX(Constants.kickerWheelSpin);
   private final Servo angle1 = new Servo(Constants.shooterHoodAngle1);
   private final Servo angle2 = new Servo(Constants.shooterHoodAngle2);
+  
+  ShooterConstants shooterConstants = new ShooterConstants();
+
+  private double kP = shooterConstants.kP;
+  private double kI = shooterConstants.kI;
+  private double kD = shooterConstants.kD;
+  private double kF = shooterConstants.kF;
+  private double kIzone = shooterConstants.kIzone;
+
+  private double targetShooterRPM = 0;
+  private double targetKickerWheelSpeed = 0;
+  private double targetHoodAngle = 0;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -29,11 +47,27 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterFollower.setInverted(InvertType.OpposeMaster);
 
     shooterLeader.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 40, 0.03));
+    shooterLeader.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    shooterLeader.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_50Ms);
+    shooterLeader.configVelocityMeasurementWindow(4);
+    shooterLeader.configNominalOutputForward(0);
+    shooterLeader.configNominalOutputReverse(0);
+    shooterLeader.configPeakOutputForward(1);
+    shooterLeader.configPeakOutputReverse(-1);
+    shooterLeader.config_kP(0, kP);
+    shooterLeader.config_kI(0, kI);
+    shooterLeader.config_kD(0, kD);
+    shooterLeader.config_kF(0, kF);
+    shooterLeader.config_IntegralZone(0, kIzone);
+    shooterLeader.configVoltageCompSaturation(12);
+    shooterLeader.enableVoltageCompensation(true);
+    shooterLeader.setNeutralMode(NeutralMode.Coast);
 
     kickerWheel.configFactoryDefault();
     kickerWheel.configContinuousCurrentLimit(30);
     kickerWheel.configPeakCurrentLimit(30);
     kickerWheel.enableCurrentLimit(true);
+    kickerWheel.setNeutralMode(NeutralMode.Brake);
 
     angle1.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
     angle2.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
@@ -42,5 +76,64 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    shooterLeader.set(ControlMode.Velocity, rpmToUnitsPer100ms(targetShooterRPM));
+    kickerWheel.set(ControlMode.PercentOutput, targetKickerWheelSpeed);
+    angle1.set(targetHoodAngle);
+    angle2.set(targetHoodAngle);
+  }
+
+  public void driverStationControl() {
+    SmartDashboard.putNumber("Shooter Target RPM", targetShooterRPM);
+    SmartDashboard.putNumber("Shooter Current RPM", unitsPer100msToRPM(shooterLeader.getSelectedSensorVelocity()));
+    SmartDashboard.putNumber("Shooter %", shooterLeader.getMotorOutputPercent());
+    targetShooterRPM = clamp(SmartDashboard.getNumber("Set Shooter Target RPM", targetShooterRPM), -6000, 6000);
+
+    SmartDashboard.putNumber("Kicker Wheel Target %", targetKickerWheelSpeed);
+    SmartDashboard.putNumber("Kicker Wheel Current %", kickerWheel.getMotorOutputPercent());
+    targetKickerWheelSpeed = clamp(SmartDashboard.getNumber("Set Kicker Wheel Target %", targetKickerWheelSpeed), -1, 1);
+
+    SmartDashboard.putNumber("Hood Current Target Angle", targetHoodAngle);
+    targetHoodAngle = clamp(SmartDashboard.getNumber("Set Hood Angle Target", targetHoodAngle), -1, 1);
+  }
+
+  public void stop() {
+    targetShooterRPM = 0;
+    targetKickerWheelSpeed = 0;
+    targetHoodAngle = 0;
+  }
+
+  public void setTargetShooterRPM(double target) {
+    targetShooterRPM = clamp(target, -6000, 6000);
+  }
+
+  public void setTargetKickerWheelSpeed(double target) {
+    targetKickerWheelSpeed = clamp(target, -1, 1);
+  }
+
+  public void setTargetHoodAngle(double target) {
+    targetHoodAngle = clamp(target, -1, 1);
+  }
+
+  public void updateShooterPID(double kP, double kI, double kD, double kF, double kIzone) {
+    shooterLeader.config_kP(0, kP);
+    shooterLeader.config_kI(0, kI);
+    shooterLeader.config_kD(0, kD);
+    shooterLeader.config_kF(0, kF);
+    shooterLeader.config_IntegralZone(0, kIzone);
+  }
+
+  private double rpmToUnitsPer100ms(double rpm) {
+    return rpm * 2048.0 / 600.0;
+  }
+
+  private double unitsPer100msToRPM(double unitsPer100ms) {
+    return unitsPer100ms * 600.0 / 2048;
+  }
+
+  private double clamp(double value, double min, double max) {
+    if (value < min) {
+      return min;
+    }
+    return Math.min(value, max);
   }
 }

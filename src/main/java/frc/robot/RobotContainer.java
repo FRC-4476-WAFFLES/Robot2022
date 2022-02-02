@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.conveyor.ConveyorStop;
 import frc.robot.commands.drive.DriveTeleop;
 import frc.robot.commands.intake.IntakeStop;
+import frc.robot.commands.shooter.ShooterDriverStationControl;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ConveyorSubsystem;
@@ -43,12 +44,14 @@ public class RobotContainer {
   private final DriveTeleop swerve = new DriveTeleop();
   private final IntakeStop intakeStop = new IntakeStop();
   private final ConveyorStop conveyorStop = new ConveyorStop();
+  private final ShooterDriverStationControl shooterDriverStationControl = new ShooterDriverStationControl();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     driveSubsystem.setDefaultCommand(swerve);
     intakeSubsystem.setDefaultCommand(intakeStop);
     conveyorSubsystem.setDefaultCommand(conveyorStop);
+    shooterSubsystem.setDefaultCommand(shooterDriverStationControl);
     CommandScheduler.getInstance().registerSubsystem(IMU);
     CommandScheduler.getInstance().registerSubsystem(vision);
     // Configure the button bindings
