@@ -5,15 +5,20 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.ADIS16448_IMU;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class RobotIMU extends SubsystemBase {
-  private final I2C MPU6050Gyro = new I2C(Port.kOnboard, Constants.MPUAddress);
-  private final ADIS16448_IMU ADIS16448Gyro = new ADIS16448_IMU();
+  private final I2C MPU6050IMU = new I2C(Port.kOnboard, Constants.MPUAddress);
+  private final ADIS16448_IMU ADIS16448IMU = new ADIS16448_IMU();
+  private final ADXRS450_Gyro ADXRS450Gyro = new ADXRS450_Gyro(Constants.gyroPort);
+  private final Accelerometer builtInAccelerometer = new BuiltInAccelerometer();
   private Timer timer = new Timer();
   private double previousTime = 0;
   private double currentTime = 0;
@@ -23,22 +28,27 @@ public class RobotIMU extends SubsystemBase {
   private double[] rotations = new double[3];
   private double[] rotationRates = new double[3];
 
-  private final GyroType gyroType;
+  private final IMUType imuType;
 
-  public enum GyroType{
+  public enum IMUType{
     MPU6050,
-    ADIS16448
+    ADIS16448,
+    ADXRS450
   }
 
   /** Creates a new Gyro. */
-  public RobotIMU(GyroType gyroType) {
-    this.gyroType = gyroType;
-    switch(gyroType) {
+  public RobotIMU(IMUType imuType) {
+    this.imuType = imuType;
+    switch(imuType) {
       case MPU6050:
-        MPU6050Gyro.write(0x6B, 0);
+        MPU6050IMU.write(0x6B, 0);
         timer.start();
         break;
       case ADIS16448:
+        ADIS16448IMU.calibrate();
+        break;
+      case ADXRS450:
+        ADXRS450Gyro.calibrate();
         break;
     }
   }
@@ -46,12 +56,15 @@ public class RobotIMU extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    switch(gyroType){
+    switch(imuType){
       case MPU6050:
         updateMPU6050();
         break;
       case ADIS16448:
         updateADIS16448();
+        break;
+      case ADXRS450:
+        updateADXRS450();
         break;
     }
   }
@@ -74,7 +87,7 @@ public class RobotIMU extends SubsystemBase {
     elapsedTime = currentTime - previousTime;
 
     byte[] byteArray = new byte[14];
-    MPU6050Gyro.read(0x3B, 14, byteArray);
+    MPU6050IMU.read(0x3B, 14, byteArray);
 
     // Store the values of acceleration along the three axes in an array
     for (int x = 0; x < 3; x++) {
@@ -96,14 +109,26 @@ public class RobotIMU extends SubsystemBase {
   }
 
   private void updateADIS16448() {
-    accelerations[0] = ADIS16448Gyro.getAccelX();
-    accelerations[1] = ADIS16448Gyro.getAccelY();
-    accelerations[2] = ADIS16448Gyro.getAccelZ();
-    rotations[0] = ADIS16448Gyro.getGyroAngleX();
-    rotations[1] = ADIS16448Gyro.getGyroAngleY();
-    rotations[2] = ADIS16448Gyro.getGyroAngleZ();
-    rotationRates[0] = ADIS16448Gyro.getGyroRateX();
-    rotationRates[1] = ADIS16448Gyro.getGyroRateY();
-    rotationRates[2] = ADIS16448Gyro.getGyroRateZ();
+    accelerations[0] = ADIS16448IMU.getAccelX();
+    accelerations[1] = ADIS16448IMU.getAccelY();
+    accelerations[2] = ADIS16448IMU.getAccelZ();
+    rotations[0] = ADIS16448IMU.getGyroAngleX();
+    rotations[1] = ADIS16448IMU.getGyroAngleY();
+    rotations[2] = ADIS16448IMU.getGyroAngleZ();
+    rotationRates[0] = ADIS16448IMU.getGyroRateX();
+    rotationRates[1] = ADIS16448IMU.getGyroRateY();
+    rotationRates[2] = ADIS16448IMU.getGyroRateZ();
+  }
+
+  private void updateADXRS450() {
+    accelerations[0] = builtInAccelerometer.getX();
+    accelerations[1] = builtInAccelerometer.getY();
+    accelerations[2] = builtInAccelerometer.getZ();
+    rotations[0] = 0;
+    rotations[1] = 0;
+    rotations[2] = ADXRS450Gyro.getAngle();
+    rotationRates[0] = 0;
+    rotationRates[1] = 0;
+    rotationRates[2] = ADXRS450Gyro.getRate();
   }
 }

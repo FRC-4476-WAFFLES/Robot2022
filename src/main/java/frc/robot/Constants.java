@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.SPI;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -48,11 +49,18 @@ public final class Constants {
     // I2C Bus
     public static final int MPUAddress = 0x68;
 
+    // SPI Bus
+    public static final SPI.Port gyroPort = SPI.Port.kOnboardCS0;
+
     // Digital Input
     public static final int intakeLimit = 0; //  am-3313 Hall Effect Sensor
     public static final int lowIR = 1; // IR
     public static final int midIR = 2; // IR
     public static final int highIR = 3; // IR
+    public static final int swerveModule1Encoder = 4; // SRX Mag Encoder
+    public static final int swerveModule2Encoder = 5; // SRX Mag Encoder
+    public static final int swerveModule3Encoder = 6; // SRX Mag Encoder
+    public static final int swerveModule4Encoder = 7; // SRX Mag Encoder
 
     public static final class SwerveConstants {
         /** Represents the offset from the centre of the robot, in metres. */
@@ -71,6 +79,8 @@ public final class Constants {
         public final int angleMotor;
         /** The CAN address of the module's drive motor. */
         public final int driveMotor;
+        /** The DIO address of the module's angle encoder. */
+        public final int angleEncoder;
 
         public final double CPR = 2048; // Encoder ticks per motor rotation
         public final double wheelDiameter = 0.1016; // Wheel diameter in meters
@@ -94,32 +104,43 @@ public final class Constants {
         // Convert degrees to motor ticks
         public final double steeringDegreesToTicks = ticksPerSteeringRevolution / 360;
 
-        public SwerveConstants(Translation2d position, double calibration, int angleMotor, int driveMotor) {
+        public SwerveConstants(Translation2d position, double calibration, int angleMotor, int driveMotor, int angleEncoder) {
             this.position = position;
             this.calibration = calibration;
             this.angleMotor = angleMotor;
             this.driveMotor = driveMotor;
+            this.angleEncoder = angleEncoder;
         }
     }
 
     public static final SwerveConstants swerveModules[] = new SwerveConstants[] {
         // Modules are in the order of Front Left, Back Left, Back Right, Front Right, when intake is front of robot
-        new SwerveConstants(new Translation2d(0.2921, 0.2921), 0, swerveModule1Angle, swerveModule1Drive),
-        new SwerveConstants(new Translation2d(-0.2921, 0.2921), 0, swerveModule2Angle, swerveModule2Drive),
-        new SwerveConstants(new Translation2d(-0.2921, -0.2921), 0, swerveModule3Angle, swerveModule3Drive),
-        new SwerveConstants(new Translation2d(0.2921, -0.2921), 0, swerveModule4Angle, swerveModule4Drive),
+        new SwerveConstants(new Translation2d(0.2921, 0.2921), 0, swerveModule1Angle, swerveModule1Drive, swerveModule1Encoder),
+        new SwerveConstants(new Translation2d(-0.2921, 0.2921), 0, swerveModule2Angle, swerveModule2Drive, swerveModule2Encoder),
+        new SwerveConstants(new Translation2d(-0.2921, -0.2921), 0, swerveModule3Angle, swerveModule3Drive, swerveModule3Encoder),
+        new SwerveConstants(new Translation2d(0.2921, -0.2921), 0, swerveModule4Angle, swerveModule4Drive, swerveModule4Encoder),
     };
 
-    public static final class IntakeConstants {
-        // TODO: set CAN ports of intake motor and motor controllers
-        public final int INTAKE_ROLLER = 0;
-        public final int INTAKE_DEPLOY_LEFT = 0;
-        public final int INTAKE_DEPLOY_RIGHT = 0;
+    public static final class ClimberConstants {
+        public final double leftRotatingSetpoints;
+        public final double leftExtendingSetpoints;
+        public final double rightRotatingSetpoints;
+        public final double rightExtendingSetpoints;
+        
+        public ClimberConstants(double leftRotatingSetpoints, double leftExtendingSetpoints, double rightExtendingSetpoints, double rightRotatingSetpoints) {
+            this.leftRotatingSetpoints = leftRotatingSetpoints;
+            this.leftExtendingSetpoints = leftExtendingSetpoints;
+            this.rightRotatingSetpoints = rightRotatingSetpoints;
+            this.rightExtendingSetpoints = rightExtendingSetpoints;
+        }
+    }
 
-        public final int firstIR = 0;
-        public final int secondIR = 0;
-        public final int thirdIR = 0;
-
-        public IntakeConstants(){}
+    public static final class ShooterConstants {
+        public final double kP = 0.5;
+        public final double kI = 0.001;
+        public final double kD = 0.1;
+        public final double kF = 1023.0/20660.0; // kF: 1023 represents output value to Talon at 100%, 20660 represents Velocity units at 100% output
+        public final int kIzone = 300;
+        public final double kPeakOutput = 1.00;
     }
 }
