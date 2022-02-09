@@ -13,6 +13,7 @@ import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.SwerveConstants;
 
 public class SwerveModule {
@@ -25,9 +26,13 @@ public class SwerveModule {
     /** The motor controlling the speed of the swerve module. */
     private final TalonFX driveMotor;
 
+    /** The absolute encoder for steering */
+    private final DutyCycleEncoder angleEncoder;
+
     public SwerveModule(SwerveConstants constants) {
         this.angleMotor = new TalonFX(constants.angleMotor);
         this.driveMotor = new TalonFX(constants.driveMotor);
+        this.angleEncoder = new DutyCycleEncoder(constants.angleEncoder);
         this.constants = constants;
 
         driveMotor.configFactoryDefault();
@@ -54,6 +59,9 @@ public class SwerveModule {
         angleMotor.config_kP(0, 0.2);
         angleMotor.config_kI(0, 0);
         angleMotor.config_kD(0, 0.1);
+
+        angleEncoder.setDistancePerRotation(360); // Wheel steers 360 degrees per one rotation of encoder
+        angleMotor.setSelectedSensorPosition(angleEncoder.getDistance() * constants.steeringDegreesToTicks); // Seed the Falcon's built-in encoder with the absolute encoder
     }
 
     /** Drives the swerve module in a direction at a speed.
@@ -76,7 +84,7 @@ public class SwerveModule {
         SwerveModuleState optimizedState = SwerveModuleState.optimize(desired, Rotation2d.fromDegrees(currentAngle));
         
         // The minus function will currently give you an angle from -180 to 180.
-        // If future library versions change this, this code will no longer work.
+        // If future library versions change this, this code may no longer work.
         double targetAngle = currentAngleRaw + optimizedState.angle.minus(Rotation2d.fromDegrees(currentAngleRaw)).getDegrees();
 
         angleMotor.set(ControlMode.Position, targetAngle * constants.steeringDegreesToTicks);

@@ -19,7 +19,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.RobotIMU;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.RobotIMU.GyroType;
+import frc.robot.subsystems.RobotIMU.IMUType;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -37,7 +37,9 @@ public class RobotContainer {
 
   public static final Joystick leftJoystick = new Joystick(0);
   public static final Joystick rightJoystick = new Joystick(1);
-  public static final RobotIMU IMU = new RobotIMU(GyroType.ADIS16448);
+  public static final XboxController operate = new XboxController(2);
+
+  public static final RobotIMU IMU = new RobotIMU(IMUType.ADXRS450);
   public static final Camera vision = new Camera();
 
   private final DriveTeleop swerve = new DriveTeleop();
