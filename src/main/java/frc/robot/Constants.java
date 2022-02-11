@@ -126,6 +126,7 @@ public final class Constants {
         public IntakeConstants(){}
     }
 
+    /*
     public static final class ClimberConstants {
         public final double leftRotatingSetpoints;
         public final double leftExtendingSetpoints;
@@ -137,6 +138,31 @@ public final class Constants {
             this.leftExtendingSetpoints = leftExtendingSetpoints;
             this.rightRotatingSetpoints = rightRotatingSetpoints;
             this.rightExtendingSetpoints = rightExtendingSetpoints;
+        }
+    }*/
+
+    public static final class ClimberConstants {
+        // Store the positions of the climber (Retracted, just above the low bar, and just above the mid bar)
+        // in an enum with a static function to return the encoder position of each climber position
+        public enum ClimberPositions {
+            RETRACTED,
+            LOW_BAR,
+            MID_BAR;
+
+            public static int getEncoderValue(ClimberPositions position) {
+                // Return the target encoder position of the climber
+                // TODO: make sure these values are adequate
+                switch (position) {
+                    case RETRACTED:
+                        return 0;
+                    case LOW_BAR:
+                        return 9216;
+                    case MID_BAR:
+                        return 16384;
+                    default:
+                        return 0;
+                }
+            }
         }
     }
 }
