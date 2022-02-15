@@ -7,6 +7,9 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.SPI;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
@@ -142,5 +145,45 @@ public final class Constants {
         public final double kF = 1023.0/20660.0; // kF: 1023 represents output value to Talon at 100%, 20660 represents Velocity units at 100% output
         public final int kIzone = 300;
         public final double kPeakOutput = 1.00;
+    }
+
+    /*
+    public static final class ClimberConstants {
+        public final double leftRotatingSetpoints;
+        public final double leftExtendingSetpoints;
+        public final double rightRotatingSetpoints;
+        public final double rightExtendingSetpoints;
+        
+        public ClimberConstants(double leftRotatingSetpoints, double leftExtendingSetpoints, double rightExtendingSetpoints, double rightRotatingSetpoints) {
+            this.leftRotatingSetpoints = leftRotatingSetpoints;
+            this.leftExtendingSetpoints = leftExtendingSetpoints;
+            this.rightRotatingSetpoints = rightRotatingSetpoints;
+            this.rightExtendingSetpoints = rightExtendingSetpoints;
+        }
+    }*/
+
+    public static final class ClimberConstants {
+        // Store the positions of the climber (Retracted, just above the low bar, and just above the mid bar)
+        // in an enum with a static function to return the encoder position of each climber position
+        public enum ClimberPositions {
+            RETRACTED,
+            LOW_BAR,
+            MID_BAR;
+
+            public static int getEncoderValue(ClimberPositions position) {
+                // Return the target encoder position of the climber
+                // TODO: make sure these values are adequate
+                switch (position) {
+                    case RETRACTED:
+                        return 0;
+                    case LOW_BAR:
+                        return 9216;
+                    case MID_BAR:
+                        return 16384;
+                    default:
+                        return 0;
+                }
+            }
+        }
     }
 }
