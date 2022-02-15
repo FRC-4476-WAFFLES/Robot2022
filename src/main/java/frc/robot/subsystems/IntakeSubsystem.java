@@ -48,26 +48,6 @@ public class IntakeSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public boolean HighIR() {
-    return !highIR.get();
-  }
-
-  public boolean LowIR() {
-    return !lowIR.get();
-  }
-
-  public boolean MidIR() {
-    return !midIR.get();
-  }
-
-  public boolean shouldRun() {
-    return !(HighIR() && LowIR()) || !(HighIR() && MidIR()); 
-  }
-
-  public boolean shouldConveyorRun() {
-    return !(HighIR() && MidIR());
-  }
-
   public void runIntakeIn() {
     intakeSpin.set(ControlMode.PercentOutput, 1);
   }
