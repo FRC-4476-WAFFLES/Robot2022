@@ -4,21 +4,18 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ConveyorSubsystem extends SubsystemBase {
-  private final TalonSRX conveyorSpin = new TalonSRX(Constants.conveyorSpin);
-  
+  private final CANSparkMax conveyorSpin = new CANSparkMax(Constants.conveyorSpin, MotorType.kBrushless);
   /** Creates a new ConveyorSubsystem. */
   public ConveyorSubsystem() {
-    conveyorSpin.configFactoryDefault();
-    conveyorSpin.configContinuousCurrentLimit(30);
-    conveyorSpin.configPeakCurrentLimit(30);
-    conveyorSpin.enableCurrentLimit(true);
+    conveyorSpin.restoreFactoryDefaults();
+    conveyorSpin.setSmartCurrentLimit(30);
   }
 
   @Override
@@ -27,14 +24,14 @@ public class ConveyorSubsystem extends SubsystemBase {
   }
 
   public void runConveyorIn() {
-    conveyorSpin.set(ControlMode.PercentOutput, 1);
+    conveyorSpin.set(1);
   }
 
   public void runConveyorOut() {
-    conveyorSpin.set(ControlMode.PercentOutput, -1);
+    conveyorSpin.set(-1);
   }
 
   public void stopConveyor() {
-    conveyorSpin.set(ControlMode.PercentOutput, 0);
+    conveyorSpin.set(0);
   }
 }

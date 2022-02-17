@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -27,6 +28,8 @@ public class DriveSubsystem extends SubsystemBase {
   /** Allows us to calculate the swerve module states from a chassis motion. */
   public final SwerveDriveKinematics kinematics;
   private final SwerveDriveOdometry odometry;
+
+  private final ADXRS450_Gyro ADXRS450Gyro = new ADXRS450_Gyro(Constants.gyroPort);
 
   public DriveSubsystem() {
     ArrayList<Translation2d> positions = new ArrayList<Translation2d>();
@@ -50,7 +53,9 @@ public class DriveSubsystem extends SubsystemBase {
     }
     this.kinematics = new SwerveDriveKinematics(positionArry);
     this.modules = moduleArray;
-    this.odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(IMU.getRotations()[2]));
+    this.odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(0));
+    
+    ADXRS450Gyro.calibrate();
 
     // Set the default command to the teleoperated command.
     
@@ -63,37 +68,49 @@ public class DriveSubsystem extends SubsystemBase {
     for(int x=0; x<modules.length; x++){
       moduleStates[x] = modules[x].getState();
     }
-    odometry.update(Rotation2d.fromDegrees(IMU.getRotations()[2]), moduleStates);
+    odometry.update(Rotation2d.fromDegrees(-ADXRS450Gyro.getAngle()), moduleStates[0], moduleStates[1], moduleStates[2], moduleStates[3]);
     SmartDashboard.putNumber("X location", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Y location", odometry.getPoseMeters().getY());
-    SmartDashboard.putNumberArray("Gyro", IMU.getRotations());
+    SmartDashboard.putNumber("Gyro Heading", -ADXRS450Gyro.getAngle());
+    SmartDashboard.putNumber("Gyro Rate", -ADXRS450Gyro.getRate());
+    int i = 1;
+    for (SwerveModule module : modules) {
+      SmartDashboard.putNumber("Encoder" + String.valueOf(i), module.getState().angle.getDegrees());
+      i++;
+    }
   }
 
   public void robotDrive(double forward, double right, double rotation, boolean fieldCentric){
     ChassisSpeeds chassisSpeeds;
 
-    if (Math.abs(forward) < .1){
+    double robotRotationRate = ADXRS450Gyro.getRate();
+    robotRotationRate = (robotRotationRate / 180.0) * Math.PI;
+
+    if (Math.abs(forward) < .05){
       forward = 0;
     }
-    if(Math.abs(right) < .1){
+    if(Math.abs(right) < .05){
       right = 0;
     }
-    if(Math.abs(rotation) < .1){
+    if(Math.abs(rotation) < .05){
       rotation = 0;
     }
-    forward /= -1;
-    right /= -1;
-    rotation /= -1;
+
+    forward *= 4;
+    right *= 4;
+    rotation *= 4;
+
+    rotation -= robotRotationRate;
 
     if (fieldCentric){
       //chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, gyro.getHeadingAsRotation2d());
-      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, Rotation2d.fromDegrees(IMU.getRotations()[2]));
+      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, Rotation2d.fromDegrees(-ADXRS450Gyro.getAngle()));
     } else {
       chassisSpeeds = new ChassisSpeeds(forward, right, rotation);
     }
     
     SwerveModuleState[] swerveModuleState = kinematics.toSwerveModuleStates(chassisSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleState, 1);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleState, 4);
     setModuleStates(swerveModuleState);
   }
 
