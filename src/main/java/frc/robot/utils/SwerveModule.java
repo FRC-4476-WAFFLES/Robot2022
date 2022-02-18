@@ -14,7 +14,6 @@ import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.SwerveConstants;
 
 public class SwerveModule {
@@ -60,6 +59,7 @@ public class SwerveModule {
         angleMotor.config_kP(0, 0.1);
         angleMotor.config_kI(0, 0);
         angleMotor.config_kD(0, 0.2);
+        angleMotor.configNeutralDeadband(5);
 
         driveMotor.config_kP(0, 0.1);
         driveMotor.config_kI(0, 0);

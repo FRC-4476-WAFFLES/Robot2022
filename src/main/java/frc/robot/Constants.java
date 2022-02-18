@@ -51,15 +51,15 @@ public final class Constants {
     public static final SPI.Port gyroPort = SPI.Port.kOnboardCS0;
 
     // Digital Input
-    public static final int intakeLimit = 0; //  am-3313 Hall Effect Sensor
-    public static final int lowIR = 1; // IR
-    public static final int midIR = 2; // IR
-    public static final int highIR = 3; // IR
+    //public static final int intakeLimit = 0; //  am-3313 Hall Effect Sensor
     
     public static final int swerveModule1Encoder = 0; // SRX Mag Encoder
     public static final int swerveModule2Encoder = 1; // SRX Mag Encoder
     public static final int swerveModule3Encoder = 2; // SRX Mag Encoder
     public static final int swerveModule4Encoder = 3; // SRX Mag Encoder
+    public static final int highIR = 4; // IR
+    public static final int midIR = 5; // IR
+    public static final int lowIR = 6; // IR
 
     public static final class SwerveConstants {
         /** Represents the offset from the centre of the robot, in metres. */
@@ -136,9 +136,10 @@ public final class Constants {
 
     public static final class ShooterConstants {
         public final double kP = 0.5;
-        public final double kI = 0.001;
-        public final double kD = 0.1;
-        public final double kF = 1023.0/20660.0; // kF: 1023 represents output value to Talon at 100%, 20660 represents Velocity units at 100% output
+        public final double kI = 0.0;
+        public final double kD = 0.0;
+        //public final double kF = 1023.0/20660.0; // kF: 1023 represents output value to Talon at 100%, 20660 represents Velocity units at 100% output
+        public final double kF = 0;
         public final int kIzone = 300;
         public final double kPeakOutput = 1.00;
     }

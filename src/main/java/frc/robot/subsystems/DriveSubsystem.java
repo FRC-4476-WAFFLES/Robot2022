@@ -83,9 +83,6 @@ public class DriveSubsystem extends SubsystemBase {
   public void robotDrive(double forward, double right, double rotation, boolean fieldCentric){
     ChassisSpeeds chassisSpeeds;
 
-    double robotRotationRate = ADXRS450Gyro.getRate();
-    robotRotationRate = (robotRotationRate / 180.0) * Math.PI;
-
     if (Math.abs(forward) < .05){
       forward = 0;
     }
@@ -100,7 +97,12 @@ public class DriveSubsystem extends SubsystemBase {
     right *= 4;
     rotation *= 4;
 
-    rotation -= robotRotationRate;
+    double robotRotationRate = -ADXRS450Gyro.getRate();
+    robotRotationRate = (robotRotationRate / 180.0) * Math.PI;
+
+    if (forward != 0 || right != 0) {
+      rotation += robotRotationRate;
+    }
 
     if (fieldCentric){
       //chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, gyro.getHeadingAsRotation2d());
