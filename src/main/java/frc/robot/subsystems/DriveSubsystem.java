@@ -95,7 +95,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     forward *= 4;
     right *= 4;
-    rotation *= 4;
+    rotation *= 8;
 
     double robotRotationRate = -ADXRS450Gyro.getRate();
     robotRotationRate = (robotRotationRate / 180.0) * Math.PI;
@@ -133,8 +133,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
 
-  /** This method will be called once per scheduler run during simulation */
-  @Override
-  public void simulationPeriodic() {
+  public void resetGyro() {
+    ADXRS450Gyro.reset();
   }
 }
