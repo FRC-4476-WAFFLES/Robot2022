@@ -30,7 +30,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final RelativeEncoder encoderLeft = deployLeft.getEncoder(Type.kHallSensor, 42);
   private final RelativeEncoder encoderRight = deployRight.getEncoder(Type.kHallSensor, 42);
   private final SparkMaxPIDController leftPIDController = deployLeft.getPIDController();
-  private final SparkMaxPIDController rightPIDController = deployRight.getPIDController();
+  //private final SparkMaxPIDController rightPIDController = deployRight.getPIDController();
   private final double deployOvershootTarget = -50;
   private double deployTargetLeft = 0;
   private double deployTargetRight = 0;

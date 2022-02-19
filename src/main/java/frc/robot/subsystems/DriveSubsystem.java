@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.utils.SwerveModule;
-import static frc.robot.RobotContainer.*;
 
 public class DriveSubsystem extends SubsystemBase {
   /** The array of swerve modules on the robot. */
