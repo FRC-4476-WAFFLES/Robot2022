@@ -30,12 +30,26 @@ public class DriveAuto extends SwerveControllerCommand {
       (states) -> driveSubsystem.setModuleStates(states),
       driveSubsystem);
   }
+
+  public DriveAuto(double maxSpeedM, Pose2d ...waypoints) {
+    super(fromWaypoints(maxSpeedM, waypoints),
+      () -> driveSubsystem.getOdometryLocation(),
+      driveSubsystem.kinematics,
+      xController, yController,
+      thetaController,
+      (states) -> driveSubsystem.setModuleStates(states),
+      driveSubsystem);
+  }
   
   public static Trajectory fromWaypoints(Pose2d ...waypoints) {
+    return DriveAuto.fromWaypoints(Constants.SwerveConstants.maxAttainableSpeedMetersPerSecond, waypoints);
+  }
+  
+  public static Trajectory fromWaypoints(double maxSpeedM, Pose2d ...waypoints) {
     TrajectoryConfig config = new TrajectoryConfig(
-      Constants.SwerveConstants.maxAttainableSpeedMetersPerSecond,
+      maxSpeedM,
       Constants.SwerveConstants.maxAccelerationMetersPerSecondSquared);
-    config.addConstraint(new SwerveDriveKinematicsConstraint(driveSubsystem.kinematics, Constants.SwerveConstants.maxAttainableSpeedMetersPerSecond));
+    config.addConstraint(new SwerveDriveKinematicsConstraint(driveSubsystem.kinematics, maxSpeedM));
     
     return TrajectoryGenerator.generateTrajectory(List.of(waypoints), config);
   }

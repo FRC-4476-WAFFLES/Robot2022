@@ -57,7 +57,7 @@ public class RobotContainer {
   private final ConveyorStop conveyorStop = new ConveyorStop();
   private final ShooterStop shooterStop = new ShooterStop();
   
-  private final DriveAuto testAuto = new DriveAuto(
+  private final DriveAuto testAuto = new DriveAuto(0.1,
     new Pose2d(0, 0, new Rotation2d(0)),
     new Pose2d(Units.feetToMeters(5), 0, new Rotation2d(0))
   );
