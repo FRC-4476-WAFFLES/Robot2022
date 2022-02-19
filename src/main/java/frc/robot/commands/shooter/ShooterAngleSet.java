@@ -7,9 +7,11 @@ package frc.robot.commands.shooter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
-public class ShooterKickerWheelSpinup extends CommandBase {
-  /** Creates a new ShooterKickerWheelSpinup. */
-  public ShooterKickerWheelSpinup() {
+public class ShooterAngleSet extends CommandBase {
+  private final double targetAngle;
+  /** Creates a new ShooterAngleSet. */
+  public ShooterAngleSet(double targetAngle) {
+    this.targetAngle = targetAngle;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements();
   }
@@ -21,7 +23,7 @@ public class ShooterKickerWheelSpinup extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setKickerSpeed(1);
+    shooterSubsystem.setHoodAngle(targetAngle);
   }
 
   // Called once the command ends or is interrupted.

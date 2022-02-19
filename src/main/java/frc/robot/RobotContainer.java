@@ -15,20 +15,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.climber.ClimberAnalogStickControl;
 import frc.robot.commands.conveyor.ConveyorIn;
-import frc.robot.commands.conveyor.ConveyorOut;
-import frc.robot.commands.conveyor.ConveyorStop;
 import frc.robot.commands.drive.DriveAuto;
 import frc.robot.commands.drive.DriveTeleop;
-import frc.robot.commands.intake.IntakeDeploy;
 import frc.robot.commands.intake.IntakeIn;
-import frc.robot.commands.intake.IntakeOut;
-import frc.robot.commands.intake.IntakeRetract;
-import frc.robot.commands.intake.IntakeStop;
-import frc.robot.commands.shooter.ShooterKickerWheelSpinup;
+import frc.robot.commands.intake.IntakePowerRun;
+import frc.robot.commands.shooter.HighFenderShotReadyUp;
+import frc.robot.commands.shooter.ShooterDriverStationControl;
 import frc.robot.commands.shooter.ShooterStop;
-import frc.robot.commands.shooter.ShooterWheelSpinup;
 import frc.robot.subsystems.Camera;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ConveyorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -46,6 +44,7 @@ public class RobotContainer {
   public static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   public static final ConveyorSubsystem conveyorSubsystem = new ConveyorSubsystem();
   public static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  public static final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
   public static final Joystick leftJoystick = new Joystick(0);
   public static final Joystick rightJoystick = new Joystick(1);
@@ -53,8 +52,8 @@ public class RobotContainer {
   public static final Camera vision = new Camera();
 
   private final DriveTeleop swerve = new DriveTeleop();
-  private final IntakeStop intakeStop = new IntakeStop();
-  private final ConveyorStop conveyorStop = new ConveyorStop();
+  //private final IntakeStop intakeStop = new IntakeStop();
+  //private final ConveyorStop conveyorStop = new ConveyorStop();
   private final ShooterStop shooterStop = new ShooterStop();
   
   private final DriveAuto testAuto = new DriveAuto(0.1,
@@ -63,12 +62,16 @@ public class RobotContainer {
   );
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
+  private final IntakePowerRun intakePowerRun = new IntakePowerRun();
+  private final ClimberAnalogStickControl climberAnalogStickControl = new ClimberAnalogStickControl();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     driveSubsystem.setDefaultCommand(swerve);
-    intakeSubsystem.setDefaultCommand(intakeStop);
-    conveyorSubsystem.setDefaultCommand(conveyorStop);
+    intakeSubsystem.setDefaultCommand(intakePowerRun);
+    conveyorSubsystem.setDefaultCommand(intakePowerRun);
     shooterSubsystem.setDefaultCommand(shooterStop);
+    climberSubsystem.setDefaultCommand(climberAnalogStickControl);
     CommandScheduler.getInstance().registerSubsystem(vision);
 
     // Configure the button bindings
@@ -96,14 +99,16 @@ public class RobotContainer {
 
     final var back = new JoystickButton(operate, XboxController.Button.kBack.value);
 
-    a.whileHeld(new IntakeIn().alongWith(new ConveyorIn()));
+    final var povUp = new POVButton(operate, 0);
+/*
+    a.whileHeld(new Intake2Balls());
     b.whileHeld(new IntakeOut().alongWith(new ConveyorOut()));
     x.whenPressed(new IntakeDeploy());
-    y.whenPressed(new IntakeRetract());
+    y.whenPressed(new IntakeRetract());*/
 
-    leftButton.whenPressed(new ShooterKickerWheelSpinup());
-    rightButton.whenPressed(new ShooterWheelSpinup());
-    back.whenPressed(new ShooterStop());
+    povUp.toggleWhenPressed(new HighFenderShotReadyUp());
+    x.whileHeld(new IntakeIn().alongWith(new ConveyorIn()));
+    back.toggleWhenPressed(new ShooterDriverStationControl());
   }
 
   /**

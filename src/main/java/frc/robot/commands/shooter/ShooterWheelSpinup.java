@@ -8,8 +8,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
 public class ShooterWheelSpinup extends CommandBase {
+  private final double targetRPM;
   /** Creates a new ShooterWheelSpinup. */
-  public ShooterWheelSpinup() {
+  public ShooterWheelSpinup(double targetRPM) {
+    this.targetRPM = targetRPM;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooterSubsystem);
   }
@@ -21,7 +23,7 @@ public class ShooterWheelSpinup extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setShooterSpeed(1500);
+    shooterSubsystem.setShooterSpeed(targetRPM);
   }
 
   // Called once the command ends or is interrupted.

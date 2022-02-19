@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -22,6 +23,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterLeader = new TalonFX(Constants.shooterSpinLeft);
   private final TalonFX shooterFollower = new TalonFX(Constants.shooterSpinRight);
   private final TalonSRX kickerWheel = new TalonSRX(Constants.kickerWheelSpin);
+  private final Servo angleLeft = new Servo(1);
+  private final Servo angleRight = new Servo(0);
   
   ShooterConstants shooterConstants = new ShooterConstants();
 
@@ -30,6 +33,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private double kD = shooterConstants.kD;
   private double kF = shooterConstants.kF;
   private double kIzone = shooterConstants.kIzone;
+
+  private double shooterTargetRPM = 0;
+  private double shooterTargetAngle = 0;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -62,6 +68,11 @@ public class ShooterSubsystem extends SubsystemBase {
     kickerWheel.configPeakCurrentLimit(30);
     kickerWheel.enableCurrentLimit(true);
     kickerWheel.setNeutralMode(NeutralMode.Brake);
+
+    angleLeft.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
+    angleRight.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
+    SmartDashboard.setDefaultNumber("Set Shooter Target Angle", -1.0);
+    SmartDashboard.setDefaultNumber("Set Shooter Target RPM", 0);
   }
 
   @Override
@@ -69,6 +80,8 @@ public class ShooterSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Shooter Current RPM", ticksPer100msToRPM(shooterLeader.getSelectedSensorVelocity()));
     SmartDashboard.putNumber("Shooter Raw Velocity", shooterLeader.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("Shooter Target RPM", shooterTargetRPM);
+    SmartDashboard.putNumber("Shooter Target Angle", shooterTargetAngle);
   }
 
   public void updateShooterPID(double kP, double kI, double kD, double kF, double kIzone) {
@@ -89,9 +102,25 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterLeader.set(ControlMode.Velocity, rpmToTicksPer100ms(target));
   }
 
+  public void setHoodAngle(double target) {
+    target = clamp(target, -1.0, 1.0);
+    angleLeft.setSpeed(target);
+    angleRight.setSpeed(target);
+  }
+
   public void stop() {
     shooterLeader.set(ControlMode.PercentOutput, 0);
     kickerWheel.set(ControlMode.PercentOutput, 0);
+  }
+
+  public void driverStationShooterRPM() {
+    shooterTargetRPM = SmartDashboard.getNumber("Set Shooter Target RPM", 0);
+    setShooterSpeed(shooterTargetRPM);
+  }
+
+  public void driverStationAngleControl() {
+    shooterTargetAngle = SmartDashboard.getNumber("Set Shooter Target Angle", 0);
+    setHoodAngle(shooterTargetAngle);
   }
 
   private double rpmToTicksPer100ms(double rpm) {

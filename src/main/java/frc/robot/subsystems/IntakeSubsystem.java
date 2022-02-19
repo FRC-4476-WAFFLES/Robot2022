@@ -13,7 +13,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -22,10 +21,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private final TalonSRX intakeSpin = new TalonSRX(Constants.intakeSpin);
   private final CANSparkMax deployLeft = new CANSparkMax(Constants.intakeDeployLeft, MotorType.kBrushless);
   private final CANSparkMax deployRight = new CANSparkMax(Constants.intakeDeployRight, MotorType.kBrushless);
-  
-  private final DigitalInput lowIR = new DigitalInput(Constants.lowIR);
-  private final DigitalInput midIR = new DigitalInput(Constants.midIR);
-  private final DigitalInput highIR = new DigitalInput(Constants.highIR);
 
   private final RelativeEncoder encoderLeft = deployLeft.getEncoder(Type.kHallSensor, 42);
   private final RelativeEncoder encoderRight = deployRight.getEncoder(Type.kHallSensor, 42);
@@ -98,10 +93,6 @@ public class IntakeSubsystem extends SubsystemBase {
     leftPIDController.setReference(deployTargetLeft, CANSparkMax.ControlType.kPosition);
     //rightPIDController.setReference(deployTargetRight, CANSparkMax.ControlType.kPosition);
 
-    SmartDashboard.putBoolean("High IR", getHighIR());
-    SmartDashboard.putBoolean("Mid IR", getMidIR());
-    SmartDashboard.putBoolean("Low IR", getLowIR());
-
     SmartDashboard.putNumber("Left Encoder Location", encoderLeft.getPosition());
     SmartDashboard.putNumber("Right Encoder Location", encoderRight.getPosition());
     SmartDashboard.putNumber("Left Deploy Target", deployTargetLeft);
@@ -128,32 +119,16 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
 
-  public boolean getHighIR() {
-    return !highIR.get();
-  }
-
-  public boolean getMidIR() {
-    return !midIR.get();
-  }
-
-  public boolean getLowIR() {
-    return !lowIR.get();
-  }
-
-  public boolean shouldRun() {
-    return !(getHighIR() && getLowIR()) || !(getHighIR() && getMidIR()); 
-  }
-
-  public boolean shouldConveyorRun() {
-    return !(getHighIR() && getMidIR());
-  }
-
   public void runIntakeIn() {
     intakeSpin.set(ControlMode.PercentOutput, 1);
   }
 
   public void runIntakeOut() {
     intakeSpin.set(ControlMode.PercentOutput, -1);
+  }
+
+  public void runIntake(double power) {
+    intakeSpin.set(ControlMode.PercentOutput, power);
   }
 
   public void stopIntake() {
