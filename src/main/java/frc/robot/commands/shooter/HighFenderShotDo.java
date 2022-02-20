@@ -4,14 +4,16 @@
 
 package frc.robot.commands.shooter;
 
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class HighFenderShotReadyUp extends ParallelDeadlineGroup {
-  /** Creates a new ShooterHighFenderShot. */
-  public HighFenderShotReadyUp() {
-    super(new ShooterWheelSpinup(2000), new ShooterAngleSet(-0.7), new ShooterKickerWheelSpinup());
+public class HighFenderShotDo extends SequentialCommandGroup {
+  /** Creates a new HighFenderShotDo. */
+  public HighFenderShotDo() {
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
+    addCommands(new HighFenderShotReadyUp());
   }
 }

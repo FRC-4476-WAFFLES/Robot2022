@@ -2,14 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.conveyor;
+package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
-public class ConveyorShoot extends CommandBase {
-  /** Creates a new ConveyorShoot. */
-  public ConveyorShoot() {
+public class ShootAllBalls extends CommandBase {
+  /** Creates a new ShootAllBalls. */
+  public ShootAllBalls() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intakeSubsystem, conveyorSubsystem);
   }
@@ -35,7 +35,6 @@ public class ConveyorShoot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    
-    return false;
+    return !conveyorSubsystem.getLowIR() && !conveyorSubsystem.getMidIR() && !conveyorSubsystem.getHighIR();
   }
 }

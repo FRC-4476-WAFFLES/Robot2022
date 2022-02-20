@@ -70,6 +70,7 @@ public class DriveSubsystem extends SubsystemBase {
     odometry.update(Rotation2d.fromDegrees(-ADXRS450Gyro.getAngle()), moduleStates[0], moduleStates[1], moduleStates[2], moduleStates[3]);
     SmartDashboard.putNumber("X location", getOdometryLocation().getX());
     SmartDashboard.putNumber("Y location", getOdometryLocation().getY());
+    SmartDashboard.putNumber("Odometry Heading", odometry.getPoseMeters().getRotation().getDegrees());
     SmartDashboard.putNumber("Gyro Heading", -ADXRS450Gyro.getAngle());
     SmartDashboard.putNumber("Gyro Rate", -ADXRS450Gyro.getRate());
     int i = 1;
@@ -105,7 +106,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     if (fieldCentric){
       //chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, gyro.getHeadingAsRotation2d());
-      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, Rotation2d.fromDegrees(-ADXRS450Gyro.getAngle()));
+      //chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, Rotation2d.fromDegrees(-ADXRS450Gyro.getAngle()));
+      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, odometry.getPoseMeters().getRotation());
     } else {
       chassisSpeeds = new ChassisSpeeds(forward, right, rotation);
     }
@@ -125,7 +127,7 @@ public class DriveSubsystem extends SubsystemBase {
     return new Pose2d(
       -odometry.getPoseMeters().getX(), 
       odometry.getPoseMeters().getY(), 
-      Rotation2d.fromDegrees(-ADXRS450Gyro.getAngle()));
+      odometry.getPoseMeters().getRotation());
   }
 
   /** Stop all motors from running. */
@@ -137,5 +139,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetGyro() {
     ADXRS450Gyro.reset();
+  }
+
+  public void resetOdometry(Pose2d robotPose) {
+    odometry.resetPosition(robotPose, Rotation2d.fromDegrees(-ADXRS450Gyro.getAngle()));
   }
 }

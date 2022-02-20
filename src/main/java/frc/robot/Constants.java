@@ -136,11 +136,10 @@ public final class Constants {
     }
 
     public static final class ShooterConstants {
-        public final double kP = 0.5;
+        public final double kP = 0.1;
         public final double kI = 0.0;
         public final double kD = 0.0;
-        //public final double kF = 1023.0/20660.0; // kF: 1023 represents output value to Talon at 100%, 20660 represents Velocity units at 100% output
-        public final double kF = 0;
+        public final double kF = 1023.0/20660.0; // kF: 1023 represents output value to Talon at 100%, 20660 represents Velocity units at 100% output
         public final int kIzone = 300;
         public final double kPeakOutput = 1.00;
     }

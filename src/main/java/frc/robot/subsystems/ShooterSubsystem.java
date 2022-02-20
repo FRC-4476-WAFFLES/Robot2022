@@ -123,6 +123,10 @@ public class ShooterSubsystem extends SubsystemBase {
     setHoodAngle(shooterTargetAngle);
   }
 
+  public double getShooterRPM() {
+    return ticksPer100msToRPM(shooterLeader.getSelectedSensorVelocity());
+  }
+
   private double rpmToTicksPer100ms(double rpm) {
     return rpm * 2048.0 / 600.0;
   }

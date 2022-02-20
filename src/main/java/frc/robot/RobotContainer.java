@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -16,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.autonomous.AutonomousRouteAlpha;
+import frc.robot.commands.autonomous.FenderHighShotComplete;
 import frc.robot.commands.climber.ClimberAnalogStickControl;
 import frc.robot.commands.conveyor.ConveyorIn;
 import frc.robot.commands.conveyor.ConveyorShoot;
@@ -62,6 +63,11 @@ public class RobotContainer {
     new Pose2d(0, 0, new Rotation2d()),
     new Pose2d(8, 0, new Rotation2d())
   );
+
+  private final FenderHighShotComplete autoShot = new FenderHighShotComplete();
+
+  private final AutonomousRouteAlpha autonomousRouteAlpha = new AutonomousRouteAlpha();
+
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   private final IntakePowerRun intakePowerRun = new IntakePowerRun();
@@ -81,6 +87,8 @@ public class RobotContainer {
 
     // Add the auto modes
     autoChooser.addOption("Test Auto", testAuto);
+    autoChooser.addOption("Auto Shot", autoShot);
+    autoChooser.addOption("Autonomous Route Alpha", autonomousRouteAlpha);
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
