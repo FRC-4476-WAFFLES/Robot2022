@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.climber.ClimberAnalogStickControl;
 import frc.robot.commands.conveyor.ConveyorIn;
+import frc.robot.commands.conveyor.ConveyorShoot;
 import frc.robot.commands.drive.DriveAuto;
 import frc.robot.commands.drive.DriveTeleop;
 import frc.robot.commands.intake.IntakeIn;
@@ -56,9 +57,10 @@ public class RobotContainer {
   //private final ConveyorStop conveyorStop = new ConveyorStop();
   private final ShooterStop shooterStop = new ShooterStop();
   
-  private final DriveAuto testAuto = new DriveAuto(0.1,
-    new Pose2d(0, 0, new Rotation2d(0)),
-    new Pose2d(Units.feetToMeters(5), 0, new Rotation2d(0))
+  private final DriveAuto testAuto = new DriveAuto(4.0, 
+    Rotation2d.fromDegrees(0),
+    new Pose2d(0, 0, new Rotation2d()),
+    new Pose2d(8, 0, new Rotation2d())
   );
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
@@ -107,7 +109,7 @@ public class RobotContainer {
     y.whenPressed(new IntakeRetract());*/
 
     povUp.toggleWhenPressed(new HighFenderShotReadyUp());
-    x.whileHeld(new IntakeIn().alongWith(new ConveyorIn()));
+    x.whileHeld(new ConveyorShoot());
     back.toggleWhenPressed(new ShooterDriverStationControl());
   }
 

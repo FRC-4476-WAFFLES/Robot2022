@@ -105,7 +105,7 @@ public class SwerveModule {
     
     public SwerveModuleState getState(){
         double currentVelocity = driveMotor.getSelectedSensorVelocity() / constants.metersPerSecondToTicksPer100ms;
-        currentVelocity += angleMotor.getSelectedSensorVelocity() * constants.steeringToDriveRatio;
+        //currentVelocity += angleMotor.getSelectedSensorVelocity() * constants.steeringToDriveRatio;
 
         double currentAngle = (angleMotor.getSelectedSensorPosition() / constants.steeringDegreesToTicks) % 360;
         if (currentAngle < -180) {

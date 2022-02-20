@@ -68,8 +68,8 @@ public class DriveSubsystem extends SubsystemBase {
       moduleStates[x] = modules[x].getState();
     }
     odometry.update(Rotation2d.fromDegrees(-ADXRS450Gyro.getAngle()), moduleStates[0], moduleStates[1], moduleStates[2], moduleStates[3]);
-    SmartDashboard.putNumber("X location", odometry.getPoseMeters().getX());
-    SmartDashboard.putNumber("Y location", odometry.getPoseMeters().getY());
+    SmartDashboard.putNumber("X location", getOdometryLocation().getX());
+    SmartDashboard.putNumber("Y location", getOdometryLocation().getY());
     SmartDashboard.putNumber("Gyro Heading", -ADXRS450Gyro.getAngle());
     SmartDashboard.putNumber("Gyro Rate", -ADXRS450Gyro.getRate());
     int i = 1;
@@ -122,7 +122,10 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public Pose2d getOdometryLocation(){
-    return odometry.getPoseMeters();
+    return new Pose2d(
+      -odometry.getPoseMeters().getX(), 
+      odometry.getPoseMeters().getY(), 
+      Rotation2d.fromDegrees(-ADXRS450Gyro.getAngle()));
   }
 
   /** Stop all motors from running. */

@@ -97,7 +97,7 @@ public final class Constants {
         public final double metersPerSecondToTicksPer100ms = CPR * driveOverallRatio / wheelCircumfrence / 10.0;
 
         public static final double maxAttainableSpeedMetersPerSecond = 4.0;
-        public static final double maxAccelerationMetersPerSecondSquared = 1.0;
+        public static final double maxAccelerationMetersPerSecondSquared = 3.0;
 
         // The number of ticks of the motor's built-in encoder per revolution of the steering module
         public final double ticksPerSteeringRevolution = 26214.4;
