@@ -19,6 +19,7 @@ import frc.robot.commands.autonomous.AutonomousRouteAlpha;
 import frc.robot.commands.autonomous.AutonomousRouteComplete;
 import frc.robot.commands.autonomous.FenderHighShotComplete;
 import frc.robot.commands.autonomous.TheAutoPathToRuleAllAutoPaths;
+import frc.robot.commands.autonomous.ThreeBallAutoComplete;
 import frc.robot.commands.autonomous.TwoBallAutoPath;
 import frc.robot.commands.climber.ClimberAnalogStickControl;
 import frc.robot.commands.conveyor.ConveyorIn;
@@ -76,6 +77,8 @@ public class RobotContainer {
 
   private final TheAutoPathToRuleAllAutoPaths fiveBallAutoPath = new TheAutoPathToRuleAllAutoPaths();
 
+  private final ThreeBallAutoComplete threeBallAutoComplete = new ThreeBallAutoComplete();
+
   private final TwoBallAutoPath twoBallAutoPath = new TwoBallAutoPath();
 
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
@@ -102,6 +105,7 @@ public class RobotContainer {
     autoChooser.addOption("Autonomous Route Complete", autonomousRouteComplete);
     autoChooser.addOption("5 Ball Auto Route", fiveBallAutoPath);
     autoChooser.addOption("2 Ball Auto Route", twoBallAutoPath);
+    autoChooser.addOption("3 Ball Auto Complete", threeBallAutoComplete);
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 

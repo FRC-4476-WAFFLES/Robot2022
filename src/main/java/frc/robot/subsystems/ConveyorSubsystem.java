@@ -71,6 +71,10 @@ public class ConveyorSubsystem extends SubsystemBase {
     return !lowIR.get();
   }
 
+  public boolean getLowIRPreviousState() {
+    return lowIRPreviousState;
+  }
+
   public boolean shouldRun() {
     if (getHighIR()) {
       return false;

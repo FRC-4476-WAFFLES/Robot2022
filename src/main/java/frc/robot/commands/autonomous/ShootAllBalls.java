@@ -35,6 +35,6 @@ public class ShootAllBalls extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !conveyorSubsystem.getLowIR() && !conveyorSubsystem.getMidIR() && !conveyorSubsystem.getHighIR();
+    return !conveyorSubsystem.getLowIR() && !conveyorSubsystem.getLowIRPreviousState() && !conveyorSubsystem.getMidIR() && !conveyorSubsystem.getHighIR();
   }
 }
