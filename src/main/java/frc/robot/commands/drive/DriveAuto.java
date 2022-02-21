@@ -9,13 +9,16 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 import static frc.robot.RobotContainer.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DriveAuto extends SwerveControllerCommand {
@@ -27,6 +30,8 @@ public class DriveAuto extends SwerveControllerCommand {
       Constants.SwerveConstants.maxAccelerationMetersPerSecondSquared));
   public static Timer timer = new Timer();
   
+  private SwervePath swervePath;
+  
   public DriveAuto(SwervePath swervePath) {
     super(swervePath.trajectory,
       () -> driveSubsystem.getOdometryLocation(),
@@ -36,6 +41,8 @@ public class DriveAuto extends SwerveControllerCommand {
       () -> swervePath.sampleAngle(timer.get()),
       (states) -> driveSubsystem.setModuleStates(states),
       driveSubsystem);
+    
+    this.swervePath = swervePath;
   }
   
   @Override
@@ -43,6 +50,17 @@ public class DriveAuto extends SwerveControllerCommand {
     timer.reset();
     timer.start();
     super.initialize();
+  }
+  
+  @Override
+  public void execute() {
+    if(Robot.isSimulation()) {
+      State state = swervePath.trajectory.sample(timer.get());
+      Rotation2d angle = swervePath.sampleAngle(timer.get());
+      driveSubsystem.field.setRobotPose(state.poseMeters.getX(), state.poseMeters.getY(), angle);
+    }
+
+    super.execute();
   }
 
   @Override
@@ -58,8 +76,8 @@ public class DriveAuto extends SwerveControllerCommand {
    */
   public static class SwervePath {
     private Pose2d startPose;
-    private List<Translation2d> points;
-    private List<Rotation2d> angles;
+    private List<Translation2d> points = new ArrayList<Translation2d>();
+    private List<Rotation2d> angles = new ArrayList<Rotation2d>();
     Trajectory trajectory;
     
     /**

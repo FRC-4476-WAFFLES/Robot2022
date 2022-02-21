@@ -14,9 +14,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.utils.SwerveModule;
 
@@ -29,6 +31,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveDriveOdometry odometry;
 
   private final ADXRS450_Gyro ADXRS450Gyro = new ADXRS450_Gyro(Constants.gyroPort);
+  public final Field2d field = new Field2d();
 
   public DriveSubsystem() {
     ArrayList<Translation2d> positions = new ArrayList<Translation2d>();
@@ -56,8 +59,7 @@ public class DriveSubsystem extends SubsystemBase {
     
     ADXRS450Gyro.calibrate();
 
-    // Set the default command to the teleoperated command.
-    
+    SmartDashboard.putData("Field", field);
   }
 
   /** This method will be called once per scheduler run. */
@@ -77,6 +79,10 @@ public class DriveSubsystem extends SubsystemBase {
     for (SwerveModule module : modules) {
       SmartDashboard.putNumber("Encoder" + String.valueOf(i), module.getState().angle.getDegrees());
       i++;
+    }
+
+    if(Robot.isReal()) {
+      field.setRobotPose(this.getOdometryLocation());
     }
   }
 

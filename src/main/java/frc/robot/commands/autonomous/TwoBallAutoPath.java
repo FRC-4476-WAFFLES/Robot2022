@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drive.DriveAuto;
+import frc.robot.commands.drive.DriveAuto.SwervePath;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -20,17 +21,12 @@ public class TwoBallAutoPath extends SequentialCommandGroup {
     addCommands(
       new ResetToLeftAutoStartingPosition(),
 
-      new DriveAuto(
-        3.0, 
-        Rotation2d.fromDegrees(160), 
-        new Pose2d(-0.3, -0.3, Rotation2d.fromDegrees(160)),
-        new Pose2d(-1.7, -1.6, Rotation2d.fromDegrees(160))),
+      new DriveAuto(new SwervePath(0, 0, 160, 160)
+          .waypoint(-0.3, -0.3, 160)
+          .finish(-1.7, -1.6, 160, 160, 3.0)),
 
-        new DriveAuto(
-          3.0, 
-          Rotation2d.fromDegrees(160), 
-          new Pose2d(-1.7, -1.6, Rotation2d.fromDegrees(160)),
-          new Pose2d(0, 0, Rotation2d.fromDegrees(160)))
+      new DriveAuto(new SwervePath(-1.7, -1.6, 160, 160)
+          .finish(0, 0, 160, 160, 3.0))
     );
   }
 }
