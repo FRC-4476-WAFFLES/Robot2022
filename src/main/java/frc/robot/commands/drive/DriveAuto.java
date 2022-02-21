@@ -17,9 +17,9 @@ import static frc.robot.RobotContainer.*;
 import java.util.List;
 
 public class DriveAuto extends SwerveControllerCommand {
-  static PIDController xController = new PIDController(-5.0, 0.0, -0.1);
-  static PIDController yController = new PIDController(5.0, 0.0, 0.1);
-  static ProfiledPIDController thetaController = new ProfiledPIDController(-2.0, 0.0, 0.0,
+  static PIDController xController = new PIDController(-6.5, 0.0, -0.1); // Original -5.0, 0.0, -0.1
+  static PIDController yController = new PIDController(6.5, 0.0, 0.1);
+  static ProfiledPIDController thetaController = new ProfiledPIDController(-6.0, 0.0, 0.0,
     new TrapezoidProfile.Constraints(
       Constants.SwerveConstants.maxAttainableSpeedMetersPerSecond, 
       Constants.SwerveConstants.maxAccelerationMetersPerSecondSquared));

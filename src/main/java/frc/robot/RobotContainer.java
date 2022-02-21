@@ -16,11 +16,15 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autonomous.AutonomousRouteAlpha;
+import frc.robot.commands.autonomous.AutonomousRouteComplete;
 import frc.robot.commands.autonomous.FenderHighShotComplete;
+import frc.robot.commands.autonomous.TheAutoPathToRuleAllAutoPaths;
+import frc.robot.commands.autonomous.TwoBallAutoPath;
 import frc.robot.commands.climber.ClimberAnalogStickControl;
 import frc.robot.commands.conveyor.ConveyorIn;
 import frc.robot.commands.conveyor.ConveyorShoot;
 import frc.robot.commands.drive.DriveAuto;
+import frc.robot.commands.drive.DriveResetGyro;
 import frc.robot.commands.drive.DriveTeleop;
 import frc.robot.commands.intake.IntakeIn;
 import frc.robot.commands.intake.IntakePowerRun;
@@ -68,6 +72,12 @@ public class RobotContainer {
 
   private final AutonomousRouteAlpha autonomousRouteAlpha = new AutonomousRouteAlpha();
 
+  private final AutonomousRouteComplete autonomousRouteComplete = new AutonomousRouteComplete();
+
+  private final TheAutoPathToRuleAllAutoPaths fiveBallAutoPath = new TheAutoPathToRuleAllAutoPaths();
+
+  private final TwoBallAutoPath twoBallAutoPath = new TwoBallAutoPath();
+
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   private final IntakePowerRun intakePowerRun = new IntakePowerRun();
@@ -89,6 +99,9 @@ public class RobotContainer {
     autoChooser.addOption("Test Auto", testAuto);
     autoChooser.addOption("Auto Shot", autoShot);
     autoChooser.addOption("Autonomous Route Alpha", autonomousRouteAlpha);
+    autoChooser.addOption("Autonomous Route Complete", autonomousRouteComplete);
+    autoChooser.addOption("5 Ball Auto Route", fiveBallAutoPath);
+    autoChooser.addOption("2 Ball Auto Route", twoBallAutoPath);
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
@@ -110,6 +123,9 @@ public class RobotContainer {
     final var back = new JoystickButton(operate, XboxController.Button.kBack.value);
 
     final var povUp = new POVButton(operate, 0);
+
+    final var rightJoystickButton7 = new JoystickButton(rightJoystick, 7);
+    final var rightJoystickButton10 = new JoystickButton(rightJoystick, 10);
 /*
     a.whileHeld(new Intake2Balls());
     b.whileHeld(new IntakeOut().alongWith(new ConveyorOut()));
@@ -119,6 +135,8 @@ public class RobotContainer {
     povUp.toggleWhenPressed(new HighFenderShotReadyUp());
     x.whileHeld(new ConveyorShoot());
     back.toggleWhenPressed(new ShooterDriverStationControl());
+
+    rightJoystickButton7.and(rightJoystickButton10).debounce(0.5).whenActive(new DriveResetGyro());
   }
 
   /**

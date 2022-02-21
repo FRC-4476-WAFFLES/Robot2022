@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.autonomous.KickerWheelSpinup;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterLeader = new TalonFX(Constants.shooterSpinLeft);
@@ -36,6 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private double shooterTargetRPM = 0;
   private double shooterTargetAngle = 0;
+  private double kickerTargetSpeed = 0;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -73,6 +75,12 @@ public class ShooterSubsystem extends SubsystemBase {
     angleRight.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
     SmartDashboard.setDefaultNumber("Set Shooter Target Angle", -1.0);
     SmartDashboard.setDefaultNumber("Set Shooter Target RPM", 0);
+    SmartDashboard.setDefaultNumber("Set Kicker Wheel Target Speed", 0);
+
+    SmartDashboard.setDefaultNumber("Shooter kP", kP);
+    SmartDashboard.setDefaultNumber("Shooter kI", kI);
+    SmartDashboard.setDefaultNumber("Shooter kD", kD);
+    SmartDashboard.setDefaultNumber("Shooter kF", kF);
   }
 
   @Override
@@ -82,14 +90,20 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Raw Velocity", shooterLeader.getSelectedSensorVelocity());
     SmartDashboard.putNumber("Shooter Target RPM", shooterTargetRPM);
     SmartDashboard.putNumber("Shooter Target Angle", shooterTargetAngle);
+
+    double p = SmartDashboard.getNumber("Shooter kP", 0);
+    double i =SmartDashboard.getNumber("Shooter kI", 0);
+    double d = SmartDashboard.getNumber("Shooter kD", 0);
+    double f = SmartDashboard.getNumber("Shooter kF", 0);
+
+    updateShooterPID(p, i, d, f);
   }
 
-  public void updateShooterPID(double kP, double kI, double kD, double kF, double kIzone) {
+  public void updateShooterPID(double kP, double kI, double kD, double kF) {
     shooterLeader.config_kP(0, kP);
     shooterLeader.config_kI(0, kI);
     shooterLeader.config_kD(0, kD);
     shooterLeader.config_kF(0, kF);
-    shooterLeader.config_IntegralZone(0, kIzone);
   }
 
   public void setKickerSpeed(double target) {
@@ -121,6 +135,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public void driverStationAngleControl() {
     shooterTargetAngle = SmartDashboard.getNumber("Set Shooter Target Angle", 0);
     setHoodAngle(shooterTargetAngle);
+  }
+
+  public void driverStationKickerWheelControl() {
+    kickerTargetSpeed = SmartDashboard.getNumber("Set Kicker Wheel Target Speed", 0);
+    setKickerSpeed(kickerTargetSpeed);
   }
 
   public double getShooterRPM() {

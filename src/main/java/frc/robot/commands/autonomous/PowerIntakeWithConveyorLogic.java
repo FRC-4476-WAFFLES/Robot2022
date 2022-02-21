@@ -2,15 +2,17 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.intake;
+package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
-public class IntakePowerRun extends CommandBase {
-  /** Creates a new IntakePowerRun. */
-  public IntakePowerRun() {
+public class PowerIntakeWithConveyorLogic extends CommandBase {
+  private final double power;
+  /** Creates a new LogicIntakeWithPower. */
+  public PowerIntakeWithConveyorLogic(double power) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.power = power;
     addRequirements(intakeSubsystem, conveyorSubsystem);
   }
 
@@ -21,17 +23,11 @@ public class IntakePowerRun extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double power = -operate.getLeftTriggerAxis() + operate.getRightTriggerAxis();
-    if (power > 0) {
-      if (conveyorSubsystem.shouldRun()) {
-        conveyorSubsystem.runConveyor(Math.min(power, 0.5));
-      } else {
-        conveyorSubsystem.stopConveyor();
-      }
+    if (conveyorSubsystem.shouldRun()) {
+      conveyorSubsystem.runConveyor(Math.min(power, 0.5));
     } else {
-      conveyorSubsystem.runConveyor(power);
+      conveyorSubsystem.stopConveyor();
     }
-    
     intakeSubsystem.runIntake(power);
   }
 
