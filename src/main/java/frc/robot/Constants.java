@@ -141,7 +141,7 @@ public final class Constants {
         public final double kD = 0.0;
         // public final double kF = 1023.0/20660.0; // kF: 1023 represents output value to Talon at 100%, 20660 represents Velocity units at 100% output
         // 1023.0/20660.0 = 0.04951597
-        public final double kF = 0.053;
+        public final double kF = 0.04876;
         public final int kIzone = 300;
         public final double kPeakOutput = 1.00;
     }
