@@ -4,6 +4,8 @@
 
 package frc.robot.commands.drive;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
@@ -21,7 +23,7 @@ public class DriveResetGyro extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveSubsystem.resetGyro();
+    driveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
   }
 
   // Called once the command ends or is interrupted.

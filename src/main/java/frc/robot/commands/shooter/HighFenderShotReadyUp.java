@@ -12,6 +12,6 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 public class HighFenderShotReadyUp extends ParallelDeadlineGroup {
   /** Creates a new ShooterHighFenderShot. */
   public HighFenderShotReadyUp() {
-    super(new ShooterWheelSpinup(2000), new ShooterAngleSet(-0.7), new ShooterKickerWheelSpinup());
+    super(new ShooterWheelSpinup(1900), new ShooterAngleSet(-0.75), new ShooterKickerWheelSpinup());
   }
 }

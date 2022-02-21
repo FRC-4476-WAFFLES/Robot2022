@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autonomous.AutonomousRouteAlpha;
 import frc.robot.commands.autonomous.AutonomousRouteComplete;
 import frc.robot.commands.autonomous.FenderHighShotComplete;
+import frc.robot.commands.autonomous.ResetToAutoStartingPosition;
 import frc.robot.commands.autonomous.TheAutoPathToRuleAllAutoPaths;
 import frc.robot.commands.autonomous.ThreeBallAutoComplete;
 import frc.robot.commands.autonomous.TwoBallAutoPath;
@@ -81,6 +82,8 @@ public class RobotContainer {
 
   private final TwoBallAutoPath twoBallAutoPath = new TwoBallAutoPath();
 
+  private final ResetToAutoStartingPosition resetToAutoStartingPosition = new ResetToAutoStartingPosition();
+
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   private final IntakePowerRun intakePowerRun = new IntakePowerRun();
@@ -106,6 +109,7 @@ public class RobotContainer {
     autoChooser.addOption("5 Ball Auto Route", fiveBallAutoPath);
     autoChooser.addOption("2 Ball Auto Route", twoBallAutoPath);
     autoChooser.addOption("3 Ball Auto Complete", threeBallAutoComplete);
+    autoChooser.addOption("Right Fender Reset", resetToAutoStartingPosition);
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 

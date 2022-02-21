@@ -39,14 +39,14 @@ public class AutonomousRouteAlpha extends SequentialCommandGroup {
         3.0,
         Rotation2d.fromDegrees(-169.0), 
         new Pose2d(-0.3, 2.05, Rotation2d.fromDegrees(-86.0)),
-        new Pose2d(-2.2, 1.00, Rotation2d.fromDegrees(-169.0 + 180))),
+        new Pose2d(-2.5, 1.16, Rotation2d.fromDegrees(-174.0 + 180))),
 
       // Get to shooting location
       new DriveAuto(
         3.0, 
         Rotation2d.fromDegrees(-110),
-        new Pose2d(-2.2, 1.00, Rotation2d.fromDegrees(-169.0 + 180)),
-        new Pose2d(0, 0, Rotation2d.fromDegrees(-110))));
+        new Pose2d(-2.5, 1.16, Rotation2d.fromDegrees(-174.0 + 180)),
+        new Pose2d(0, 0, Rotation2d.fromDegrees(-110 + 180))));
   }
 }
 //Start at 111 degrees
