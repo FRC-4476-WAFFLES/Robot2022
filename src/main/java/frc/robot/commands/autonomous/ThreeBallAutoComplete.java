@@ -14,6 +14,6 @@ public class ThreeBallAutoComplete extends SequentialCommandGroup {
   public ThreeBallAutoComplete() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new FenderHighShotComplete, new AutonomousRouteComplete, new FenderHighShotComplete);
+    addCommands(new FenderHighShotComplete(), new AutonomousRouteComplete(), new FenderHighShotComplete());
   }
 }
