@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drive.DriveAuto;
+import frc.robot.commands.drive.DriveAuto.SwervePath;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -20,33 +21,22 @@ public class AutonomousRouteAlpha extends SequentialCommandGroup {
     addCommands(
       new ResetToAutoStartingPosition(),
       // new FenderHighShotComplete()
-      // Get away from fender
-      new DriveAuto(
-        3.0, 
-        Rotation2d.fromDegrees(-110),
-        new Pose2d(0, 0, Rotation2d.fromDegrees(-110 + 180)),
-        new Pose2d(-0.3, 0.3, Rotation2d.fromDegrees(-110 + 180))),
-
       // Get to first ball
       new DriveAuto(
-        3.0,
-        Rotation2d.fromDegrees(-88.0),
-        new Pose2d(-0.3, 0.3, Rotation2d.fromDegrees(-110 + 180)),
-        new Pose2d(-0.3, 2.05, Rotation2d.fromDegrees(-88.0 + 180))),
-      
+        new SwervePath(0, 0, -110, -110 + 180)
+        .waypoint(-0.3, 0.3, -110)
+        .finish(-0.3, 2.05, -88, -88 + 180, 3.0)),
+
       // Get to second ball
       new DriveAuto(
-        3.0,
-        Rotation2d.fromDegrees(-169.0), 
-        new Pose2d(-0.3, 2.05, Rotation2d.fromDegrees(-86.0)),
-        new Pose2d(-2.2, 1.00, Rotation2d.fromDegrees(-169.0 + 180))),
+        new SwervePath(-0.3, 2.05, -88, -88)
+        .finish(-2.2, 1.00, -169, -169 + 180, 3.0)
+      ),
 
       // Get to shooting location
       new DriveAuto(
-        3.0, 
-        Rotation2d.fromDegrees(-110),
-        new Pose2d(-2.2, 1.00, Rotation2d.fromDegrees(-169.0 + 180)),
-        new Pose2d(0, 0, Rotation2d.fromDegrees(-110))));
+        new SwervePath(-2.2, 1.00, -169, -169 + 180)
+        .finish(0, 0, -110, -110 + 180, 3.0)));
   }
 }
 //Start at 111 degrees

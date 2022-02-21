@@ -25,6 +25,7 @@ import frc.robot.commands.conveyor.ConveyorIn;
 import frc.robot.commands.conveyor.ConveyorShoot;
 import frc.robot.commands.drive.DriveAuto;
 import frc.robot.commands.drive.DriveResetGyro;
+import frc.robot.commands.drive.DriveAuto.SwervePath;
 import frc.robot.commands.drive.DriveTeleop;
 import frc.robot.commands.intake.IntakeIn;
 import frc.robot.commands.intake.IntakePowerRun;
@@ -62,11 +63,9 @@ public class RobotContainer {
   //private final ConveyorStop conveyorStop = new ConveyorStop();
   private final ShooterStop shooterStop = new ShooterStop();
   
-  private final DriveAuto testAuto = new DriveAuto(4.0, 
-    Rotation2d.fromDegrees(0),
-    new Pose2d(0, 0, new Rotation2d()),
-    new Pose2d(8, 0, new Rotation2d())
-  );
+  private final DriveAuto testAuto = new DriveAuto(
+    new SwervePath(0, 0, 0, 0)
+    .finish(8, 0, 0, 0, 4.0));
 
   private final FenderHighShotComplete autoShot = new FenderHighShotComplete();
 
