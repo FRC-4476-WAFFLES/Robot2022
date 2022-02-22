@@ -30,12 +30,14 @@ public class AutonomousRouteAlpha extends SequentialCommandGroup {
       // Get to second ball
       new DriveAuto(
         new SwervePath(-0.3, 2.05, -88, -88)
-        .finish(-2.2, 1.00, -169, -169 + 180, 3.0)
+        .waypoint(-1.0, 1.3, -160)
+        .finish(-2.27, 0.7, -160, -160 + 180, 3.0)
       ),
 
       // Get to shooting location
       new DriveAuto(
-        new SwervePath(-2.2, 1.00, -169, -169 + 180)
+        new SwervePath(-2.27, 0.7, -160, -160 + 180)
+        .waypoint(-1.0, 1.0, -110)
         .finish(0, 0, -110, -110 + 180, 3.0)));
   }
 }

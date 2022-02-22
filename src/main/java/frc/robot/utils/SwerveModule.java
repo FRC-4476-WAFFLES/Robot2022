@@ -38,7 +38,7 @@ public class SwerveModule {
         angleMotor.configFactoryDefault();
 
         driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0.03));
-        angleMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 40, 0.03));
+        angleMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 30, 30, 0.03));
 
         driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
@@ -56,10 +56,10 @@ public class SwerveModule {
         driveMotor.setNeutralMode(NeutralMode.Brake);
         angleMotor.setNeutralMode(NeutralMode.Brake);
 
-        angleMotor.config_kP(0, 0.1);
+        angleMotor.config_kP(0, 0.07);
         angleMotor.config_kI(0, 0);
         angleMotor.config_kD(0, 0.2);
-        angleMotor.configNeutralDeadband(0.08);
+        angleMotor.configNeutralDeadband(0.02);
 
         driveMotor.config_kP(0, 0.1);
         driveMotor.config_kI(0, 0);

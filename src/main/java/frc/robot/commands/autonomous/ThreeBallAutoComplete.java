@@ -5,6 +5,7 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -14,6 +15,6 @@ public class ThreeBallAutoComplete extends SequentialCommandGroup {
   public ThreeBallAutoComplete() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new FenderHighShotComplete(), new AutonomousRouteComplete(), new FenderHighShotComplete());
+    addCommands(new FenderHighShotComplete(), new AutonomousRouteComplete(), new WaitCommand(0.5), new FenderHighShotComplete());
   }
 }

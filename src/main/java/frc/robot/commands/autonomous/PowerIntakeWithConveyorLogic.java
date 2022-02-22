@@ -24,7 +24,7 @@ public class PowerIntakeWithConveyorLogic extends CommandBase {
   @Override
   public void execute() {
     if (conveyorSubsystem.shouldRun()) {
-      conveyorSubsystem.runConveyor(Math.min(power, 0.5));
+      conveyorSubsystem.runConveyor(Math.min(power, 0.3));
     } else {
       conveyorSubsystem.stopConveyor();
     }

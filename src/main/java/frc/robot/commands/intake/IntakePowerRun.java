@@ -24,12 +24,13 @@ public class IntakePowerRun extends CommandBase {
     double power = -operate.getLeftTriggerAxis() + operate.getRightTriggerAxis();
     if (power > 0) {
       if (conveyorSubsystem.shouldRun()) {
-        conveyorSubsystem.runConveyor(Math.min(power, 0.5));
+        conveyorSubsystem.runConveyor(Math.min(power, 0.2));
       } else {
         conveyorSubsystem.stopConveyor();
       }
     } else {
       conveyorSubsystem.runConveyor(power);
+      shooterSubsystem.setKickerSpeed(power);
     }
     
     intakeSubsystem.runIntake(power);
@@ -40,6 +41,7 @@ public class IntakePowerRun extends CommandBase {
   public void end(boolean interrupted) {
     intakeSubsystem.stopIntake();
     conveyorSubsystem.stopConveyor();
+    shooterSubsystem.setKickerSpeed(0);
   }
 
   // Returns true when the command should end.

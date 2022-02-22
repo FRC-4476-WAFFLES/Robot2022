@@ -33,6 +33,6 @@ public class SetShooterSpeed extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooterSubsystem.getShooterRPM() + 100 > targetRPM;
+    return shooterSubsystem.getShooterRPM() + 75 > targetRPM;
   }
 }

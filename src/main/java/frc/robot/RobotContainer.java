@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -13,25 +11,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autonomous.AutonomousRouteAlpha;
 import frc.robot.commands.autonomous.AutonomousRouteComplete;
 import frc.robot.commands.autonomous.FenderHighShotComplete;
+import frc.robot.commands.autonomous.FenderHighShotSetup;
+import frc.robot.commands.autonomous.ResetToAutoStartingPosition;
 import frc.robot.commands.autonomous.TheAutoPathToRuleAllAutoPaths;
 import frc.robot.commands.autonomous.ThreeBallAutoComplete;
 import frc.robot.commands.autonomous.TwoBallAutoPath;
 import frc.robot.commands.climber.ClimberAnalogStickControl;
-import frc.robot.commands.conveyor.ConveyorIn;
 import frc.robot.commands.conveyor.ConveyorShoot;
-import frc.robot.commands.drive.DriveAuto;
 import frc.robot.commands.drive.DriveResetGyro;
-import frc.robot.commands.drive.DriveAuto.SwervePath;
 import frc.robot.commands.drive.DriveTeleop;
-import frc.robot.commands.intake.IntakeIn;
 import frc.robot.commands.intake.IntakePowerRun;
-import frc.robot.commands.shooter.HighFenderShotReadyUp;
 import frc.robot.commands.shooter.ShooterDriverStationControl;
 import frc.robot.commands.shooter.ShooterStop;
 import frc.robot.subsystems.Camera;
@@ -79,6 +73,8 @@ public class RobotContainer {
 
   private final TwoBallAutoPath twoBallAutoPath = new TwoBallAutoPath();
 
+  private final ResetToAutoStartingPosition resetToAutoStartingPosition = new ResetToAutoStartingPosition();
+
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   private final IntakePowerRun intakePowerRun = new IntakePowerRun();
@@ -104,6 +100,7 @@ public class RobotContainer {
     autoChooser.addOption("5 Ball Auto Route", fiveBallAutoPath);
     autoChooser.addOption("2 Ball Auto Route", twoBallAutoPath);
     autoChooser.addOption("3 Ball Auto Complete", threeBallAutoComplete);
+    autoChooser.addOption("Reset Right Fender", resetToAutoStartingPosition);
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
@@ -134,7 +131,7 @@ public class RobotContainer {
     x.whenPressed(new IntakeDeploy());
     y.whenPressed(new IntakeRetract());*/
 
-    povUp.toggleWhenPressed(new HighFenderShotReadyUp());
+    povUp.toggleWhenPressed(new FenderHighShotSetup().perpetually());
     x.whileHeld(new ConveyorShoot());
     back.toggleWhenPressed(new ShooterDriverStationControl());
 

@@ -35,8 +35,8 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     intakeSpin.configFactoryDefault();
-    intakeSpin.configContinuousCurrentLimit(40);
-    intakeSpin.configPeakCurrentLimit(40);
+    intakeSpin.configContinuousCurrentLimit(30);
+    intakeSpin.configPeakCurrentLimit(30);
     intakeSpin.enableCurrentLimit(true);
     intakeSpin.setInverted(true);
 

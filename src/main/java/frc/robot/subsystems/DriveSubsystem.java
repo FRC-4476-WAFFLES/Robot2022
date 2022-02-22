@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -14,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,6 +34,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveDriveOdometry odometry;
 
   private final ADXRS450_Gyro ADXRS450Gyro = new ADXRS450_Gyro(Constants.gyroPort);
+  private final AHRS ahrsIMU = new AHRS(SPI.Port.kMXP);
   public final Field2d field = new Field2d();
 
   public DriveSubsystem() {
@@ -69,12 +73,15 @@ public class DriveSubsystem extends SubsystemBase {
     for(int x=0; x<modules.length; x++){
       moduleStates[x] = modules[x].getState();
     }
-    odometry.update(Rotation2d.fromDegrees(-ADXRS450Gyro.getAngle()), moduleStates[0], moduleStates[1], moduleStates[2], moduleStates[3]);
+    odometry.update(Rotation2d.fromDegrees(-ahrsIMU.getAngle()), moduleStates[0], moduleStates[1], moduleStates[2], moduleStates[3]);
     SmartDashboard.putNumber("X location", getOdometryLocation().getX());
     SmartDashboard.putNumber("Y location", getOdometryLocation().getY());
     SmartDashboard.putNumber("Odometry Heading", odometry.getPoseMeters().getRotation().getDegrees());
     SmartDashboard.putNumber("Gyro Heading", -ADXRS450Gyro.getAngle());
     SmartDashboard.putNumber("Gyro Rate", -ADXRS450Gyro.getRate());
+    SmartDashboard.putNumber("New Gyro Angle", ahrsIMU.getAngle());
+    SmartDashboard.putNumber("New Gyro Rate", ahrsIMU.getRate());
+
     int i = 1;
     for (SwerveModule module : modules) {
       SmartDashboard.putNumber("Encoder" + String.valueOf(i), module.getState().angle.getDegrees());
@@ -101,9 +108,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     forward *= 4;
     right *= 4;
-    rotation *= 8;
+    rotation *= 6;
 
-    double robotRotationRate = -ADXRS450Gyro.getRate();
+    double robotRotationRate = -ahrsIMU.getRate();
     robotRotationRate = (robotRotationRate / 180.0) * Math.PI;
 
     if (forward != 0 || right != 0) {
@@ -112,7 +119,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     if (fieldCentric){
       //chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, gyro.getHeadingAsRotation2d());
-      //chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, Rotation2d.fromDegrees(-ADXRS450Gyro.getAngle()));
+      //chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, Rotation2d.fromDegrees(-ahrsIMU.getAngle()));
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, odometry.getPoseMeters().getRotation());
     } else {
       chassisSpeeds = new ChassisSpeeds(forward, right, rotation);
@@ -144,10 +151,10 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void resetGyro() {
-    ADXRS450Gyro.reset();
+    ahrsIMU.reset();
   }
 
   public void resetOdometry(Pose2d robotPose) {
-    odometry.resetPosition(robotPose, Rotation2d.fromDegrees(-ADXRS450Gyro.getAngle()));
+    odometry.resetPosition(robotPose, Rotation2d.fromDegrees(-ahrsIMU.getAngle()));
   }
 }
