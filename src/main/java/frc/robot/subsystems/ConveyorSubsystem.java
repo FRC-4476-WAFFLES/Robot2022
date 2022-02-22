@@ -43,14 +43,6 @@ public class ConveyorSubsystem extends SubsystemBase {
     }
   }
 
-  public void runConveyorIn() {
-    conveyorSpin.set(.4);
-  }
-
-  public void runConveyorOut() {
-    conveyorSpin.set(-1);
-  }
-
   public void runConveyor(double power) {
     conveyorSpin.set(power);
   }

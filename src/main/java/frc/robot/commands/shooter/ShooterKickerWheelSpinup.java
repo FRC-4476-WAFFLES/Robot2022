@@ -8,8 +8,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
 public class ShooterKickerWheelSpinup extends CommandBase {
+  private final double power;
   /** Creates a new ShooterKickerWheelSpinup. */
-  public ShooterKickerWheelSpinup() {
+  public ShooterKickerWheelSpinup(double power) {
+    this.power = power;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements();
   }
@@ -21,7 +23,7 @@ public class ShooterKickerWheelSpinup extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setKickerSpeed(1);
+    shooterSubsystem.setKickerSpeed(power);
   }
 
   // Called once the command ends or is interrupted.

@@ -4,8 +4,6 @@
 
 package frc.robot.commands.autonomous;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drive.DriveAuto;
 import frc.robot.commands.drive.DriveAuto.SwervePath;

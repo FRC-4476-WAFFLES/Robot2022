@@ -2,18 +2,16 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.autonomous;
+package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
-public class SetShooterAngle extends CommandBase {
-  private final double targetAngle;
-  /** Creates a new ShooterAngleSet. */
-  public SetShooterAngle(double targetAngle) {
-    this.targetAngle = targetAngle;
+public class Shoot extends CommandBase {
+  /** Creates a new ShootAllBalls. */
+  public Shoot() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements();
+    addRequirements(intakeSubsystem, conveyorSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -23,16 +21,20 @@ public class SetShooterAngle extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setHoodAngle(targetAngle);
+    intakeSubsystem.runIntake(1.0);
+    conveyorSubsystem.runConveyor(0.4);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    intakeSubsystem.stopIntake();
+    conveyorSubsystem.stopConveyor();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !conveyorSubsystem.getLowIR() && !conveyorSubsystem.getLowIRPreviousState() && !conveyorSubsystem.getMidIR() && !conveyorSubsystem.getHighIR();
   }
 }

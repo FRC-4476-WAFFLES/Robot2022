@@ -5,6 +5,9 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import frc.robot.commands.shooter.ShooterAngleSet;
+import frc.robot.commands.shooter.ShooterKickerWheelSpinup;
+import frc.robot.commands.shooter.ShooterWheelSpinup;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -14,6 +17,6 @@ public class FenderHighShotSetup extends ParallelDeadlineGroup {
   public FenderHighShotSetup() {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
-    super(new SetShooterSpeed(1800), new SetShooterAngle(-0.75), new KickerWheelSpinup());
+    super(new ShooterWheelSpinup(1800), new ShooterAngleSet(-0.75), new ShooterKickerWheelSpinup(1.0));
   }
 }

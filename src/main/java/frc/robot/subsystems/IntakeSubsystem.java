@@ -119,14 +119,6 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
 
-  public void runIntakeIn() {
-    intakeSpin.set(ControlMode.PercentOutput, 1);
-  }
-
-  public void runIntakeOut() {
-    intakeSpin.set(ControlMode.PercentOutput, -1);
-  }
-
   public void runIntake(double power) {
     intakeSpin.set(ControlMode.PercentOutput, power);
   }

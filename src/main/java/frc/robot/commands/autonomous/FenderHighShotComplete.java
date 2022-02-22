@@ -5,6 +5,7 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.shooter.Shoot;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -14,6 +15,6 @@ public class FenderHighShotComplete extends SequentialCommandGroup {
   public FenderHighShotComplete() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new FenderHighShotSetup(), new ShootAllBalls().withTimeout(3));
+    addCommands(new FenderHighShotSetup(), new Shoot().withTimeout(3));
   }
 }
