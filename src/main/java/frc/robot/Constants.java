@@ -145,5 +145,7 @@ public final class Constants {
         public final double kF = 0.053; //0.053
         public final int kIzone = 300;
         public final double kPeakOutput = 1.00;
+
+        public final static double RPMTolerance = 75;
     }
 }

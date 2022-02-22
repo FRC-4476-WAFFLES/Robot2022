@@ -112,6 +112,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setShooterSpeed(double target) {
     target = clamp(target, -6000, 6000);
+    shooterTargetRPM = target;
     shooterLeader.set(ControlMode.Velocity, rpmToTicksPer100ms(target));
   }
 
@@ -143,6 +144,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double getShooterRPM() {
     return ticksPer100msToRPM(shooterLeader.getSelectedSensorVelocity());
+  }
+
+  public double getShooterTargetRPM() {
+    return shooterTargetRPM;
   }
 
   private double rpmToTicksPer100ms(double rpm) {

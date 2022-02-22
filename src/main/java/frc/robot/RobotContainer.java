@@ -33,6 +33,7 @@ import frc.robot.subsystems.ConveyorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.triggers.ShooterReadyTrigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -110,6 +111,8 @@ public class RobotContainer {
 
     final var rightJoystickButton7 = new JoystickButton(rightJoystick, 7);
     final var rightJoystickButton10 = new JoystickButton(rightJoystick, 10);
+
+    final var shooterReadyTrigger = new ShooterReadyTrigger();
 /*
     a.whileHeld(new Intake2Balls());
     b.whileHeld(new IntakeOut().alongWith(new ConveyorOut()));
@@ -117,7 +120,7 @@ public class RobotContainer {
     y.whenPressed(new IntakeRetract());*/
 
     povUp.toggleWhenPressed(new FenderHighShotSetup().perpetually());
-    x.whileHeld(new Shoot().perpetually());
+    x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
     back.toggleWhenPressed(new ShooterDriverStationControl());
 
     rightJoystickButton7.and(rightJoystickButton10).debounce(0.1).whenActive(new DriveResetGyro());
