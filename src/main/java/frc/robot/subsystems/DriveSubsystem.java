@@ -96,20 +96,6 @@ public class DriveSubsystem extends SubsystemBase {
   public void robotDrive(double forward, double right, double rotation, boolean fieldCentric){
     ChassisSpeeds chassisSpeeds;
 
-    if (Math.abs(forward) < .05){
-      forward = 0;
-    }
-    if(Math.abs(right) < .05){
-      right = 0;
-    }
-    if(Math.abs(rotation) < .05){
-      rotation = 0;
-    }
-
-    forward *= 4;
-    right *= 4;
-    rotation *= 6;
-
     double robotRotationRate = -ahrsIMU.getRate();
     robotRotationRate = (robotRotationRate / 180.0) * Math.PI;
 

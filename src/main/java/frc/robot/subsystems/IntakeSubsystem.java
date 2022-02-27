@@ -25,8 +25,10 @@ public class IntakeSubsystem extends SubsystemBase {
   private final RelativeEncoder encoderLeft = deployLeft.getEncoder(Type.kHallSensor, 42);
   private final RelativeEncoder encoderRight = deployRight.getEncoder(Type.kHallSensor, 42);
   private final SparkMaxPIDController leftPIDController = deployLeft.getPIDController();
-  //private final SparkMaxPIDController rightPIDController = deployRight.getPIDController();
-  private final double deployOvershootTarget = -50;
+  private final SparkMaxPIDController rightPIDController = deployRight.getPIDController();
+  //private final double deployOvershootTarget = -50;
+  private final double leftDeployedPosition = -22.12;
+  private final double rightDeployedPosition = -21.1;
   private double deployTargetLeft = 0;
   private double deployTargetRight = 0;
   //private final double deployOvershootTarget = -21.14; // The approximate number of rotations of the deploy motors to deploy the intake
@@ -35,8 +37,8 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     intakeSpin.configFactoryDefault();
-    intakeSpin.configContinuousCurrentLimit(30);
-    intakeSpin.configPeakCurrentLimit(30);
+    intakeSpin.configContinuousCurrentLimit(20);
+    intakeSpin.configPeakCurrentLimit(20);
     intakeSpin.enableCurrentLimit(true);
     intakeSpin.setInverted(true);
 
@@ -47,8 +49,7 @@ public class IntakeSubsystem extends SubsystemBase {
     deployRight.restoreFactoryDefaults();
     deployRight.setSmartCurrentLimit(20);
     deployRight.setIdleMode(IdleMode.kBrake);
-    //deployRight.setInverted(true);
-    deployRight.follow(deployLeft, true);
+    deployRight.setInverted(true);
 
     encoderLeft.setPosition(0);
     encoderRight.setPosition(0);
@@ -60,8 +61,8 @@ public class IntakeSubsystem extends SubsystemBase {
     kD = 0; 
     kIz = 0; 
     kFF = 0; 
-    kMaxOutput = 1; 
-    kMinOutput = -1;
+    kMaxOutput = 0.25; 
+    kMinOutput = -0.25;
 
     // set PID coefficients
     leftPIDController.setP(kP);
@@ -70,42 +71,51 @@ public class IntakeSubsystem extends SubsystemBase {
     leftPIDController.setIZone(kIz);
     leftPIDController.setFF(kFF);
     leftPIDController.setOutputRange(kMinOutput, kMaxOutput);
-/*
+
     rightPIDController.setP(kP);
     rightPIDController.setI(kI);
     rightPIDController.setD(kD);
     rightPIDController.setIZone(kIz);
     rightPIDController.setFF(kFF);
-    rightPIDController.setOutputRange(kMinOutput, kMaxOutput);*/
+    rightPIDController.setOutputRange(kMinOutput, kMaxOutput);
+    
+    SmartDashboard.setDefaultNumber("Intake kP", kP);
+    SmartDashboard.setDefaultNumber("Intake kI", kI);
+    SmartDashboard.setDefaultNumber("Intake kD", kD);
+    SmartDashboard.setDefaultNumber("Intake kIZone", kIz);
+    SmartDashboard.setDefaultNumber("Intake kF", kFF);
+    SmartDashboard.setDefaultNumber("Intake kMax", kMaxOutput);
+    SmartDashboard.setDefaultNumber("Intake kMin", kMinOutput);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    /*
     if (encoderLeft.getPosition() < -5 && encoderLeft.getVelocity() == 0) {
       deployTargetLeft = encoderLeft.getPosition();
     }
 
     if (encoderRight.getPosition() < -5 && encoderRight.getVelocity() == 0) {
       deployTargetRight = encoderRight.getPosition();
-    }
+    }*/
 
     leftPIDController.setReference(deployTargetLeft, CANSparkMax.ControlType.kPosition);
-    //rightPIDController.setReference(deployTargetRight, CANSparkMax.ControlType.kPosition);
+    rightPIDController.setReference(deployTargetRight, CANSparkMax.ControlType.kPosition);
 
-    SmartDashboard.putNumber("Left Encoder Location", encoderLeft.getPosition());
-    SmartDashboard.putNumber("Right Encoder Location", encoderRight.getPosition());
-    SmartDashboard.putNumber("Left Deploy Target", deployTargetLeft);
-    SmartDashboard.putNumber("Right Deploy Target", deployTargetRight);
+    SmartDashboard.putNumber("Intake Left Encoder Location", encoderLeft.getPosition());
+    SmartDashboard.putNumber("Intake Right Encoder Location", encoderRight.getPosition());
+    SmartDashboard.putNumber("Intake Left Deploy Target", deployTargetLeft);
+    SmartDashboard.putNumber("Intake Right Deploy Target", deployTargetRight);
 
     // read PID coefficients from SmartDashboard
-    double p = SmartDashboard.getNumber("P Gain", 0);
-    double i = SmartDashboard.getNumber("I Gain", 0);
-    double d = SmartDashboard.getNumber("D Gain", 0);
-    double iz = SmartDashboard.getNumber("I Zone", 0);
-    double ff = SmartDashboard.getNumber("Feed Forward", 0);
-    double max = SmartDashboard.getNumber("Max Output", 0);
-    double min = SmartDashboard.getNumber("Min Output", 0);
+    double p = SmartDashboard.getNumber("Intake kP", 0);
+    double i = SmartDashboard.getNumber("Intake kI", 0);
+    double d = SmartDashboard.getNumber("Intake kD", 0);
+    double iz = SmartDashboard.getNumber("Intake kIZone", 0);
+    double ff = SmartDashboard.getNumber("Intake kF", 0);
+    double max = SmartDashboard.getNumber("Intake kMax", 0);
+    double min = SmartDashboard.getNumber("Intake kMin", 0);
 
     // if PID coefficients on SmartDashboard have changed, write new values to controller
     if((p != kP)) { leftPIDController.setP(p); kP = p; }
@@ -115,6 +125,16 @@ public class IntakeSubsystem extends SubsystemBase {
     if((ff != kFF)) { leftPIDController.setFF(ff); kFF = ff; }
     if((max != kMaxOutput) || (min != kMinOutput)) { 
       leftPIDController.setOutputRange(min, max); 
+      kMinOutput = min; kMaxOutput = max; 
+    }
+
+    if((p != kP)) { rightPIDController.setP(p); kP = p; }
+    if((i != kI)) { rightPIDController.setI(i); kI = i; }
+    if((d != kD)) { rightPIDController.setD(d); kD = d; }
+    if((iz != kIz)) { rightPIDController.setIZone(iz); kIz = iz; }
+    if((ff != kFF)) { rightPIDController.setFF(ff); kFF = ff; }
+    if((max != kMaxOutput) || (min != kMinOutput)) { 
+      rightPIDController.setOutputRange(min, max); 
       kMinOutput = min; kMaxOutput = max; 
     }
   }
@@ -128,8 +148,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void deployIntake() {
-    deployTargetLeft = deployOvershootTarget;
-    deployTargetRight = deployOvershootTarget;
+    deployTargetLeft = leftDeployedPosition;
+    deployTargetRight = rightDeployedPosition;
   }
 
   public void retractIntake() {
@@ -140,5 +160,21 @@ public class IntakeSubsystem extends SubsystemBase {
   public void resetEncoder() {
     encoderLeft.setPosition(0);
     encoderRight.setPosition(0);
+  }
+
+  public double getLeftPosition() {
+    return encoderLeft.getPosition();
+  }
+
+  public double getRightPosition() {
+    return encoderRight.getPosition();
+  }
+
+  public double getLeftTarget() {
+    return deployTargetLeft;
+  }
+
+  public double getRightTarget() {
+    return deployTargetRight;
   }
 }

@@ -38,6 +38,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private double shooterTargetAngle = 0;
   private double kickerTargetSpeed = 0;
 
+  private double angleOffset = -0.03;
+
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     shooterLeader.configFactoryDefault();
@@ -75,6 +77,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.setDefaultNumber("Set Shooter Target Angle", -1.0);
     SmartDashboard.setDefaultNumber("Set Shooter Target RPM", 0);
     SmartDashboard.setDefaultNumber("Set Kicker Wheel Target Speed", 0);
+    SmartDashboard.setDefaultNumber("Set Shooter Angle Offset", 0);
 
     SmartDashboard.setDefaultNumber("Shooter kP", kP);
     SmartDashboard.setDefaultNumber("Shooter kI", kI);
@@ -89,9 +92,10 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Raw Velocity", shooterLeader.getSelectedSensorVelocity());
     SmartDashboard.putNumber("Shooter Target RPM", shooterTargetRPM);
     SmartDashboard.putNumber("Shooter Target Angle", shooterTargetAngle);
+    SmartDashboard.putNumber("Shooter Target Angle Offset", angleOffset);
 
     double p = SmartDashboard.getNumber("Shooter kP", 0);
-    double i =SmartDashboard.getNumber("Shooter kI", 0);
+    double i = SmartDashboard.getNumber("Shooter kI", 0);
     double d = SmartDashboard.getNumber("Shooter kD", 0);
     double f = SmartDashboard.getNumber("Shooter kF", 0);
 
@@ -117,10 +121,14 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setHoodAngle(double target) {
-    target = clamp(target, -1.0, 1.0);
+    target = clamp(target, -1.0, 1.0 - angleOffset);
     angleLeft.setSpeed(target);
-    angleRight.setSpeed(target);
+    angleRight.setSpeed(target + angleOffset);
   }
+/*
+  public void setHoodAngleOffset(double target) {
+    angleOffset = target;
+  }*/
 
   public void stop() {
     shooterLeader.set(ControlMode.PercentOutput, 0);
@@ -141,6 +149,10 @@ public class ShooterSubsystem extends SubsystemBase {
     kickerTargetSpeed = SmartDashboard.getNumber("Set Kicker Wheel Target Speed", 0);
     setKickerSpeed(kickerTargetSpeed);
   }
+/*
+  public void driverStationAngleOffsetControl() {
+    angleOffset = SmartDashboard.getNumber("Set Shooter Angle Offset", 0);
+  }*/
 
   public double getShooterRPM() {
     return ticksPer100msToRPM(shooterLeader.getSelectedSensorVelocity());
@@ -165,3 +177,12 @@ public class ShooterSubsystem extends SubsystemBase {
     return Math.min(value, max);
   }
 }
+
+/*
+Equation for shooter RPM given target area gotten from limelight:
+2655 + -1379x + 866x^2
+Where x is ta from limelight and output is shooter RPM
+
+Equation for shooter servo position given area gotten from limelight:
+0.418 + -1.77x + 0.85x^2
+*/

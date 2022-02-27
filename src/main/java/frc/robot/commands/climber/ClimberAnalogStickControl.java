@@ -26,6 +26,12 @@ public class ClimberAnalogStickControl extends CommandBase {
       movement = 0;
     }
     climberSubsystem.moveClimberWithAnalogStick(movement);
+
+    double otherMovement = -operate.getRightY();
+    if (Math.abs(otherMovement) < 0.05) {
+      otherMovement = 0;
+    }
+    climberSubsystem.moveCLimberPivotWithAnalogStick(otherMovement);
   }
 
   // Called once the command ends or is interrupted.

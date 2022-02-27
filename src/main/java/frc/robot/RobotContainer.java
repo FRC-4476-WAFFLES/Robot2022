@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -21,6 +23,7 @@ import frc.robot.commands.autonomous.FiveBallAutoPath;
 import frc.robot.commands.autonomous.ThreeBallAutoComplete;
 import frc.robot.commands.autonomous.TwoBallAutoPath;
 import frc.robot.commands.climber.ClimberAnalogStickControl;
+import frc.robot.commands.drive.DriveCameraAim;
 import frc.robot.commands.drive.DriveResetGyro;
 import frc.robot.commands.drive.DriveTeleop;
 import frc.robot.commands.intake.IntakeTeleop;
@@ -88,6 +91,10 @@ public class RobotContainer {
     autoChooser.addOption("3 Ball Auto Complete", threeBallAutoComplete);
     autoChooser.addOption("Reset Right Fender", resetToAutoStartingPosition);
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    vision.setProcesingMode(Camera.ProcessingMode.Vision);
+    vision.setPipeline(Camera.Pipeline.TheOnlyPipelineWeAreUsing);
+    vision.setLEDMode(Camera.CameraLEDMode.On);
   }
 
   /**
@@ -108,6 +115,7 @@ public class RobotContainer {
     final var back = new JoystickButton(operate, XboxController.Button.kBack.value);
 
     final var povUp = new POVButton(operate, 0);
+    final var povDown = new POVButton(operate, 180);
 
     final var rightJoystickButton7 = new JoystickButton(rightJoystick, 7);
     final var rightJoystickButton10 = new JoystickButton(rightJoystick, 10);
@@ -119,9 +127,14 @@ public class RobotContainer {
     x.whenPressed(new IntakeDeploy());
     y.whenPressed(new IntakeRetract());*/
 
+    //a.whenPressed(new IntakeDeploy());
+    //b.whenPressed(new IntakeRetract());
+
     povUp.toggleWhenPressed(new FenderHighShotSetup().perpetually());
     x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
     back.toggleWhenPressed(new ShooterDriverStationControl());
+
+    povDown.whileHeld(new DriveCameraAim());
 
     rightJoystickButton7.and(rightJoystickButton10).debounce(0.1).whenActive(new DriveResetGyro());
   }

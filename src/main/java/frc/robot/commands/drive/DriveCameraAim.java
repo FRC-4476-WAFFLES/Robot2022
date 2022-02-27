@@ -2,16 +2,16 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.shooter;
+package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
-public class ShooterDriverStationControl extends CommandBase {
-  /** Creates a new DriverStationShooterControl. */
-  public ShooterDriverStationControl() {
+public class DriveCameraAim extends CommandBase {
+  /** Creates a new DriveCameraAim. */
+  public DriveCameraAim() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooterSubsystem);
+    addRequirements(driveSubsystem, vision);
   }
 
   // Called when the command is initially scheduled.
@@ -21,15 +21,15 @@ public class ShooterDriverStationControl extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.driverStationAngleControl();
-    shooterSubsystem.driverStationShooterRPM();
-    shooterSubsystem.driverStationKickerWheelControl();
-    //shooterSubsystem.driverStationAngleOffsetControl();
+    double yaw = Math.toRadians(vision.getHorizontal());
+    driveSubsystem.robotDrive(0.0, 0.0, yaw * 8.0, true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    driveSubsystem.stop();
+  }
 
   // Returns true when the command should end.
   @Override

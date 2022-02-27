@@ -19,6 +19,8 @@ import frc.robot.Constants;
 public class ClimberSubsystem extends SubsystemBase {
   private final TalonFX climbLeft = new TalonFX(Constants.climbLeft);
   private final TalonFX climbRight = new TalonFX(Constants.climbRight);
+  private final TalonFX climbPivotLeft = new TalonFX(Constants.climbPivotLeft);
+  private final TalonFX climbPivotRight = new TalonFX(Constants.climbPivotRight);
 
   private final Timer timer = new Timer();
 
@@ -26,6 +28,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private double previousTime = 0;
   private double previousLoopTime = 0;
 
+  private int targetPivotSetpoint = 0;
   
   public ClimberSubsystem() {
     climbLeft.configFactoryDefault();
@@ -48,6 +51,26 @@ public class ClimberSubsystem extends SubsystemBase {
     climbRight.setNeutralMode(NeutralMode.Brake);
     climbRight.setSelectedSensorPosition(0);
 
+    climbPivotLeft.configFactoryDefault();
+    climbPivotLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    climbPivotLeft.setInverted(TalonFXInvertType.Clockwise);
+    climbPivotLeft.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 40, 0.03));
+    climbPivotLeft.config_kP(0, 0.1);
+    climbPivotLeft.config_kI(0, 0);
+    climbPivotLeft.config_kD(0, 0);
+    climbPivotLeft.setNeutralMode(NeutralMode.Brake);
+    climbPivotLeft.setSelectedSensorPosition(0);
+
+    climbPivotRight.configFactoryDefault();
+    climbPivotRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    climbPivotRight.setInverted(TalonFXInvertType.CounterClockwise);
+    climbPivotRight.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 40, 0.03));
+    climbPivotRight.config_kP(0, 0.1);
+    climbPivotRight.config_kI(0, 0);
+    climbPivotRight.config_kD(0, 0);
+    climbPivotRight.setNeutralMode(NeutralMode.Brake);
+    climbPivotRight.setSelectedSensorPosition(0);
+
     timer.start();
   }
 
@@ -56,6 +79,8 @@ public class ClimberSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     //climbLeft.set(ControlMode.Position, targetSetpoint);
     //climbRight.set(ControlMode.Position, targetSetpoint);
+    //climbPivotLeft.set(ControlMode.Position, targetPivotSetpoint);
+    //climbPivotRight.set(ControlMode.Position, targetPivotSetpoint);
 
     previousLoopTime = timer.get() - previousTime;
     previousTime = timer.get();
@@ -63,6 +88,10 @@ public class ClimberSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Climber Target", targetSetpoint);
     SmartDashboard.putNumber("Climber Left Position", climbLeft.getSelectedSensorPosition());
     SmartDashboard.putNumber("Climber Right Position", climbRight.getSelectedSensorPosition());
+
+    SmartDashboard.putNumber("Climber Pivot Target", targetPivotSetpoint);
+    SmartDashboard.putNumber("Climber Pivot Left Position", climbPivotLeft.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Climber Pivot Right Position", climbPivotRight.getSelectedSensorPosition());
   }
 
   public void moveClimberSetpoint(double amountToMove) {
@@ -73,12 +102,22 @@ public class ClimberSubsystem extends SubsystemBase {
     }*/
   }
 
+  public void moveClimberPivotSetpoint(double amountToMove) {
+    targetPivotSetpoint += amountToMove;
+  }
+
   public void moveClimberWithAnalogStick(double analogStickValue) {
-    moveClimberSetpoint(analogStickValue * previousLoopTime * 80000);
+    moveClimberSetpoint(analogStickValue * previousLoopTime * 160000);
+  }
+
+  public void moveCLimberPivotWithAnalogStick(double analogStickValue) {
+    moveClimberPivotSetpoint(analogStickValue * previousLoopTime * 80000);
   }
 
   public void stopClimber() {
     climbLeft.set(ControlMode.PercentOutput, 0);
     climbRight.set(ControlMode.PercentOutput, 0);
+    climbPivotLeft.set(ControlMode.PercentOutput, 0);
+    climbPivotRight.set(ControlMode.PercentOutput, 0);
   }
 }
