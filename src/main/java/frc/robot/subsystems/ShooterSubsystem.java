@@ -25,14 +25,12 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonSRX kickerWheel = new TalonSRX(Constants.kickerWheelSpin);
   private final Servo angleLeft = new Servo(1);
   private final Servo angleRight = new Servo(0);
-  
-  ShooterConstants shooterConstants = new ShooterConstants();
 
-  private double kP = shooterConstants.kP;
-  private double kI = shooterConstants.kI;
-  private double kD = shooterConstants.kD;
-  private double kF = shooterConstants.kF;
-  private double kIzone = shooterConstants.kIzone;
+  private double kP = ShooterConstants.kP;
+  private double kI = ShooterConstants.kI;
+  private double kD = ShooterConstants.kD;
+  private double kF = ShooterConstants.kF;
+  private double kIzone = ShooterConstants.kIzone;
 
   private double shooterTargetRPM = 0;
   private double shooterTargetAngle = 0;

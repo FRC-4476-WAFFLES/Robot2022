@@ -137,15 +137,44 @@ public final class Constants {
     }
 
     public static final class ShooterConstants {
-        public final double kP = 0.00001;
-        public final double kI = 0.0;
-        public final double kD = 0.0;
+        public static final double kP = 0.00001;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
         // public final double kF = 1023.0/20660.0; // kF: 1023 represents output value to Talon at 100%, 20660 represents Velocity units at 100% output
         // 1023.0/20660.0 = 0.04951597
-        public final double kF = 0.053; //0.053
-        public final int kIzone = 300;
-        public final double kPeakOutput = 1.00;
+        public static final double kF = 0.053; //0.053
+        public static final int kIzone = 300;
+        public static final double kPeakOutput = 1.00;
 
-        public final static double RPMTolerance = 75;
+        public static final double RPMTolerance = 75;
+
+        public enum Setup {
+            FENDER_HIGH(1800, -0.75, 1.0),
+            FENDER_LOW(900, -0.3, 0.75),
+            BALL_AROUND_HUB_HIGH(2200, -0.2, 1.0),
+            HUMAN_PLAYER_HIGH(3200, 0.0, 1.0);
+
+            private final double targetRPM;
+            private final double targetAngle;
+            private final double targetKickerPower;
+
+            Setup(double targetRPM, double targetAngle, double targetKickerPower) {
+                this.targetRPM = targetRPM;
+                this.targetAngle = targetAngle;
+                this.targetKickerPower = targetKickerPower;
+            }
+
+            public double getTargetRPM() {
+                return this.targetRPM;
+            }
+
+            public double getTargetAngle() {
+                return this.targetAngle;
+            }
+
+            public double getTargetKickerPower() {
+                return this.targetKickerPower;
+            }
+        }
     }
 }

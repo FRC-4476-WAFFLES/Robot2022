@@ -16,6 +16,10 @@ public class IntakeAuto extends CommandBase {
     addRequirements(intakeSubsystem, conveyorSubsystem);
   }
 
+  public IntakeAuto() {
+    this(1.0);
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}

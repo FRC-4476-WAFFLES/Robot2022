@@ -5,16 +5,17 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.ShooterConstants.Setup;
 import frc.robot.commands.shooter.Shoot;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class FenderHighShotComplete extends SequentialCommandGroup {
+public class ShotComplete extends SequentialCommandGroup {
   /** Creates a new foo. */
-  public FenderHighShotComplete() {
+  public ShotComplete(Setup targetSetup) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new FenderHighShotSetup(), new Shoot().withTimeout(3));
+    addCommands(new ShotSetup(targetSetup), new Shoot().withTimeout(3));
   }
 }

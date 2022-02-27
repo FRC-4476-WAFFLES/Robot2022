@@ -14,9 +14,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autonomous.ThreeBallAutoPath;
-import frc.robot.commands.autonomous.FenderHighShotComplete;
-import frc.robot.commands.autonomous.FenderHighShotSetup;
+import frc.robot.Constants.ShooterConstants.Setup;
+import frc.robot.commands.autonomous.ShotComplete;
 import frc.robot.commands.autonomous.ResetToRightAutoStartingPosition;
+import frc.robot.commands.autonomous.ShotSetup;
 import frc.robot.commands.autonomous.FiveBallAutoPath;
 import frc.robot.commands.autonomous.ThreeBallAutoComplete;
 import frc.robot.commands.autonomous.TwoBallAutoPath;
@@ -59,7 +60,7 @@ public class RobotContainer {
   private final IntakeTeleop intakeTeleop = new IntakeTeleop();
   private final ClimberAnalogStickControl climberAnalogStickControl = new ClimberAnalogStickControl();
   
-  private final FenderHighShotComplete autoShot = new FenderHighShotComplete();
+  private final ShotComplete autoShot = new ShotComplete(Setup.FENDER_HIGH);
   private final ThreeBallAutoPath threeBallAutoPath = new ThreeBallAutoPath();
   private final FiveBallAutoPath fiveBallAutoPath = new FiveBallAutoPath();
   private final ThreeBallAutoComplete threeBallAutoComplete = new ThreeBallAutoComplete();
@@ -119,7 +120,7 @@ public class RobotContainer {
     x.whenPressed(new IntakeDeploy());
     y.whenPressed(new IntakeRetract());*/
 
-    povUp.toggleWhenPressed(new FenderHighShotSetup().perpetually());
+    povUp.toggleWhenPressed(new ShotSetup(Setup.FENDER_HIGH).perpetually());
     x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
     back.toggleWhenPressed(new ShooterDriverStationControl());
 
