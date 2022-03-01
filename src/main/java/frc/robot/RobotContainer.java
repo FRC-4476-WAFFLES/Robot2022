@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -16,8 +14,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autonomous.ThreeBallAutoPath;
+import frc.robot.commands.autonomous.TwoBallAutoComplete;
 import frc.robot.commands.autonomous.FenderHighShotComplete;
-import frc.robot.commands.autonomous.FenderHighShotSetup;
 import frc.robot.commands.autonomous.ResetToRightAutoStartingPosition;
 import frc.robot.commands.autonomous.FiveBallAutoPath;
 import frc.robot.commands.autonomous.ThreeBallAutoComplete;
@@ -30,6 +28,7 @@ import frc.robot.commands.intake.IntakeTeleop;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.ShooterDriverStationControl;
 import frc.robot.commands.shooter.ShooterStop;
+import frc.robot.commands.shooter.ShooterVisionSetup;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ConveyorSubsystem;
@@ -63,10 +62,11 @@ public class RobotContainer {
   private final ClimberAnalogStickControl climberAnalogStickControl = new ClimberAnalogStickControl();
   
   private final FenderHighShotComplete autoShot = new FenderHighShotComplete();
+  private final TwoBallAutoPath twoBallAutoPath = new TwoBallAutoPath();
   private final ThreeBallAutoPath threeBallAutoPath = new ThreeBallAutoPath();
   private final FiveBallAutoPath fiveBallAutoPath = new FiveBallAutoPath();
+  private final TwoBallAutoComplete twoBallAutoComplete = new TwoBallAutoComplete();
   private final ThreeBallAutoComplete threeBallAutoComplete = new ThreeBallAutoComplete();
-  private final TwoBallAutoPath twoBallAutoPath = new TwoBallAutoPath();
   private final ResetToRightAutoStartingPosition resetToAutoStartingPosition = new ResetToRightAutoStartingPosition();
   
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
@@ -88,13 +88,14 @@ public class RobotContainer {
     autoChooser.addOption("2 Ball Auto Path", twoBallAutoPath);
     autoChooser.addOption("3 Ball Auto Path", threeBallAutoPath);
     autoChooser.addOption("5 Ball Auto Path", fiveBallAutoPath);
+    autoChooser.addOption("2 Ball Auto Complete", twoBallAutoComplete);
     autoChooser.addOption("3 Ball Auto Complete", threeBallAutoComplete);
     autoChooser.addOption("Reset Right Fender", resetToAutoStartingPosition);
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     vision.setProcesingMode(Camera.ProcessingMode.Vision);
     vision.setPipeline(Camera.Pipeline.TheOnlyPipelineWeAreUsing);
-    vision.setLEDMode(Camera.CameraLEDMode.On);
+    vision.setLEDMode(Camera.CameraLEDMode.Off);
   }
 
   /**
@@ -104,19 +105,21 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    final var a = new JoystickButton(operate, XboxController.Button.kA.value);
-    final var b = new JoystickButton(operate, XboxController.Button.kB.value);
+    //final var a = new JoystickButton(operate, XboxController.Button.kA.value);
+    //final var b = new JoystickButton(operate, XboxController.Button.kB.value);
     final var x = new JoystickButton(operate, XboxController.Button.kX.value);
     final var y = new JoystickButton(operate, XboxController.Button.kY.value);
 
-    final var leftButton = new JoystickButton(operate, XboxController.Button.kLeftBumper.value);
-    final var rightButton = new JoystickButton(operate, XboxController.Button.kRightBumper.value);
+    //final var leftButton = new JoystickButton(operate, XboxController.Button.kLeftBumper.value);
+    //final var rightButton = new JoystickButton(operate, XboxController.Button.kRightBumper.value);
 
     final var back = new JoystickButton(operate, XboxController.Button.kBack.value);
 
     final var povUp = new POVButton(operate, 0);
-    final var povDown = new POVButton(operate, 180);
+    //final var povRight = new POVButton(operate, 90);
+    //final var povDown = new POVButton(operate, 180);
 
+    final var rightJoystickButton3 = new JoystickButton(rightJoystick, 3);
     final var rightJoystickButton7 = new JoystickButton(rightJoystick, 7);
     final var rightJoystickButton10 = new JoystickButton(rightJoystick, 10);
 
@@ -130,12 +133,14 @@ public class RobotContainer {
     //a.whenPressed(new IntakeDeploy());
     //b.whenPressed(new IntakeRetract());
 
-    povUp.toggleWhenPressed(new FenderHighShotSetup().perpetually());
+    povUp.toggleWhenPressed(new ShooterVisionSetup().perpetually());
     x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
     back.toggleWhenPressed(new ShooterDriverStationControl());
 
-    povDown.whileHeld(new DriveCameraAim());
+    //rightJoystickButton3.whileHeld(new DriveCameraAim()).or(povUp).toggleWhenActive(new ShooterVisionSetup().perpetually());
 
+    rightJoystickButton3.whileHeld(new DriveCameraAim());
+    
     rightJoystickButton7.and(rightJoystickButton10).debounce(0.1).whenActive(new DriveResetGyro());
   }
 

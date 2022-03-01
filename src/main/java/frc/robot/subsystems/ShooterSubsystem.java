@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,6 +28,10 @@ public class ShooterSubsystem extends SubsystemBase {
   private final Servo angleRight = new Servo(0);
   
   ShooterConstants shooterConstants = new ShooterConstants();
+
+  private final LinearFilter shooterRPMFilter = LinearFilter.movingAverage(30);
+
+  private double filteredShooterRPM = 0;
 
   private double kP = shooterConstants.kP;
   private double kI = shooterConstants.kI;
@@ -100,6 +105,8 @@ public class ShooterSubsystem extends SubsystemBase {
     double f = SmartDashboard.getNumber("Shooter kF", 0);
 
     updateShooterPID(p, i, d, f);
+
+    filteredShooterRPM = shooterRPMFilter.calculate(getShooterRPM());
   }
 
   public void updateShooterPID(double kP, double kI, double kD, double kF) {
@@ -156,6 +163,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double getShooterRPM() {
     return ticksPer100msToRPM(shooterLeader.getSelectedSensorVelocity());
+  }
+
+  public double getFilteredShooterRPM() {
+    return filteredShooterRPM;
   }
 
   public double getShooterTargetRPM() {

@@ -35,7 +35,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climbLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     climbLeft.setInverted(TalonFXInvertType.Clockwise);
     climbLeft.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 40, 0.03));
-    climbLeft.config_kP(0, 0.1);
+    climbLeft.config_kP(0, 0.05);
     climbLeft.config_kI(0, 0);
     climbLeft.config_kD(0, 0.1);
     climbLeft.setNeutralMode(NeutralMode.Brake);
@@ -45,7 +45,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climbRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     climbRight.setInverted(TalonFXInvertType.CounterClockwise);
     climbRight.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 40, 0.03));
-    climbRight.config_kP(0, 0.1);
+    climbRight.config_kP(0, 0.05);
     climbRight.config_kI(0, 0);
     climbRight.config_kD(0, 0.1);
     climbRight.setNeutralMode(NeutralMode.Brake);
@@ -77,10 +77,10 @@ public class ClimberSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    //climbLeft.set(ControlMode.Position, targetSetpoint);
-    //climbRight.set(ControlMode.Position, targetSetpoint);
-    //climbPivotLeft.set(ControlMode.Position, targetPivotSetpoint);
-    //climbPivotRight.set(ControlMode.Position, targetPivotSetpoint);
+    climbLeft.set(ControlMode.Position, targetSetpoint);
+    climbRight.set(ControlMode.Position, targetSetpoint);
+    climbPivotLeft.set(ControlMode.Position, targetPivotSetpoint);
+    climbPivotRight.set(ControlMode.Position, targetPivotSetpoint);
 
     previousLoopTime = timer.get() - previousTime;
     previousTime = timer.get();

@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.filter.LinearFilter;
 // import edu.wpi.first.wpilibj.Preferences;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
@@ -34,6 +35,14 @@ public class Camera extends SubsystemBase {
 
   NetworkTable camera = NetworkTableInstance.getDefault().getTable("limelight");
 
+  //LinearFilter linearFilter = new LinearFilter(1, 2);
+
+  private final LinearFilter taFilter = LinearFilter.movingAverage(100);
+  private final LinearFilter txFilter = LinearFilter.movingAverage(20);
+
+  private double taFiltered = 0;
+  private double txFiltered = 0;
+
   /**
    * Creates a new CameraSubsystem.
    */
@@ -44,6 +53,8 @@ public class Camera extends SubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
+    taFiltered = taFilter.calculate(getArea());
+    txFiltered = txFilter.calculate(getHorizontal());
     // camera.getEntry("ledMode").setNumber(ledMode.ordinal());
     // camera.getEntry("camMode").setNumber(1);
     SmartDashboard.putBoolean("Camera has target", getHasTarget());
@@ -74,6 +85,10 @@ public class Camera extends SubsystemBase {
     return camera.getEntry("tx").getDouble(0);
   }
 
+  public double getFilteredHorizontal() {
+    return txFiltered;
+  }
+
   public double getVertical() {
     // ty: Vertical Offset From Crosshair To Target (LL1: -20.5 degrees to 20.5
     // degrees | LL2: -24.85 to 24.85 degrees)
@@ -83,6 +98,10 @@ public class Camera extends SubsystemBase {
   public double getArea() {
     // ta: Target Area (0% of image to 100% of image)
     return camera.getEntry("ta").getDouble(0);
+  }
+
+  public double getFilteredArea() {
+    return taFiltered;
   }
 
   public double getSkew() {
