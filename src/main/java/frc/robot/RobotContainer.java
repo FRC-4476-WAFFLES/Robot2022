@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autonomous.ThreeBallAutoPath;
@@ -124,6 +127,8 @@ public class RobotContainer {
     final var rightJoystickButton10 = new JoystickButton(rightJoystick, 10);
 
     final var shooterReadyTrigger = new ShooterReadyTrigger();
+
+    //final var testThingy = new JoystickButton(operate, XboxController.Axis.kRightTrigger.value);
 /*
     a.whileHeld(new Intake2Balls());
     b.whileHeld(new IntakeOut().alongWith(new ConveyorOut()));
@@ -137,9 +142,11 @@ public class RobotContainer {
     x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
     back.toggleWhenPressed(new ShooterDriverStationControl());
 
-    //rightJoystickButton3.whileHeld(new DriveCameraAim()).or(povUp).toggleWhenActive(new ShooterVisionSetup().perpetually());
+    rightJoystickButton3.toggleWhenPressed(new DriveCameraAim()).or(povUp).toggleWhenActive(new SequentialCommandGroup(new InstantCommand(vision::setLEDOn, vision), new WaitCommand(0.25), new ShooterVisionSetup().perpetually()));
 
-    rightJoystickButton3.whileHeld(new DriveCameraAim());
+    //rightJoystickButton3.whileHeld(new DriveCameraAim());
+
+    
     
     rightJoystickButton7.and(rightJoystickButton10).debounce(0.1).whenActive(new DriveResetGyro());
   }

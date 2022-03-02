@@ -10,6 +10,10 @@ import frc.robot.subsystems.Camera.CameraLEDMode;
 import static frc.robot.RobotContainer.*;
 
 public class DriveCameraAim extends CommandBase {
+  private final double pCoefficient = 8.0;
+  private final double dCoefficient = 1.0;
+
+  private double previousYawError = 0;
   /** Creates a new DriveCameraAim. */
   public DriveCameraAim() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -24,8 +28,12 @@ public class DriveCameraAim extends CommandBase {
   @Override
   public void execute() {
     vision.setLEDMode(CameraLEDMode.On);
-    double yaw = Math.toRadians(vision.getFilteredHorizontal());
-    driveSubsystem.robotDrive(0.0, 0.0, yaw * 8.0, true);
+    double yawError = Math.toRadians(vision.getFilteredHorizontal());
+    double pValue = yawError * pCoefficient;
+    double dValue = (yawError - previousYawError) * dCoefficient * 0.02;
+    double pdControlledVelocity = pValue + dValue;
+    driveSubsystem.robotDrive(0.0, 0.0, pdControlledVelocity, true);
+    previousYawError = yawError;
   }
 
   // Called once the command ends or is interrupted.

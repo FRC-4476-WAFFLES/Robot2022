@@ -37,7 +37,7 @@ public class Camera extends SubsystemBase {
 
   //LinearFilter linearFilter = new LinearFilter(1, 2);
 
-  private final LinearFilter taFilter = LinearFilter.movingAverage(100);
+  private final LinearFilter taFilter = LinearFilter.movingAverage(25);
   private final LinearFilter txFilter = LinearFilter.movingAverage(20);
 
   private double taFiltered = 0;
@@ -64,6 +64,14 @@ public class Camera extends SubsystemBase {
   public void setLEDMode(CameraLEDMode mode) {
     camera.getEntry("ledMode").setNumber(mode.ordinal());
     System.out.println("Camera mode being set to: " + mode.ordinal());
+  }
+
+  public void setLEDOn() {
+    camera.getEntry("ledMode").setNumber(4);
+  }
+
+  public void setLEDOff() {
+    camera.getEntry("ledMode").setNumber(2);
   }
 
   public void setProcesingMode(ProcessingMode mode) {

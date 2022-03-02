@@ -27,8 +27,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private final SparkMaxPIDController leftPIDController = deployLeft.getPIDController();
   private final SparkMaxPIDController rightPIDController = deployRight.getPIDController();
   //private final double deployOvershootTarget = -50;
-  private final double leftDeployedPosition = -22.12;
-  private final double rightDeployedPosition = -21.1;
+  private final double leftDeployedPosition = -22.5;
+  private final double rightDeployedPosition = -22.2;
   private double deployTargetLeft = 0;
   private double deployTargetRight = 0;
   //private final double deployOvershootTarget = -21.14; // The approximate number of rotations of the deploy motors to deploy the intake
