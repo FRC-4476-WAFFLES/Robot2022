@@ -38,6 +38,8 @@ public class ClimberSubsystem extends SubsystemBase {
     climbLeft.config_kP(0, 0.05);
     climbLeft.config_kI(0, 0);
     climbLeft.config_kD(0, 0.1);
+    climbLeft.configReverseSoftLimitThreshold(0);
+    climbLeft.configForwardSoftLimitThreshold(10000);
     climbLeft.setNeutralMode(NeutralMode.Brake);
     climbLeft.setSelectedSensorPosition(0);
 
@@ -48,6 +50,8 @@ public class ClimberSubsystem extends SubsystemBase {
     climbRight.config_kP(0, 0.05);
     climbRight.config_kI(0, 0);
     climbRight.config_kD(0, 0.1);
+    climbRight.configReverseSoftLimitThreshold(0);
+    climbRight.configForwardSoftLimitThreshold(10000);
     climbRight.setNeutralMode(NeutralMode.Brake);
     climbRight.setSelectedSensorPosition(0);
 
@@ -112,6 +116,13 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void moveCLimberPivotWithAnalogStick(double analogStickValue) {
     moveClimberPivotSetpoint(analogStickValue * previousLoopTime * 80000);
+  }
+
+  public void setClimbSoftLimitEnable(boolean enable) {
+    climbLeft.configForwardSoftLimitEnable(enable);
+    climbLeft.configReverseSoftLimitEnable(enable);
+    climbRight.configForwardSoftLimitEnable(enable);
+    climbRight.configReverseSoftLimitEnable(enable);
   }
 
   public void stopClimber() {

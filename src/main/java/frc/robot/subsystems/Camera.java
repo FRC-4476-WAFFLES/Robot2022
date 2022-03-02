@@ -8,10 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.filter.LinearFilter;
-// import edu.wpi.first.wpilibj.Preferences;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
-// import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -67,11 +64,11 @@ public class Camera extends SubsystemBase {
   }
 
   public void setLEDOn() {
-    camera.getEntry("ledMode").setNumber(4);
+    camera.getEntry("ledMode").setNumber(3);
   }
 
   public void setLEDOff() {
-    camera.getEntry("ledMode").setNumber(2);
+    camera.getEntry("ledMode").setNumber(1);
   }
 
   public void setProcesingMode(ProcessingMode mode) {
