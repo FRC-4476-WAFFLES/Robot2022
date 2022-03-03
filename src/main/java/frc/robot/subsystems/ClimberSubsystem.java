@@ -100,10 +100,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void moveClimberSetpoint(double amountToMove) {
     targetSetpoint += amountToMove;
-    /*
-    if (targetSetpoint < 0) {
-      targetSetpoint = 0;
-    }*/
   }
 
   public void moveClimberPivotSetpoint(double amountToMove) {
@@ -123,6 +119,14 @@ public class ClimberSubsystem extends SubsystemBase {
     climbLeft.configReverseSoftLimitEnable(enable);
     climbRight.configForwardSoftLimitEnable(enable);
     climbRight.configReverseSoftLimitEnable(enable);
+  }
+
+  public void enableClimbSoftLimit() {
+    setClimbSoftLimitEnable(true);
+  }
+
+  public void disableClimbSoftLimit() {
+    setClimbSoftLimitEnable(false);
   }
 
   public void stopClimber() {

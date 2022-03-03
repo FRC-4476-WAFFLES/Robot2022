@@ -108,7 +108,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //final var a = new JoystickButton(operate, XboxController.Button.kA.value);
+    final var a = new JoystickButton(operate, XboxController.Button.kA.value);
     //final var b = new JoystickButton(operate, XboxController.Button.kB.value);
     final var x = new JoystickButton(operate, XboxController.Button.kX.value);
     final var y = new JoystickButton(operate, XboxController.Button.kY.value);
@@ -146,7 +146,7 @@ public class RobotContainer {
 
     //rightJoystickButton3.whileHeld(new DriveCameraAim());
 
-    
+    a.whenPressed(new InstantCommand(climberSubsystem::disableClimbSoftLimit)).whenReleased(new InstantCommand(climberSubsystem::enableClimbSoftLimit));
     
     rightJoystickButton7.and(rightJoystickButton10).debounce(0.1).whenActive(new DriveResetGyro());
   }

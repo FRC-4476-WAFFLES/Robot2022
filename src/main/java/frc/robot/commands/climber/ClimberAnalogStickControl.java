@@ -25,12 +25,14 @@ public class ClimberAnalogStickControl extends CommandBase {
     if (Math.abs(movement) < 0.05) {
       movement = 0;
     }
+
     climberSubsystem.moveClimberWithAnalogStick(movement);
 
     double otherMovement = -operate.getRightY();
     if (Math.abs(otherMovement) < 0.05) {
       otherMovement = 0;
     }
+
     climberSubsystem.moveCLimberPivotWithAnalogStick(otherMovement);
   }
 
