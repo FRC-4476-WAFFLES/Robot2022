@@ -129,6 +129,11 @@ public class ClimberSubsystem extends SubsystemBase {
     setClimbSoftLimitEnable(false);
   }
 
+  public void resetClimbEncoders() {
+    climbLeft.setSelectedSensorPosition(0);
+    climbRight.setSelectedSensorPosition(0);
+  }
+
   public void stopClimber() {
     climbLeft.set(ControlMode.PercentOutput, 0);
     climbRight.set(ControlMode.PercentOutput, 0);
