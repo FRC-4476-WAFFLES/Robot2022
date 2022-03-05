@@ -23,6 +23,18 @@ public class IntakeTeleop extends CommandBase {
   public void execute() {
     double power = -operate.getLeftTriggerAxis() + operate.getRightTriggerAxis();
     if (Math.abs(power) >= 0.01) {
+      // for testing
+      // conveyorSubsystem.runConveyor(Math.min(power, 0.2)); 
+      // intakeSubsystem.runIntake(power);
+      // if (Math.abs(power) >= 0.01) {
+      //   intakeSubsystem.deployIntake();
+      //   conveyorSubsystem.runConveyor(Math.min(power, 0.2));
+      //   intakeSubsystem.runIntake(power);
+      // }else{
+      //   intakeSubsystem.retractIntake();
+      //   intakeSubsystem.runIntake(0.0);
+      //   conveyorSubsystem.runConveyor(0.0);
+      // }
       if (conveyorSubsystem.getHighIR()) {
         conveyorSubsystem.runConveyor(0.0);
         intakeSubsystem.runIntake(0.0);

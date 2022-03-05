@@ -148,9 +148,7 @@ public class RobotContainer {
 
     b
       .whenPressed(new InstantCommand(climberSubsystem::disableClimbSoftLimit))
-      .whenReleased(
-        new InstantCommand(climberSubsystem::resetClimbEncoders, climberSubsystem)
-        .alongWith(new InstantCommand(climberSubsystem::enableClimbSoftLimit)));
+      .whenReleased(new InstantCommand(climberSubsystem::enableClimbSoftLimit));
     
     rightJoystickButton7.and(rightJoystickButton10).debounce(0.1).whenActive(new DriveResetGyro());
   }

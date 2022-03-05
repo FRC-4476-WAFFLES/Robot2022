@@ -40,7 +40,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeSpin.configContinuousCurrentLimit(20);
     intakeSpin.configPeakCurrentLimit(20);
     intakeSpin.enableCurrentLimit(true);
-    intakeSpin.setInverted(true);
+    intakeSpin.setInverted(false);
 
     deployLeft.restoreFactoryDefaults();
     deployLeft.setSmartCurrentLimit(20);
