@@ -24,7 +24,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
   private final Timer timer = new Timer();
 
-  private final int maxExtention = 100000;
+  private final int maxExtention = 470000;
+  private final int minExtention = 0;
 
   private int targetSetpoint = 0;
   private double previousTime = 0;
@@ -38,11 +39,11 @@ public class ClimberSubsystem extends SubsystemBase {
     climbLeft.configFactoryDefault();
     climbLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     climbLeft.setInverted(TalonFXInvertType.Clockwise);
-    climbLeft.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 5, 5, 0.03));
+    climbLeft.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 28, 28, 0.03));
     climbLeft.config_kP(0, 0.05);
     climbLeft.config_kI(0, 0);
     climbLeft.config_kD(0, 0.1);
-    climbLeft.configReverseSoftLimitThreshold(0);
+    climbLeft.configReverseSoftLimitThreshold(minExtention);
     climbLeft.configForwardSoftLimitThreshold(maxExtention);
     climbLeft.configForwardSoftLimitEnable(true);
     climbLeft.configReverseSoftLimitEnable(true);
@@ -52,11 +53,11 @@ public class ClimberSubsystem extends SubsystemBase {
     climbRight.configFactoryDefault();
     climbRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     climbRight.setInverted(TalonFXInvertType.CounterClockwise);
-    climbRight.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 5, 5, 0.03));
+    climbRight.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 28, 28, 0.03));
     climbRight.config_kP(0, 0.05);
     climbRight.config_kI(0, 0);
     climbRight.config_kD(0, 0.1);
-    climbRight.configReverseSoftLimitThreshold(0);
+    climbRight.configReverseSoftLimitThreshold(minExtention);
     climbRight.configForwardSoftLimitThreshold(maxExtention);
     climbRight.configForwardSoftLimitEnable(true);
     climbRight.configReverseSoftLimitEnable(true);
@@ -113,8 +114,8 @@ public class ClimberSubsystem extends SubsystemBase {
     if (climbLimitEnabled) {
       if (targetSetpoint > maxExtention) {
         targetSetpoint = maxExtention;
-      } else if (targetSetpoint < 0) {
-        targetSetpoint = 0;
+      } else if (targetSetpoint < minExtention) {
+        targetSetpoint = minExtention;
       }
     }
   }
