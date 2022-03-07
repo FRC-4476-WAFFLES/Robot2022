@@ -67,7 +67,8 @@ public class SwerveModule {
         driveMotor.config_kF(0, 0);
 
         angleEncoder.setDistancePerRotation(360);
-        angleMotor.setSelectedSensorPosition((angleEncoder.getDistance() - constants.calibration) * constants.steeringDegreesToTicks); 
+        
+        resetSteeringEncoder();
     }
 
     /** Drives the swerve module in a direction at a speed.
@@ -96,6 +97,10 @@ public class SwerveModule {
         angleMotor.set(ControlMode.Position, targetAngle * constants.steeringDegreesToTicks);
         driveMotor.set(ControlMode.Velocity, optimizedState.speedMetersPerSecond * constants.metersPerSecondToTicksPer100ms - velocityOffset);
         //driveMotor.set(ControlMode.Velocity, -velocityOffset);
+    }
+
+    public void resetSteeringEncoder() {
+        angleMotor.setSelectedSensorPosition((angleEncoder.getDistance() - constants.calibration) * constants.steeringDegreesToTicks); 
     }
 
     /**

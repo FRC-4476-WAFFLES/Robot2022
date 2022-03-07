@@ -143,4 +143,10 @@ public class DriveSubsystem extends SubsystemBase {
   public void resetOdometry(Pose2d robotPose) {
     odometry.resetPosition(robotPose, Rotation2d.fromDegrees(-ahrsIMU.getAngle()));
   }
+
+  public void resetSteeringEncoders() {
+    for (SwerveModule module : modules) {
+      module.resetSteeringEncoder();
+    }
+  }
 }
