@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -93,27 +94,38 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
 
-  public void robotDrive(double forward, double right, double rotation, boolean fieldCentric){
+  private void robotDrive(double forward, double right, double rotation, Translation2d orbitPoint, boolean fieldCentric, boolean orbitAroundPoint) {
     ChassisSpeeds chassisSpeeds;
+    SwerveModuleState[] swerveModuleStates;
 
-    double robotRotationRate = -ahrsIMU.getRate();
-    robotRotationRate = (robotRotationRate / 180.0) * Math.PI;
+    double robotRotationRate = Units.degreesToRadians(-ahrsIMU.getRate());
 
     if (forward != 0 || right != 0) {
       rotation += robotRotationRate;
     }
 
-    if (fieldCentric){
-      //chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, gyro.getHeadingAsRotation2d());
-      //chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, Rotation2d.fromDegrees(-ahrsIMU.getAngle()));
+    if (fieldCentric) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, right, rotation, odometry.getPoseMeters().getRotation());
     } else {
       chassisSpeeds = new ChassisSpeeds(forward, right, rotation);
     }
     
-    SwerveModuleState[] swerveModuleState = kinematics.toSwerveModuleStates(chassisSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleState, 4);
-    setModuleStates(swerveModuleState);
+    if (orbitAroundPoint) {
+      swerveModuleStates = kinematics.toSwerveModuleStates(chassisSpeeds, orbitPoint);
+    } else {
+      swerveModuleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
+    }
+    
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxAttainableSpeedMetersPerSecond);
+    setModuleStates(swerveModuleStates);
+  }
+
+  public void robotDrive(double forward, double right, double rotation, boolean fieldCentric){
+    robotDrive(forward, right, rotation, new Translation2d(), fieldCentric, false);
+  }
+
+  public void orbitAroundPoint(double orbitRadiansPerSecond, Translation2d orbitPoint) {
+    robotDrive(0.0, 0.0, orbitRadiansPerSecond, orbitPoint, false, true);
   }
 
   public void setModuleStates(SwerveModuleState[] swerveModuleStates){
