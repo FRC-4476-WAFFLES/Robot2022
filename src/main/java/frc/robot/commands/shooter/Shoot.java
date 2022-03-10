@@ -36,5 +36,6 @@ public class Shoot extends CommandBase {
   @Override
   public boolean isFinished() {
     return !conveyorSubsystem.getLowIR() && !conveyorSubsystem.getLowIRPreviousState() && !conveyorSubsystem.getMidIR() && !conveyorSubsystem.getHighIR();
+    //return false;
   }
 }

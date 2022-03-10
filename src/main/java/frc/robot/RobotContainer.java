@@ -24,6 +24,8 @@ import frc.robot.commands.climber.ClimberAnalogStickControl;
 import frc.robot.commands.drive.DriveCameraAim;
 import frc.robot.commands.drive.DriveResetGyro;
 import frc.robot.commands.drive.DriveTeleop;
+import frc.robot.commands.intake.IntakeRetract;
+import frc.robot.commands.intake.IntakeDeploy;
 import frc.robot.commands.intake.IntakeTeleop;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.ShooterDriverStationControl;
@@ -105,8 +107,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //final var a = new JoystickButton(operate, XboxController.Button.kA.value);
-    //final var b = new JoystickButton(operate, XboxController.Button.kB.value);
+    final var a = new JoystickButton(operate, XboxController.Button.kA.value);
+    final var b = new JoystickButton(operate, XboxController.Button.kB.value);
     final var x = new JoystickButton(operate, XboxController.Button.kX.value);
     final var y = new JoystickButton(operate, XboxController.Button.kY.value);
 
@@ -130,11 +132,12 @@ public class RobotContainer {
     x.whenPressed(new IntakeDeploy());
     y.whenPressed(new IntakeRetract());*/
 
-    //a.whenPressed(new IntakeDeploy());
-    //b.whenPressed(new IntakeRetract());
+    a.whenPressed(new IntakeDeploy());
+    b.whenPressed(new IntakeRetract());
 
     povUp.toggleWhenPressed(new ShooterVisionSetup().perpetually());
-    x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
+    //x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
+    x.whileActiveContinuous(new Shoot().perpetually());
     back.toggleWhenPressed(new ShooterDriverStationControl());
 
     //rightJoystickButton3.whileHeld(new DriveCameraAim()).or(povUp).toggleWhenActive(new ShooterVisionSetup().perpetually());
