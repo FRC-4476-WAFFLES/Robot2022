@@ -4,6 +4,7 @@
 
 package frc.robot.commands.drive;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
@@ -22,7 +23,29 @@ public class DriveTeleop extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveSubsystem.robotDrive(leftJoystick.getY(), leftJoystick.getX(), rightJoystick.getX(), true);
+    double forward = leftJoystick.getY();
+    double right = leftJoystick.getX();
+    double rotation = rightJoystick.getX();
+
+    SmartDashboard.putNumber("Left Joystick Y", forward);
+    SmartDashboard.putNumber("Left Joystick X", right);
+    SmartDashboard.putNumber("Right Joystick X", rotation);
+
+    if (Math.abs(forward) < .05){
+      forward = 0;
+    }
+    if(Math.abs(right) < .05){
+      right = 0;
+    }
+    if(Math.abs(rotation) < .05){
+      rotation = 0;
+    }
+
+    forward *= 4;
+    right *= 4;
+    rotation *= 6;
+    
+    driveSubsystem.robotDrive(forward, right, rotation, true);
   }
 
   // Called once the command ends or is interrupted.

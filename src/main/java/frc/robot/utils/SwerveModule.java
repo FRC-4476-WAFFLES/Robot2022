@@ -26,7 +26,6 @@ public class SwerveModule {
     /** The motor controlling the speed of the swerve module. */
     private final TalonFX driveMotor;
 
-    /** The absolute encoder for steering */
     private final DutyCycleEncoder angleEncoder;
 
     public SwerveModule(SwerveConstants constants) {
@@ -39,10 +38,11 @@ public class SwerveModule {
         angleMotor.configFactoryDefault();
 
         driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0.03));
-        angleMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 40, 0.03));
+        angleMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 30, 30, 0.03));
 
         driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        
         driveMotor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_50Ms);
         angleMotor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_50Ms);
         driveMotor.configVelocityMeasurementWindow(4);
@@ -56,12 +56,18 @@ public class SwerveModule {
         driveMotor.setNeutralMode(NeutralMode.Brake);
         angleMotor.setNeutralMode(NeutralMode.Brake);
 
-        angleMotor.config_kP(0, 0.2);
+        angleMotor.config_kP(0, 0.07);
         angleMotor.config_kI(0, 0);
-        angleMotor.config_kD(0, 0.1);
+        angleMotor.config_kD(0, 0.2);
+        angleMotor.configNeutralDeadband(0.02);
 
-        angleEncoder.setDistancePerRotation(360); // Wheel steers 360 degrees per one rotation of encoder
-        angleMotor.setSelectedSensorPosition(angleEncoder.getDistance() * constants.steeringDegreesToTicks); // Seed the Falcon's built-in encoder with the absolute encoder
+        driveMotor.config_kP(0, 0.1);
+        driveMotor.config_kI(0, 0);
+        driveMotor.config_kD(0, 0.1);
+        driveMotor.config_kF(0, 0);
+
+        angleEncoder.setDistancePerRotation(360);
+        angleMotor.setSelectedSensorPosition((angleEncoder.getDistance() - constants.calibration) * constants.steeringDegreesToTicks); 
     }
 
     /** Drives the swerve module in a direction at a speed.
@@ -70,7 +76,7 @@ public class SwerveModule {
      */
     public void drive(SwerveModuleState desired) {
         double currentAngleRaw = angleMotor.getSelectedSensorPosition() / constants.steeringDegreesToTicks;
-        //double currentAngleVelocityRaw = angleMotor.getSelectedSensorVelocity();
+        double currentAngleVelocityRaw = angleMotor.getSelectedSensorVelocity();
 
         double currentAngle = currentAngleRaw % 360;
         if (currentAngle < -180) {
@@ -79,7 +85,7 @@ public class SwerveModule {
             currentAngle -= 360;
         }
 
-        //double velocityOffset = currentAngleVelocityRaw * constants.steeringThingy;
+        double velocityOffset = currentAngleVelocityRaw * constants.steeringToDriveRatio;
 
         SwerveModuleState optimizedState = SwerveModuleState.optimize(desired, Rotation2d.fromDegrees(currentAngle));
         
@@ -88,8 +94,8 @@ public class SwerveModule {
         double targetAngle = currentAngleRaw + optimizedState.angle.minus(Rotation2d.fromDegrees(currentAngleRaw)).getDegrees();
 
         angleMotor.set(ControlMode.Position, targetAngle * constants.steeringDegreesToTicks);
-        //driveMotor.set(ControlMode.Velocity, optimizedState.speedMetersPerSecond * constants.metersPerSecondToTicksPer100ms);
-        driveMotor.set(ControlMode.PercentOutput, optimizedState.speedMetersPerSecond);
+        driveMotor.set(ControlMode.Velocity, optimizedState.speedMetersPerSecond * constants.metersPerSecondToTicksPer100ms - velocityOffset);
+        //driveMotor.set(ControlMode.Velocity, -velocityOffset);
     }
 
     /**
@@ -98,15 +104,17 @@ public class SwerveModule {
      */
     
     public SwerveModuleState getState(){
+        double currentVelocity = driveMotor.getSelectedSensorVelocity() / constants.metersPerSecondToTicksPer100ms;
+        //currentVelocity += angleMotor.getSelectedSensorVelocity() * constants.steeringToDriveRatio;
+
         double currentAngle = (angleMotor.getSelectedSensorPosition() / constants.steeringDegreesToTicks) % 360;
         if (currentAngle < -180) {
             currentAngle += 360;
         } else if (currentAngle > 180) {
             currentAngle -= 360;
         }
-        return new SwerveModuleState(
-            driveMotor.getSelectedSensorVelocity() / constants.metersPerSecondToTicksPer100ms, 
-            Rotation2d.fromDegrees(currentAngle));
+
+        return new SwerveModuleState(currentVelocity, Rotation2d.fromDegrees(currentAngle));
     }
 
     /** Stops all motors from running. */
