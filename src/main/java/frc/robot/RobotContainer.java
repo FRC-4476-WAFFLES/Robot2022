@@ -15,13 +15,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autonomous.ThreeBallAutoPath;
 import frc.robot.commands.autonomous.TwoBallAutoComplete;
+import frc.robot.commands.Utility.CommandSwitch;
 import frc.robot.commands.autonomous.FenderHighShotComplete;
 import frc.robot.commands.autonomous.ResetToRightAutoStartingPosition;
 import frc.robot.commands.autonomous.FiveBallAutoPath;
 import frc.robot.commands.autonomous.ThreeBallAutoComplete;
 import frc.robot.commands.autonomous.TwoBallAutoPath;
 import frc.robot.commands.climber.ClimberAnalogStickControl;
-import frc.robot.commands.drive.DriveCameraAim;
+import frc.robot.commands.drive.DriveVisionAim;
 import frc.robot.commands.drive.DriveResetGyro;
 import frc.robot.commands.drive.DriveTeleop;
 import frc.robot.commands.intake.IntakeRetract;
@@ -121,9 +122,9 @@ public class RobotContainer {
     //final var povRight = new POVButton(operate, 90);
     //final var povDown = new POVButton(operate, 180);
 
-    final var rightJoystickButton3 = new JoystickButton(rightJoystick, 3);
-    final var rightJoystickButton7 = new JoystickButton(rightJoystick, 7);
-    final var rightJoystickButton10 = new JoystickButton(rightJoystick, 10);
+    final var right3 = new JoystickButton(rightJoystick, 3);
+    final var right7 = new JoystickButton(rightJoystick, 7);
+    final var right10 = new JoystickButton(rightJoystick, 10);
 
     final var shooterReadyTrigger = new ShooterReadyTrigger();
 /*
@@ -141,10 +142,10 @@ public class RobotContainer {
     back.toggleWhenPressed(new ShooterDriverStationControl());
 
     //rightJoystickButton3.whileHeld(new DriveCameraAim()).or(povUp).toggleWhenActive(new ShooterVisionSetup().perpetually());
-
-    rightJoystickButton3.whileHeld(new DriveCameraAim());
     
-    rightJoystickButton7.and(rightJoystickButton10).debounce(0.1).whenActive(new DriveResetGyro());
+    right3.whileHeld(new DriveVisionAim());
+    
+    right7.and(right10).debounce(0.1).whenActive(new DriveResetGyro());
   }
 
   /**

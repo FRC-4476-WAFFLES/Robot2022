@@ -9,11 +9,11 @@ import frc.robot.subsystems.Camera.CameraLEDMode;
 
 import static frc.robot.RobotContainer.*;
 
-public class DriveCameraAim extends CommandBase {
+public class DriveVisionAim extends CommandBase {
   /** Creates a new DriveCameraAim. */
-  public DriveCameraAim() {
+  public DriveVisionAim() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(driveSubsystem, vision);
+    addRequirements(driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -32,12 +32,12 @@ public class DriveCameraAim extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     driveSubsystem.stop();
-    vision.setLEDMode(CameraLEDMode.Off);
+    //vision.setLEDMode(CameraLEDMode.Off);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(vision.getFilteredHorizontal()) <= 5.0;
   }
 }

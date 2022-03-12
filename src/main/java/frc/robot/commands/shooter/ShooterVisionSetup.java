@@ -5,6 +5,7 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Camera.CameraLEDMode;
 
 import static frc.robot.RobotContainer.*;
@@ -13,7 +14,7 @@ public class ShooterVisionSetup extends CommandBase {
   /** Creates a new ShooterSetup. */
   public ShooterVisionSetup() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooterSubsystem, vision);
+    addRequirements(shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -43,12 +44,13 @@ public class ShooterVisionSetup extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    vision.setLEDMode(CameraLEDMode.Off);
+    //vision.setLEDMode(CameraLEDMode.Off);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return (Math.abs(shooterSubsystem.getShooterTargetRPM() - shooterSubsystem.getFilteredShooterRPM()) <= ShooterConstants.RPMTolerance) 
+    && (Math.abs(shooterSubsystem.getHoodAngleDegrees() - shooterSubsystem.getHoodTargetAngleDegrees()) <= ShooterConstants.angleTolerance);
   }
 }
