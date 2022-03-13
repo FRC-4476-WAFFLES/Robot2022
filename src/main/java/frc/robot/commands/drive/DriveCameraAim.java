@@ -13,7 +13,7 @@ public class DriveCameraAim extends CommandBase {
   /** Creates a new DriveCameraAim. */
   public DriveCameraAim() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(driveSubsystem, vision);
+    addRequirements(driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -24,7 +24,7 @@ public class DriveCameraAim extends CommandBase {
   @Override
   public void execute() {
     vision.setLEDMode(CameraLEDMode.On);
-    double yaw = Math.toRadians(vision.getFilteredHorizontal());
+    double yaw = Math.toRadians(vision.getHorizontal());
     driveSubsystem.robotDrive(0.0, 0.0, yaw * 8.0, true);
   }
 
@@ -38,6 +38,6 @@ public class DriveCameraAim extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(vision.getHorizontal()) < 2.0 && vision.getHasTarget();
   }
 }

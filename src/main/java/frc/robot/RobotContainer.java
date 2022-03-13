@@ -11,11 +11,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autonomous.ThreeBallAutoPath;
 import frc.robot.commands.autonomous.TwoBallAutoComplete;
 import frc.robot.commands.autonomous.FenderHighShotComplete;
+import frc.robot.commands.autonomous.FiveBallAutoComplete;
 import frc.robot.commands.autonomous.ResetToRightAutoStartingPosition;
 import frc.robot.commands.autonomous.FiveBallAutoPath;
 import frc.robot.commands.autonomous.ThreeBallAutoComplete;
@@ -37,6 +39,7 @@ import frc.robot.subsystems.ConveyorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.Camera.CameraLEDMode;
 import frc.robot.triggers.ShooterReadyTrigger;
 
 /**
@@ -69,7 +72,11 @@ public class RobotContainer {
   private final FiveBallAutoPath fiveBallAutoPath = new FiveBallAutoPath();
   private final TwoBallAutoComplete twoBallAutoComplete = new TwoBallAutoComplete();
   private final ThreeBallAutoComplete threeBallAutoComplete = new ThreeBallAutoComplete();
+  private final FiveBallAutoComplete fiveBallAutoComplete = new FiveBallAutoComplete();
   private final ResetToRightAutoStartingPosition resetToAutoStartingPosition = new ResetToRightAutoStartingPosition();
+
+  private final DriveCameraAim driveCameraAim = new DriveCameraAim();
+  private final InstantCommand lightsOn = new InstantCommand(() -> vision.setLEDMode(CameraLEDMode.On));
   
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
@@ -92,7 +99,10 @@ public class RobotContainer {
     autoChooser.addOption("5 Ball Auto Path", fiveBallAutoPath);
     autoChooser.addOption("2 Ball Auto Complete", twoBallAutoComplete);
     autoChooser.addOption("3 Ball Auto Complete", threeBallAutoComplete);
+    autoChooser.addOption("5 Ball Auto Complete", fiveBallAutoComplete);
     autoChooser.addOption("Reset Right Fender", resetToAutoStartingPosition);
+    autoChooser.addOption("Auto Lineup", driveCameraAim);
+    autoChooser.addOption("Lights On", lightsOn);
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     vision.setProcesingMode(Camera.ProcessingMode.Vision);
@@ -121,7 +131,7 @@ public class RobotContainer {
     //final var povRight = new POVButton(operate, 90);
     //final var povDown = new POVButton(operate, 180);
 
-    final var rightJoystickButton3 = new JoystickButton(rightJoystick, 3);
+    final var rightJoystickButton1 = new JoystickButton(rightJoystick, 1);
     final var rightJoystickButton7 = new JoystickButton(rightJoystick, 7);
     final var rightJoystickButton10 = new JoystickButton(rightJoystick, 10);
 
@@ -132,8 +142,10 @@ public class RobotContainer {
     x.whenPressed(new IntakeDeploy());
     y.whenPressed(new IntakeRetract());*/
 
-    a.whenPressed(new IntakeDeploy());
-    b.whenPressed(new IntakeRetract());
+    //a.whenPressed(new IntakeDeploy());
+    //b.whenPressed(new IntakeRetract());
+    a.whenPressed(new InstantCommand(climberSubsystem::nextSetpoint));
+    b.whenPressed(new InstantCommand(climberSubsystem::previousSetpoint));
 
     povUp.toggleWhenPressed(new ShooterVisionSetup().perpetually());
     //x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
@@ -142,7 +154,7 @@ public class RobotContainer {
 
     //rightJoystickButton3.whileHeld(new DriveCameraAim()).or(povUp).toggleWhenActive(new ShooterVisionSetup().perpetually());
 
-    rightJoystickButton3.whileHeld(new DriveCameraAim());
+    rightJoystickButton1.whileHeld(new DriveCameraAim().perpetually());
     
     rightJoystickButton7.and(rightJoystickButton10).debounce(0.1).whenActive(new DriveResetGyro());
   }

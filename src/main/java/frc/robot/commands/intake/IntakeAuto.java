@@ -24,7 +24,7 @@ public class IntakeAuto extends CommandBase {
   @Override
   public void execute() {
     if (conveyorSubsystem.shouldRun()) {
-      conveyorSubsystem.runConveyor(Math.min(power, 0.3));
+      conveyorSubsystem.runConveyor(Math.min(power, 0.2));
     } else {
       conveyorSubsystem.stopConveyor();
     }
