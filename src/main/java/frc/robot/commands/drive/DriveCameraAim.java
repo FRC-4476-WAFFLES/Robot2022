@@ -4,12 +4,16 @@
 
 package frc.robot.commands.drive;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Camera.CameraLEDMode;
 
 import static frc.robot.RobotContainer.*;
 
 public class DriveCameraAim extends CommandBase {
+  PIDController turnController = new PIDController(-8.0, 0, -0.2);
+
   /** Creates a new DriveCameraAim. */
   public DriveCameraAim() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -24,8 +28,11 @@ public class DriveCameraAim extends CommandBase {
   @Override
   public void execute() {
     vision.setLEDMode(CameraLEDMode.On);
-    double yaw = Math.toRadians(vision.getHorizontal());
-    driveSubsystem.robotDrive(0.0, 0.0, yaw * 8.0, true);
+    turnController.setSetpoint(0);
+    double turnSpeed = turnController.calculate(Math.toRadians(vision.getFilteredHorizontal()));
+    driveSubsystem.robotDrive(0.0, 0.0, turnSpeed, true);
+    SmartDashboard.putNumber("Drive Current Rotation Error (Radians)", Math.toRadians(vision.getFilteredHorizontal()));
+    SmartDashboard.putNumber("Drive PID Turn Speed", turnSpeed);
   }
 
   // Called once the command ends or is interrupted.

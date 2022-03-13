@@ -38,7 +38,7 @@ public class Camera extends SubsystemBase {
   //LinearFilter linearFilter = new LinearFilter(1, 2);
 
   private final LinearFilter taFilter = LinearFilter.movingAverage(100);
-  private final LinearFilter txFilter = LinearFilter.movingAverage(20);
+  private final LinearFilter txFilter = LinearFilter.movingAverage(10);
 
   private double taFiltered = 0;
   private double txFiltered = 0;

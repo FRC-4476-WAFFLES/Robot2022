@@ -45,7 +45,11 @@ public class FiveBallAutoPath extends SequentialCommandGroup {
 
       new DriveAuto(
         new SwervePath(-2.27, 0.7, -160, -160)
-        .finish(-6.61, 1.2, -143, -143, 3))
+        .finish(-6.61, 1.2, -143, -143, 3)),
+      
+      new DriveAuto(
+        new SwervePath(-6.61, 1.2, -143, -143)
+        .finish(-2.27, 0.7, -160, -160, 3.0))
     ); // -6.67, 0.90, -176.5
   }
 }

@@ -43,16 +43,16 @@ public class IntakeTeleop extends CommandBase {
       } else {
         conveyorSubsystem.stopConveyor();
       }
-      conveyorSubsystem.runConveyor(power);
-      shooterSubsystem.setKickerSpeed(power);
       
       intakeSubsystem.runIntake(power);
       shooterSubsystem.setKickerSpeed(0.0);
+
     } else if (power <= 0.01) {
-      intakeSubsystem.runIntake(power);
+      intakeSubsystem.runIntake(0.0);
       conveyorSubsystem.runConveyor(power);
       intakeSubsystem.retractIntake();
       shooterSubsystem.setKickerSpeed(power);
+
     } else {
       intakeSubsystem.retractIntake();
       intakeSubsystem.runIntake(0.0);

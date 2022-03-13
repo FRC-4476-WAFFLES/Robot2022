@@ -100,7 +100,7 @@ public final class Constants {
 
         public static final double maxAttainableSpeedMetersPerSecond = 4.0;
         public static final double maxAttainableRotationRateRadiansPerSecond = 8.0;
-        public static final double maxAccelerationMetersPerSecondSquared = 2.2;
+        public static final double maxAccelerationMetersPerSecondSquared = 3.0;
 
         // The number of ticks of the motor's built-in encoder per revolution of the steering module
         public final double ticksPerSteeringRevolution = 26214.4;

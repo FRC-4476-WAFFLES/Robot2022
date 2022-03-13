@@ -22,12 +22,11 @@ import frc.robot.commands.autonomous.ResetToRightAutoStartingPosition;
 import frc.robot.commands.autonomous.FiveBallAutoPath;
 import frc.robot.commands.autonomous.ThreeBallAutoComplete;
 import frc.robot.commands.autonomous.TwoBallAutoPath;
+import frc.robot.commands.autonomous.TwoBallExtendedAutoComplete;
 import frc.robot.commands.climber.ClimberAnalogStickControl;
 import frc.robot.commands.drive.DriveCameraAim;
 import frc.robot.commands.drive.DriveResetGyro;
 import frc.robot.commands.drive.DriveTeleop;
-import frc.robot.commands.intake.IntakeRetract;
-import frc.robot.commands.intake.IntakeDeploy;
 import frc.robot.commands.intake.IntakeTeleop;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.ShooterDriverStationControl;
@@ -39,7 +38,6 @@ import frc.robot.subsystems.ConveyorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.Camera.CameraLEDMode;
 import frc.robot.triggers.ShooterReadyTrigger;
 
 /**
@@ -74,9 +72,7 @@ public class RobotContainer {
   private final ThreeBallAutoComplete threeBallAutoComplete = new ThreeBallAutoComplete();
   private final FiveBallAutoComplete fiveBallAutoComplete = new FiveBallAutoComplete();
   private final ResetToRightAutoStartingPosition resetToAutoStartingPosition = new ResetToRightAutoStartingPosition();
-
-  private final DriveCameraAim driveCameraAim = new DriveCameraAim();
-  private final InstantCommand lightsOn = new InstantCommand(() -> vision.setLEDMode(CameraLEDMode.On));
+  private final TwoBallExtendedAutoComplete twoBallExtendedAutoComplete = new TwoBallExtendedAutoComplete();
   
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
@@ -101,8 +97,7 @@ public class RobotContainer {
     autoChooser.addOption("3 Ball Auto Complete", threeBallAutoComplete);
     autoChooser.addOption("5 Ball Auto Complete", fiveBallAutoComplete);
     autoChooser.addOption("Reset Right Fender", resetToAutoStartingPosition);
-    autoChooser.addOption("Auto Lineup", driveCameraAim);
-    autoChooser.addOption("Lights On", lightsOn);
+    autoChooser.addOption("2 Ball Extended Auto Complete", twoBallExtendedAutoComplete);
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     vision.setProcesingMode(Camera.ProcessingMode.Vision);
@@ -148,8 +143,8 @@ public class RobotContainer {
     b.whenPressed(new InstantCommand(climberSubsystem::previousSetpoint));
 
     povUp.toggleWhenPressed(new ShooterVisionSetup().perpetually());
-    //x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
-    x.whileActiveContinuous(new Shoot().perpetually());
+    x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
+    //x.whileActiveContinuous(new Shoot().perpetually());
     back.toggleWhenPressed(new ShooterDriverStationControl());
 
     //rightJoystickButton3.whileHeld(new DriveCameraAim()).or(povUp).toggleWhenActive(new ShooterVisionSetup().perpetually());
