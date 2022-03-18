@@ -129,6 +129,14 @@ public class DriveSubsystem extends SubsystemBase {
       odometry.getPoseMeters().getRotation());
   }
 
+  public ChassisSpeeds getChassisSpeeds() {
+    SwerveModuleState[] moduleStates = new SwerveModuleState[4];
+    for(int x=0; x<modules.length; x++){
+      moduleStates[x] = modules[x].getState();
+    }
+    return kinematics.toChassisSpeeds(moduleStates[0], moduleStates[1], moduleStates[2], moduleStates[3]);
+  }
+
   /** Stop all motors from running. */
   public void stop() {
     for (SwerveModule module : modules) {
