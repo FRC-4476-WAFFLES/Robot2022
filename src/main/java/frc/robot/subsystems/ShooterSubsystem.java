@@ -48,7 +48,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private double shooterkD = ShooterConstants.shooterkD;
   private double shooterkF = ShooterConstants.shooterkF;
 
-  private double kP = ShooterConstants.anglekP;
+  //private double kP = ShooterConstants.anglekP;
+  private double kP = 5;
   private double kI = ShooterConstants.anglekI;
   private double kD = ShooterConstants.anglekD;
   private double kF = ShooterConstants.anglekF;
@@ -106,7 +107,7 @@ public class ShooterSubsystem extends SubsystemBase {
     hoodPIDController.setIZone(kIz);
     hoodPIDController.setOutputRange(kMinOutput, kMaxOutput);
 
-    //SmartDashboard.setDefaultNumber("Set Shooter Target Angle", -1.0);
+    SmartDashboard.setDefaultNumber("Set Shooter Target Angle", -1.0);
     SmartDashboard.setDefaultNumber("Set Shooter Hood Motor Position", 0);
     SmartDashboard.setDefaultNumber("Set Shooter Target RPM", 0);
     SmartDashboard.setDefaultNumber("Set Kicker Wheel Target Speed", 0);
@@ -134,6 +135,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Target RPM", shooterTargetRPM);
     SmartDashboard.putNumber("Shooter Target Angle", targetAngle);
     SmartDashboard.putNumber("Shooter Hood Current Motor Position", hoodEncoder.getPosition());
+    SmartDashboard.putNumber("Shooter Hood Applied Output", hoodMotor.getAppliedOutput());
 
     double shooterP = SmartDashboard.getNumber("Shooter kP", 0);
     double shooterI = SmartDashboard.getNumber("Shooter kI", 0);
@@ -141,6 +143,7 @@ public class ShooterSubsystem extends SubsystemBase {
     double shooterF = SmartDashboard.getNumber("Shooter kF", 0);
 
     // read PID coefficients from SmartDashboard
+    
     double p = SmartDashboard.getNumber("Hood kP", 0);
     double i = SmartDashboard.getNumber("Hood kI", 0);
     double d = SmartDashboard.getNumber("Hood kD", 0);
@@ -192,8 +195,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setHoodAngle(double target) {
-    targetAngle = target = clamp(target, ShooterConstants.minAngle, ShooterConstants.maxAngle);
-    hoodPIDController.setReference(hoodAngleDegreesToRotations(target), ControlType.kPosition);
+    //targetAngle = target = clamp(target, ShooterConstants.minAngle, ShooterConstants.maxAngle);
+    //hoodPIDController.setReference(hoodAngleDegreesToRotations(target), ControlType.kPosition);
   }
 
   public void stop() {
@@ -210,8 +213,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public void driverStationAngleControl() {/*
     targetAngle = SmartDashboard.getNumber("Set Shooter Target Angle", 0);
     setHoodAngle(targetAngle);*/
+    System.err.println("Hello there. ");
     targetAngle = SmartDashboard.getNumber("Set Shooter Hood Motor Position", 0);
-    targetAngle = clamp(targetAngle, 0, 2.9);
+    targetAngle = clamp(targetAngle, 0, 2.7);
+    System.err.println(targetAngle);
     hoodPIDController.setReference(targetAngle, ControlType.kPosition);
   }
 
