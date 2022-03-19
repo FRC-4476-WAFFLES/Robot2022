@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -29,7 +30,8 @@ public class DriveAuto extends SwerveControllerCommand {
       Constants.SwerveConstants.maxAttainableRotationRateRadiansPerSecond, 
       Constants.SwerveConstants.maxAccelerationMetersPerSecondSquared));
   public static Timer timer = new Timer();
-  
+  private static final Pose2d toField = new Pose2d(-10, -5, new Rotation2d(0));
+   
   private SwervePath swervePath;
   
   public DriveAuto(SwervePath swervePath) {
@@ -50,15 +52,25 @@ public class DriveAuto extends SwerveControllerCommand {
     timer.reset();
     timer.start();
     super.initialize();
+
+    ArrayList<Pose2d> poses = new ArrayList<Pose2d>();
+    for (Trajectory.State state : this.swervePath.trajectory.getStates()) {
+      poses.add(toField(state.poseMeters));
+    }
+    driveSubsystem.field.getObject("Trajectory").setPoses(poses);
+  }
+
+  private Pose2d toField(Pose2d in) {
+    return new Pose2d(in.getX() + 10, in.getY() + 5, in.getRotation());
   }
   
   @Override
   public void execute() {
-    if(Robot.isSimulation()) {
-      State state = swervePath.trajectory.sample(timer.get());
-      Rotation2d angle = swervePath.sampleAngle(timer.get());
-      driveSubsystem.field.setRobotPose(state.poseMeters.getX(), state.poseMeters.getY(), angle);
-    }
+    driveSubsystem.field.setRobotPose(toField(driveSubsystem.getOdometryLocation()));
+    State state = swervePath.trajectory.sample(timer.get());
+    Rotation2d target_angle = swervePath.sampleAngle(timer.get());
+    Pose2d target = toField(state.poseMeters);
+    driveSubsystem.field.getObject("Target").setPose(target.getX(), target.getY(), target_angle);
 
     super.execute();
   }
@@ -67,6 +79,20 @@ public class DriveAuto extends SwerveControllerCommand {
   public void end(boolean interrupted) {
     super.end(interrupted);
     driveSubsystem.stop();
+  }
+
+  public static class LinePath {
+    Pose2d startPose;
+
+    public LinePath(double x, double y, double angle) {
+      this.startPose = new Pose2d(x, y, Rotation2d.fromDegrees(angle));
+    }
+
+    public SwervePath finish(double x, double y, double angle, double maxSpeedM) {
+      double pathHeading = new Rotation2d(x - startPose.getX(), y - startPose.getY()).getDegrees();
+      return new SwervePath(startPose.getX(), startPose.getY(), startPose.getRotation().getDegrees(), pathHeading)
+        .finish(x, y, angle, pathHeading, maxSpeedM);
+    }
   }
 
   /** 
