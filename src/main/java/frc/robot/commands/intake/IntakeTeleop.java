@@ -21,6 +21,7 @@ public class IntakeTeleop extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
     double power = -operate.getLeftTriggerAxis() + operate.getRightTriggerAxis();
     if (power >= 0.01 && !conveyorSubsystem.getHighIR()) {
       // for testing

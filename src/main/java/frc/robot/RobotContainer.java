@@ -143,15 +143,15 @@ public class RobotContainer {
     b.whenPressed(new InstantCommand(climberSubsystem::previousSetpoint));
 
     povUp.toggleWhenPressed(new ShooterVisionSetup().perpetually());
-    x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
-    //x.whileActiveContinuous(new Shoot().perpetually());
+    //x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
+    x.whileActiveContinuous(new Shoot().perpetually());
     back.toggleWhenPressed(new ShooterDriverStationControl());
 
     //rightJoystickButton3.whileHeld(new DriveCameraAim()).or(povUp).toggleWhenActive(new ShooterVisionSetup().perpetually());
 
     rightJoystickButton1.whileHeld(new DriveCameraAim().perpetually());
     
-    rightJoystickButton7.and(rightJoystickButton10).debounce(0.1).whenActive(new DriveResetGyro());
+    rightJoystickButton7.and(rightJoystickButton10).debounce(0.1).whenActive(new DriveResetGyro().alongWith(new InstantCommand(driveSubsystem::resetSteerEncoders)));
   }
 
   /**

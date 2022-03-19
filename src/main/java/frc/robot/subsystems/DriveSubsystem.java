@@ -81,6 +81,9 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Gyro Rate", -ADXRS450Gyro.getRate());
     SmartDashboard.putNumber("New Gyro Angle", ahrsIMU.getAngle());
     SmartDashboard.putNumber("New Gyro Rate", ahrsIMU.getRate());
+    for (int x = 0; x < modules.length; x++) {
+      SmartDashboard.putNumber("Module " + String.valueOf(x) + " Speed", moduleStates[x].speedMetersPerSecond);
+    }
 
     int i = 1;
     for (SwerveModule module : modules) {
@@ -112,7 +115,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
     
     SwerveModuleState[] swerveModuleState = kinematics.toSwerveModuleStates(chassisSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleState, 4);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleState, Constants.SwerveConstants.maxAttainableSpeedMetersPerSecond);
     setModuleStates(swerveModuleState);
   }
 
@@ -150,5 +153,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetOdometry(Pose2d robotPose) {
     odometry.resetPosition(robotPose, Rotation2d.fromDegrees(-ahrsIMU.getAngle()));
+  }
+
+  public void resetSteerEncoders() {
+    for (SwerveModule module : modules) {
+      module.resetSteerEncoder();
+    }
   }
 }

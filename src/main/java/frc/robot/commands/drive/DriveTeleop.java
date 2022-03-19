@@ -4,8 +4,11 @@
 
 package frc.robot.commands.drive;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+
 import static frc.robot.RobotContainer.*;
 
 public class DriveTeleop extends CommandBase {
@@ -31,18 +34,12 @@ public class DriveTeleop extends CommandBase {
     SmartDashboard.putNumber("Left Joystick X", right);
     SmartDashboard.putNumber("Right Joystick X", rotation);
 
-    if (Math.abs(forward) < .05){
-      forward = 0;
-    }
-    if(Math.abs(right) < .05){
-      right = 0;
-    }
-    if(Math.abs(rotation) < .05){
-      rotation = 0;
-    }
+    forward = MathUtil.applyDeadband(forward, 0.05);
+    right = MathUtil.applyDeadband(right, 0.05);
+    rotation = MathUtil.applyDeadband(rotation, 0.05);
 
-    forward *= 4;
-    right *= 4;
+    forward *= Constants.SwerveConstants.maxAttainableSpeedMetersPerSecond;
+    right *= Constants.SwerveConstants.maxAttainableSpeedMetersPerSecond;
     rotation *= 6;
     
     driveSubsystem.robotDrive(forward, right, rotation, true);

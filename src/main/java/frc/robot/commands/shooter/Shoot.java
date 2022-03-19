@@ -4,6 +4,7 @@
 
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
@@ -11,7 +12,7 @@ public class Shoot extends CommandBase {
   /** Creates a new ShootAllBalls. */
   public Shoot() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem, conveyorSubsystem);
+    addRequirements(conveyorSubsystem, intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -22,6 +23,7 @@ public class Shoot extends CommandBase {
   @Override
   public void execute() {
     //intakeSubsystem.runIntake(1.0);
+    SmartDashboard.putString("Conveyor", "Is being told to run");
     conveyorSubsystem.runConveyor(0.3);
   }
 

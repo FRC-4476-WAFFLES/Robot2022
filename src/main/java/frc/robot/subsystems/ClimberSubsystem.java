@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
@@ -84,6 +85,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climbLeft.config_kI(0, 0);
     climbLeft.config_kD(0, 0.0);
     climbLeft.setNeutralMode(NeutralMode.Brake);
+    climbLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100, 100);
     climbLeft.setSelectedSensorPosition(0);
 
     climbRight.configFactoryDefault();
@@ -94,6 +96,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climbRight.config_kI(0, 0);
     climbRight.config_kD(0, 0.0);
     climbRight.setNeutralMode(NeutralMode.Brake);
+    climbRight.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100, 100);
     climbRight.setSelectedSensorPosition(0);
 
     climbPivotLeft.configFactoryDefault();
@@ -104,6 +107,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climbPivotLeft.config_kI(0, 0);
     climbPivotLeft.config_kD(0, 0);
     climbPivotLeft.setNeutralMode(NeutralMode.Brake);
+    climbPivotLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100, 100);
     climbPivotLeft.setSelectedSensorPosition(0);
 
     climbPivotRight.configFactoryDefault();
@@ -114,6 +118,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climbPivotRight.config_kI(0, 0);
     climbPivotRight.config_kD(0, 0);
     climbPivotRight.setNeutralMode(NeutralMode.Brake);
+    climbPivotRight.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100, 100);
     climbPivotRight.setSelectedSensorPosition(0);
 
     timer.start();
