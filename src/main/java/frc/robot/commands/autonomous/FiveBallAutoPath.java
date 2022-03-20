@@ -4,13 +4,9 @@
 
 package frc.robot.commands.autonomous;
 
-import javax.sound.sampled.Line;
-
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.drive.DriveAuto;
-import frc.robot.commands.drive.DriveAuto.SwervePath;
-import frc.robot.commands.drive.DriveAuto.LinePath;
+import frc.robot.commands.drive.DriveCameraAim;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -22,6 +18,7 @@ public class FiveBallAutoPath extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new FiveBallAutoPathPart1(),
+      new DriveCameraAim(),
       new WaitCommand(2),
       new FiveBallAutoPathPart2()
     ); // -6.67, 0.90, -176.5
