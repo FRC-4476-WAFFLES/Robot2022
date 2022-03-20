@@ -18,6 +18,12 @@ public class FiveBallAutoPathPart2 extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      // new InstantCommand(() -> new DriveAuto(
+      //   new SwervePath(-0.3, 2.05, -88, RobotContainer.driveSubsystem.getOdometryLocation().getRotation().getDegrees())
+      //   .waypoint(-1.0, 1.3, -160)
+      //   .finish(-2.27, 0.7, -160, -160, 3.0)
+      // ).schedule());
+
       new DriveAuto(
         new SwervePath(-2.27, 0.7, -160, -160)
         .finish(-6.5, 1.41, -139, -139, 4.0)),
@@ -25,8 +31,8 @@ public class FiveBallAutoPathPart2 extends SequentialCommandGroup {
       new WaitCommand(1.0),
 
       new DriveAuto(
-        new SwervePath(-6.5, 1.41, -139, -139)
-        .finish(-2.27, 0.7, -160, -160, 4.0)
+        new SwervePath(-6.5, 1.41, -139, -139 + 180)
+        .finish(-2.27, 0.7, -160, -160 + 180, 4.0)
       )
     );
   }
