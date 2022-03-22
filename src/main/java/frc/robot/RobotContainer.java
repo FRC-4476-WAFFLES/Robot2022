@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autonomous.ThreeBallAutoPath;
 import frc.robot.commands.autonomous.TwoBallAutoComplete;
 import frc.robot.commands.autonomous.FenderHighShotComplete;
+import frc.robot.commands.autonomous.FenderHighShotSetup;
 import frc.robot.commands.autonomous.FiveBallAutoComplete;
 import frc.robot.commands.autonomous.ResetToRightAutoStartingPosition;
 import frc.robot.commands.autonomous.FiveBallAutoPath;
@@ -124,7 +125,7 @@ public class RobotContainer {
 
     final var povUp = new POVButton(operate, 0);
     //final var povRight = new POVButton(operate, 90);
-    //final var povDown = new POVButton(operate, 180);
+    final var povDown = new POVButton(operate, 180);
 
     final var rightJoystickButton1 = new JoystickButton(rightJoystick, 1);
     final var rightJoystickButton7 = new JoystickButton(rightJoystick, 7);
@@ -142,9 +143,11 @@ public class RobotContainer {
     a.whenPressed(new InstantCommand(climberSubsystem::nextSetpoint));
     b.whenPressed(new InstantCommand(climberSubsystem::previousSetpoint));
 
-    povUp.toggleWhenPressed(new ShooterVisionSetup().perpetually());
-    //x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
-    x.whileActiveContinuous(new Shoot().perpetually());
+    povUp.whileActiveContinuous(new ShooterVisionSetup().perpetually());
+    povDown.whileActiveContinuous(new FenderHighShotSetup().perpetually());
+    
+    x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
+    //x.whileActiveContinuous(new Shoot().perpetually());
     back.toggleWhenPressed(new ShooterDriverStationControl());
 
     //rightJoystickButton3.whileHeld(new DriveCameraAim()).or(povUp).toggleWhenActive(new ShooterVisionSetup().perpetually());

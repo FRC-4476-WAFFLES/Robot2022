@@ -5,6 +5,8 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.ShooterConstants;
+
 import static frc.robot.RobotContainer.*;
 
 public class ShooterAngleSet extends CommandBase {
@@ -33,6 +35,6 @@ public class ShooterAngleSet extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(shooterSubsystem.getHoodMotorPosition() - shooterSubsystem.getHoodMotorTargetPosition()) <= ShooterConstants.angleTolerance;
   }
 }

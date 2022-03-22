@@ -49,6 +49,12 @@ public class ShooterSubsystem extends SubsystemBase {
   private double shooterkF = ShooterConstants.shooterkF;
 
   //private double kP = ShooterConstants.anglekP;
+  /*
+  Tuned PID values:
+  p = 0.4
+  i = 0
+  d = 0.4
+  */
   private double kP = 5;
   private double kI = ShooterConstants.anglekI;
   private double kD = ShooterConstants.anglekD;
@@ -91,7 +97,7 @@ public class ShooterSubsystem extends SubsystemBase {
     kickerWheel.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100, 100);
     kickerWheel.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, 100);
     kickerWheel.setControlFramePeriod(ControlFrame.Control_3_General, 100);
-    kickerWheel.setNeutralMode(NeutralMode.Brake);
+    kickerWheel.setNeutralMode(NeutralMode.Coast);
 
     hoodMotor.restoreFactoryDefaults();
     hoodMotor.setSmartCurrentLimit(20);
@@ -136,6 +142,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Target Angle", targetAngle);
     SmartDashboard.putNumber("Shooter Hood Current Motor Position", hoodEncoder.getPosition());
     SmartDashboard.putNumber("Shooter Hood Applied Output", hoodMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Shooter Hood Target Position", targetAngle);
 
     double shooterP = SmartDashboard.getNumber("Shooter kP", 0);
     double shooterI = SmartDashboard.getNumber("Shooter kI", 0);
@@ -184,6 +191,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setKickerSpeed(double target) {
+    //System.err.println("Kicker is being told to spin at power" + String.valueOf(target));
     target = clamp(target, -1, 1);
     kickerWheel.set(ControlMode.PercentOutput, target);
   }
@@ -197,9 +205,12 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setHoodAngle(double target) {
     //targetAngle = target = clamp(target, ShooterConstants.minAngle, ShooterConstants.maxAngle);
     //hoodPIDController.setReference(hoodAngleDegreesToRotations(target), ControlType.kPosition);
+    targetAngle = target = clamp(target, 0, 13.5);
+    hoodPIDController.setReference(targetAngle, ControlType.kPosition);
   }
 
   public void stop() {
+    //System.err.println("Shooter Is being told to stop");
     shooterLeader.set(ControlMode.PercentOutput, 0);
     kickerWheel.set(ControlMode.PercentOutput, 0);
     hoodMotor.set(0);
@@ -213,11 +224,13 @@ public class ShooterSubsystem extends SubsystemBase {
   public void driverStationAngleControl() {/*
     targetAngle = SmartDashboard.getNumber("Set Shooter Target Angle", 0);
     setHoodAngle(targetAngle);*/
-    System.err.println("Hello there. ");
+    //System.err.println("Hello there. ");
     targetAngle = SmartDashboard.getNumber("Set Shooter Hood Motor Position", 0);
-    targetAngle = clamp(targetAngle, 0, 2.7);
+    setHoodAngle(targetAngle);
+    /*
+    targetAngle = clamp(targetAngle, 0, 13.5);
     System.err.println(targetAngle);
-    hoodPIDController.setReference(targetAngle, ControlType.kPosition);
+    hoodPIDController.setReference(targetAngle, ControlType.kPosition);*/
   }
 
   public void driverStationKickerWheelControl() {
@@ -237,12 +250,12 @@ public class ShooterSubsystem extends SubsystemBase {
     return shooterTargetRPM;
   }
 
-  public double getHoodAngleDegrees() {
-    return rotationsToHoodAngleDegrees(hoodEncoder.getPosition());
+  public double getHoodMotorPosition() {
+    return hoodEncoder.getPosition();
     //return 0;
   }
 
-  public double getHoodTargetAngleDegrees() {
+  public double getHoodMotorTargetPosition() {
     return targetAngle;
   }
 
@@ -271,10 +284,34 @@ public class ShooterSubsystem extends SubsystemBase {
 }
 
 /*
+OLD STUFF:
 Equation for shooter RPM given target area gotten from limelight:
 2655 + -1379x + 866x^2
 Where x is ta from limelight and output is shooter RPM
 
 Equation for shooter servo position given area gotten from limelight:
 0.418 + -1.77x + 0.85x^2
+
+NEW STUFF:
+hood motor position = 9
+rpm = 2050
+when camera tx = 19.5 degrees
+
+hood motor position = 13
+rpm = 3260
+when camera tx = -8.2 degrees
+
+tx dif = 27.7 degrees
+hood pos dif = 4 degrees
+hoodPos/tx = .144
+m = -.144
+y=mx+b
+y=-.144x + b
+13 = -.144(-8.2) + b
+1.1808
+b = 11.82
+hoodPos = -.144(cameraTX) + 11.82
+
+Equation for shooter RPM:
+rpm = 2623 + -63.2x + 1.78x^2
 */

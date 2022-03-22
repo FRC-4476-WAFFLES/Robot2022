@@ -31,16 +31,15 @@ public class FiveBallAutoPathPart2 extends SequentialCommandGroup {
         new SwervePath(-2.27, 0.7, -160, -160)
         .finish(-6.5, 1.41, -139, -139, 4.0)),*/
       new ProxyVariableCommand(() -> new DriveAuto(
-        new SwervePath(-0.3, 2.05, driveSubsystem.getOdometryLocation().getRotation().getDegrees(), -88)
-        .waypoint(-1.0, 1.3, -160)
-        .finish(-2.27, 0.7, -160, -160, 3.0)
+        new SwervePath(-3.5, 0.7, driveSubsystem.getOdometryLocation().getRotation().getDegrees(), -88 + 180)
+        .finish(-6.62, 1.62, -130, -130, 3.0)
       )),
 
       new WaitCommand(1.0),
 
       new DriveAuto(
-        new SwervePath(-6.5, 1.41, -139, -139 + 180)
-        .finish(-2.27, 0.7, -160, -160 + 180, 4.0)
+        new SwervePath(-6.62, 1.62, -130, -130 + 180)
+        .finish(-3.5, 0.7, -160, -160 + 180, 4.0)
       )
     );
   }

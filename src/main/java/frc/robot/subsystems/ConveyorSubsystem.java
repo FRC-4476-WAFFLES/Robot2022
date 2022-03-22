@@ -47,12 +47,12 @@ public class ConveyorSubsystem extends SubsystemBase {
 
   public void runConveyor(double power) {
     SmartDashboard.putNumber("Conveyor Power", power);
-    System.err.println("Conveyor is being told to run at power " + String.valueOf(power));
+    //System.err.println("Conveyor is being told to run at power " + String.valueOf(power));
     conveyorSpin.set(power);
   }
 
   public void stopConveyor() {
-    System.err.println("Conveyor is being told to stop");
+    //System.err.println("Conveyor is being told to stop");
     conveyorSpin.set(0);
   }
 

@@ -40,7 +40,7 @@ public class IntakeTeleop extends CommandBase {
       intakeSubsystem.deployIntake();
     
       if (conveyorSubsystem.shouldRun()) {
-        conveyorSubsystem.runConveyor(Math.min(power, 0.2));
+        conveyorSubsystem.runConveyor(Math.min(power, 0.25));
       } else {
         conveyorSubsystem.stopConveyor();
       }

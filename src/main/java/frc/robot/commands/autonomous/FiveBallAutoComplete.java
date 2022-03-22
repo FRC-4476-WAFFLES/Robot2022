@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drive.DriveCameraAim;
 import frc.robot.commands.intake.IntakeAuto;
 import frc.robot.commands.intake.IntakeDeploy;
+import frc.robot.commands.shooter.Shoot;
+import frc.robot.commands.shooter.ShooterVisionSetup;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -18,14 +20,18 @@ public class FiveBallAutoComplete extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new IntakeDeploy().withTimeout(1.0),
+      new IntakeDeploy(),
       new FenderHighShotComplete(),
       new FiveBallAutoPathPart1().deadlineWith(new IntakeAuto(1.0)),
-      new DriveCameraAim().withTimeout(4.0),
-      new OutsideTarmacHighShotComplete(),
+      //new VisionHighShotComplete(),
+      new DriveCameraAim().withTimeout(2),
+      new ShooterVisionSetup().withTimeout(2),
+      new Shoot().withTimeout(3),
       new FiveBallAutoPathPart2().deadlineWith(new IntakeAuto(1.0)),
-      new DriveCameraAim().withTimeout(4.0),
-      new OutsideTarmacHighShotComplete()
+      //new VisionHighShotComplete(),
+      new DriveCameraAim().withTimeout(2),
+      new ShooterVisionSetup().withTimeout(2),
+      new Shoot().withTimeout(3)
     );
   }
 }

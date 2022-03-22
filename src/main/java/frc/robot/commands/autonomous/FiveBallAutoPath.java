@@ -18,9 +18,12 @@ public class FiveBallAutoPath extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new FiveBallAutoPathPart1(),
+      new WaitCommand(0.25),
       new DriveCameraAim(),
       new WaitCommand(2),
-      new FiveBallAutoPathPart2()
+      new FiveBallAutoPathPart2(),
+      new WaitCommand(0.25),
+      new DriveCameraAim()
     ); // -6.67, 0.90, -176.5
   }
 }

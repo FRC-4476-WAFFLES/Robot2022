@@ -5,23 +5,16 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.drive.DriveCameraAim;
-import frc.robot.commands.intake.IntakeAuto;
-import frc.robot.commands.intake.IntakeDeploy;
+import frc.robot.commands.shooter.Shoot;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TwoBallExtendedAutoComplete extends SequentialCommandGroup {
-  /** Creates a new TwoBallWithBallDefenceComplete. */
-  public TwoBallExtendedAutoComplete() {
+public class VisionHighShotComplete extends SequentialCommandGroup {
+  /** Creates a new VisionHighShotComplete. */
+  public VisionHighShotComplete() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-      new IntakeDeploy().withTimeout(1.0),
-      new TwoBallExtendedAutoPathPart1().deadlineWith(new IntakeAuto(1.0)),
-      new DriveCameraAim().withTimeout(4.0),
-      new VisionHighShotComplete()
-    );
+    addCommands(new VisionHighShotSetup(), new Shoot().withTimeout(3.0));
   }
 }

@@ -12,7 +12,7 @@ import frc.robot.subsystems.Camera.CameraLEDMode;
 import static frc.robot.RobotContainer.*;
 
 public class DriveCameraAim extends CommandBase {
-  PIDController turnController = new PIDController(-8.0, 0, -0.2);
+  PIDController turnController = new PIDController(-4.0, 0, -0.2);
 
   /** Creates a new DriveCameraAim. */
   public DriveCameraAim() {
@@ -22,11 +22,14 @@ public class DriveCameraAim extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    System.err.println("Drive aim supposedly commencing");
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.err.println("Drive aim supposedly executing");
     vision.setLEDMode(CameraLEDMode.On);
     turnController.setSetpoint(0);
     double turnSpeed = turnController.calculate(Math.toRadians(vision.getFilteredHorizontal()));
@@ -38,6 +41,7 @@ public class DriveCameraAim extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.err.println("Drive aim supposedly finished");
     driveSubsystem.stop();
     vision.setLEDMode(CameraLEDMode.Off);
   }

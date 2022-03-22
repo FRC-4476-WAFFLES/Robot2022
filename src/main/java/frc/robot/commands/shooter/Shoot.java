@@ -4,7 +4,6 @@
 
 package frc.robot.commands.shooter;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
@@ -23,7 +22,7 @@ public class Shoot extends CommandBase {
   @Override
   public void execute() {
     //intakeSubsystem.runIntake(1.0);
-    SmartDashboard.putString("Conveyor", "Is being told to run");
+    //SmartDashboard.putString("Conveyor", "Is being told to run");
     conveyorSubsystem.runConveyor(0.3);
   }
 
