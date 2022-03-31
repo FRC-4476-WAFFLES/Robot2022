@@ -51,18 +51,18 @@ public class ShooterVisionSetup extends CommandBase {
     } else if (timeSinceLastHasTarget.get() < 0.5) {
       if (startTimer.get() < 0.5) {
         //System.err.println("1");
-        shooterTargetRPM = 1875;
-        shooterTargetAngle = 1.0;
+        shooterTargetRPM = 2050.0;
+        shooterTargetAngle = 0.0;
       } else {
         //System.err.println("2");
-        shooterTargetRPM = 2702 - 56.7 * savedLimelightTY + 1.26 * Math.pow(savedLimelightTY, 2);
+        shooterTargetRPM = 2702 - 56.7 * savedLimelightTY + 1.26 * Math.pow(savedLimelightTY, 2); // was 2702.0 for c value, a = 1.26, b = 56.7
         shooterTargetAngle = -0.144 * savedLimelightTY + 11.82;
       }
 
     } else {
       //System.err.println("3");
-      shooterTargetRPM = 1875;
-      shooterTargetAngle = 1.0;
+      shooterTargetRPM = 2050.0;
+      shooterTargetAngle = 0.0;
     }
 
     shooterSubsystem.setShooterSpeed(shooterTargetRPM);

@@ -23,13 +23,13 @@ public class DriveCameraAim extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.err.println("Drive aim supposedly commencing");
+    //System.err.println("Drive aim supposedly commencing");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.err.println("Drive aim supposedly executing");
+    //System.err.println("Drive aim supposedly executing");
     vision.setLEDMode(CameraLEDMode.On);
     turnController.setSetpoint(0);
     double turnSpeed = turnController.calculate(Math.toRadians(vision.getFilteredHorizontal()));
@@ -41,7 +41,7 @@ public class DriveCameraAim extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.err.println("Drive aim supposedly finished");
+    //System.err.println("Drive aim supposedly finished");
     driveSubsystem.stop();
     vision.setLEDMode(CameraLEDMode.Off);
   }
@@ -49,6 +49,6 @@ public class DriveCameraAim extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(vision.getHorizontal()) < 2.0 && vision.getHasTarget();
+    return Math.abs(vision.getHorizontal()) < 1.0 && vision.getHasTarget();
   }
 }

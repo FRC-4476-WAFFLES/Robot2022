@@ -37,7 +37,7 @@ public class FiveBallAutoPathPart1 extends SequentialCommandGroup {
         new SwervePath(-0.3, 2.05, -88, -88)
         .waypoint(-1.0, 1.3, -160)
         .waypoint(-2.30, 0.9, -160)
-        .finish(-3.5, 0.7, -160, -160, 3.0)
+        .finish(-4.2, 0.7, -155, -155, 3.0)
       )
     );
   }

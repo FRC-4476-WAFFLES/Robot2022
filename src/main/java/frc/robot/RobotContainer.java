@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import javax.tools.Diagnostic;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -25,6 +27,7 @@ import frc.robot.commands.autonomous.ThreeBallAutoComplete;
 import frc.robot.commands.autonomous.TwoBallAutoPath;
 import frc.robot.commands.autonomous.TwoBallExtendedAutoComplete;
 import frc.robot.commands.climber.ClimberAnalogStickControl;
+import frc.robot.commands.colourStuff.SetColourBasedOnRobotState;
 import frc.robot.commands.drive.DriveCameraAim;
 import frc.robot.commands.drive.DriveResetGyro;
 import frc.robot.commands.drive.DriveTeleop;
@@ -38,6 +41,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ConveyorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LightController;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.triggers.ShooterReadyTrigger;
 
@@ -60,10 +64,13 @@ public class RobotContainer {
   public static final XboxController operate = new XboxController(2);
   public static final Camera vision = new Camera();
 
+  public static final LightController lightController = new LightController();
+
   private final DriveTeleop swerve = new DriveTeleop();
   private final ShooterStop shooterStop = new ShooterStop();
   private final IntakeTeleop intakeTeleop = new IntakeTeleop();
   private final ClimberAnalogStickControl climberAnalogStickControl = new ClimberAnalogStickControl();
+  private final SetColourBasedOnRobotState autoUpdateColour = new SetColourBasedOnRobotState();
   
   private final FenderHighShotComplete autoShot = new FenderHighShotComplete();
   private final TwoBallAutoPath twoBallAutoPath = new TwoBallAutoPath();
@@ -84,6 +91,7 @@ public class RobotContainer {
     conveyorSubsystem.setDefaultCommand(intakeTeleop);
     shooterSubsystem.setDefaultCommand(shooterStop);
     climberSubsystem.setDefaultCommand(climberAnalogStickControl);
+    lightController.setDefaultCommand(autoUpdateColour);
     CommandScheduler.getInstance().registerSubsystem(vision);
 
     // Configure the button bindings

@@ -259,6 +259,12 @@ public class ShooterSubsystem extends SubsystemBase {
     return targetAngle;
   }
 
+  public boolean getIsReady() {
+    return Math.abs(getShooterTargetRPM() - getShooterRPM()) <= ShooterConstants.RPMTolerance 
+    && Math.abs(getHoodMotorPosition() - getHoodMotorTargetPosition()) <= ShooterConstants.angleTolerance
+    && Math.abs(getShooterRPM()) >= 1000;
+  }
+
   private double rpmToTicksPer100ms(double rpm) {
     return rpm * 2048.0 / 600.0;
   }

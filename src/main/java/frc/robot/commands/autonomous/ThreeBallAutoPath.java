@@ -29,12 +29,12 @@ public class ThreeBallAutoPath extends SequentialCommandGroup {
       new DriveAuto(
         new SwervePath(-0.3, 2.05, -88, -88)
         .waypoint(-1.0, 1.3, -160)
-        .finish(-2.27, 0.7, -160, -160, 3.0)
+        .finish(-2.4, 0.7, -160, -160, 3.0)
       ),
 
       // Get to shooting location
       new DriveAuto(
-        new SwervePath(-2.27, 0.7, -160, -160 + 180)
+        new SwervePath(-2.4, 0.7, -160, -160 + 180)
         .waypoint(-1.0, 1.0, -110)
         .finish(0, 0, -110, -110, 3.0)));
   }

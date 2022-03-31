@@ -23,7 +23,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private final TalonFX climbPivotLeft = new TalonFX(Constants.climbPivotLeft);
   private final TalonFX climbPivotRight = new TalonFX(Constants.climbPivotRight);
 
-  private final int telHookMaxExt = 260000;
+  private final int telHookMaxExt = 270000;
   private final int telHookMinExt = -6000;
   private final int telHookAboveBar = 60000;
   private final int telHookPulledOffBar = 160000;

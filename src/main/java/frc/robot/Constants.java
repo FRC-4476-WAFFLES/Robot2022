@@ -20,10 +20,7 @@ import edu.wpi.first.wpilibj.SPI;
 public final class Constants {
     // TODO: set ports of all motors and actuators
     // PWM
-    public static final int shooterHoodAngle1 = 0; // am-3517 Linear Servo
-    public static final int shooterHoodAngle2 = 1; // am-3517 Linear Servo
-    // See https://andymark-weblinc.netdna-ssl.com/media/W1siZiIsIjIwMTkvMDMvMjIvMTAvMjcvNTgvMDMxOTQ4ODUtYmM5Yi00M2UyLWE1NDAtZGNiMWVhNzEzMDEzL1VzaW5nIEwxNiBMaW5lYXIgU2Vydm8gMDMtMjAxOS5wZGYiXV0/Using%20L16%20Linear%20Servo%2003-2019.pdf?sha=ee4c9607408cc835
-    // for information on calibrating the linear servos
+    public static final int lightsBlinkin = 0; // Blinkin for controlling aRGB lights
 
     // CAN bus
     public static final int swerveModule1Angle = 6; // FX Front Left 2
@@ -101,7 +98,7 @@ public final class Constants {
 
         public static final double maxAttainableSpeedMetersPerSecond = 4.1;
         public static final double maxAttainableRotationRateRadiansPerSecond = 8.0;
-        public static final double maxAccelerationMetersPerSecondSquared = 2.8;
+        public static final double maxAccelerationMetersPerSecondSquared = 2.9;
 
         // The number of ticks of the motor's built-in encoder per revolution of the steering module
         public final double ticksPerSteeringRevolution = 26214.4;
