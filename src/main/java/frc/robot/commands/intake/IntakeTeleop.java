@@ -22,40 +22,18 @@ public class IntakeTeleop extends CommandBase {
   @Override
   public void execute() {
     double power = -operate.getLeftTriggerAxis() + operate.getRightTriggerAxis();
-    if (Math.abs(power) >= 0.01 && !conveyorSubsystem.getHighIR()) {
-      // for testing
-      // conveyorSubsystem.runConveyor(Math.min(power, 0.2)); 
-      // intakeSubsystem.runIntake(power);
-      // if (Math.abs(power) >= 0.01) {
-      //   intakeSubsystem.deployIntake();
-      //   conveyorSubsystem.runConveyor(Math.min(power, 0.2));
-      //   intakeSubsystem.runIntake(power);
-      // }else{
-      //   intakeSubsystem.retractIntake();
-      //   intakeSubsystem.runIntake(0.0);
-      //   conveyorSubsystem.runConveyor(0.0);
-      // }
-      
-      intakeSubsystem.deployIntake();
-
-      if (power > 0) {
-        if (conveyorSubsystem.shouldRun()) {
-          conveyorSubsystem.runConveyor(Math.min(power, 0.2));
-        } else {
-          conveyorSubsystem.stopConveyor();
-        }
+    if (power > 0) {
+      if (conveyorSubsystem.shouldRun()) {
+        conveyorSubsystem.runConveyor(Math.min(power, 0.2));
       } else {
-        conveyorSubsystem.runConveyor(power);
-        shooterSubsystem.setKickerSpeed(power);
+        conveyorSubsystem.stopConveyor();
       }
-      
-      intakeSubsystem.runIntake(power);
-      
     } else {
-      intakeSubsystem.retractIntake();
-      intakeSubsystem.runIntake(0.0);
-      conveyorSubsystem.runConveyor(0.0);
+      conveyorSubsystem.runConveyor(power);
+      shooterSubsystem.setKickerSpeed(power);
     }
+    
+    intakeSubsystem.runIntake(power);
   }
 
   // Called once the command ends or is interrupted.

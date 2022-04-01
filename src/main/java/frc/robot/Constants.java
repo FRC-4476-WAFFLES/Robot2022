@@ -45,7 +45,6 @@ public final class Constants {
     public static final int climbRight = 15; // FX
     public static final int climbPivotLeft = 19; // FX
     public static final int climbPivotRight = 20; // FX
-    public static final int shooterAngle = 21; // Spark Max
 
     // I2C Bus
     public static final int MPUAddress = 0x68;
@@ -140,25 +139,15 @@ public final class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final double shooterkP = 0.05;
-        public static final double shooterkI = 0.0;
-        public static final double shooterkD = 0.0;
-        public static final double shooterkF = 0.0505; //0.053
+        public final double kP = 0.05;
+        public final double kI = 0.0;
+        public final double kD = 0.0;
         // public final double kF = 1023.0/20660.0; // kF: 1023 represents output value to Talon at 100%, 20660 represents Velocity units at 100% output
         // 1023.0/20660.0 = 0.04951597
-        
-        public static final double anglekP = 0.5;
-        public static final double anglekI = 0.0;
-        public static final double anglekD = 0.0;
-        public static final double anglekF = 0.0;
+        public final double kF = 0.0505; //0.053
+        public final int kIzone = 300;
+        public final double kPeakOutput = 1.00;
 
-        public static final double RPMTolerance = 75;
-        public static final double angleTolerance = 1;
-
-        //TODO: change following variables to reflect actual design
-        public static final double minAngle = 10;
-        public static final double maxAngle = 30;
-
-        public static final double motorRotationsToHoodDegreesMoved = 5.0;
+        public final static double RPMTolerance = 75;
     }
 }

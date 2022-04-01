@@ -129,10 +129,6 @@ public class DriveSubsystem extends SubsystemBase {
       odometry.getPoseMeters().getRotation());
   }
 
-  public Rotation2d getOdometryHeading() {
-    return odometry.getPoseMeters().getRotation();
-  }
-
   /** Stop all motors from running. */
   public void stop() {
     for (SwerveModule module : modules) {

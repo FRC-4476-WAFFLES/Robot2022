@@ -12,15 +12,9 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -30,28 +24,26 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterLeader = new TalonFX(Constants.shooterSpinLeft);
   private final TalonFX shooterFollower = new TalonFX(Constants.shooterSpinRight);
   private final TalonSRX kickerWheel = new TalonSRX(Constants.kickerWheelSpin);
-  private final CANSparkMax hoodMotor = new CANSparkMax(Constants.shooterAngle, MotorType.kBrushless);
+  private final Servo angleLeft = new Servo(1);
+  private final Servo angleRight = new Servo(0);
+  
+  ShooterConstants shooterConstants = new ShooterConstants();
 
-  private final SparkMaxPIDController hoodPIDController = hoodMotor.getPIDController();
-  private final RelativeEncoder hoodEncoder = hoodMotor.getEncoder(Type.kHallSensor, 42);
-
-  private final LinearFilter shooterRPMFilter = LinearFilter.movingAverage(10);
+  private final LinearFilter shooterRPMFilter = LinearFilter.movingAverage(30);
 
   private double filteredShooterRPM = 0;
 
-  private double shooterkP = ShooterConstants.shooterkP;
-  private double shooterkI = ShooterConstants.shooterkI;
-  private double shooterkD = ShooterConstants.shooterkD;
-  private double shooterkF = ShooterConstants.shooterkF;
-
-  private double anglekP = ShooterConstants.anglekP;
-  private double anglekI = ShooterConstants.anglekI;
-  private double anglekD = ShooterConstants.anglekD;
-  private double anglekF = ShooterConstants.anglekF;
+  private double kP = shooterConstants.kP;
+  private double kI = shooterConstants.kI;
+  private double kD = shooterConstants.kD;
+  private double kF = shooterConstants.kF;
+  private double kIzone = shooterConstants.kIzone;
 
   private double shooterTargetRPM = 0;
+  private double shooterTargetAngle = 0;
   private double kickerTargetSpeed = 0;
-  private double targetAngle = 0;
+
+  private double angleOffset = -0.03;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -65,10 +57,15 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterLeader.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     shooterLeader.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_50Ms);
     shooterLeader.configVelocityMeasurementWindow(4);
-    shooterLeader.config_kP(0, shooterkP);
-    shooterLeader.config_kI(0, shooterkI);
-    shooterLeader.config_kD(0, shooterkD);
-    shooterLeader.config_kF(0, shooterkF);
+    shooterLeader.configNominalOutputForward(0);
+    shooterLeader.configNominalOutputReverse(0);
+    shooterLeader.configPeakOutputForward(1);
+    shooterLeader.configPeakOutputReverse(-1);
+    shooterLeader.config_kP(0, kP);
+    shooterLeader.config_kI(0, kI);
+    shooterLeader.config_kD(0, kD);
+    shooterLeader.config_kF(0, kF);
+    shooterLeader.config_IntegralZone(0, kIzone);
     shooterLeader.configVoltageCompSaturation(12);
     shooterLeader.enableVoltageCompensation(true);
     shooterLeader.setNeutralMode(NeutralMode.Coast);
@@ -80,31 +77,17 @@ public class ShooterSubsystem extends SubsystemBase {
     kickerWheel.enableCurrentLimit(true);
     kickerWheel.setNeutralMode(NeutralMode.Brake);
 
-    hoodMotor.restoreFactoryDefaults();
-    hoodMotor.setSmartCurrentLimit(20);
-    hoodMotor.setIdleMode(IdleMode.kBrake);
-
-    hoodEncoder.setPosition(0);
-
-    hoodPIDController.setP(anglekP);
-    hoodPIDController.setI(anglekI);
-    hoodPIDController.setD(anglekD);
-    hoodPIDController.setFF(anglekF);
-
+    angleLeft.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
+    angleRight.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
     SmartDashboard.setDefaultNumber("Set Shooter Target Angle", -1.0);
     SmartDashboard.setDefaultNumber("Set Shooter Target RPM", 0);
     SmartDashboard.setDefaultNumber("Set Kicker Wheel Target Speed", 0);
     SmartDashboard.setDefaultNumber("Set Shooter Angle Offset", 0);
 
-    SmartDashboard.setDefaultNumber("Shooter kP", shooterkP);
-    SmartDashboard.setDefaultNumber("Shooter kI", shooterkI);
-    SmartDashboard.setDefaultNumber("Shooter kD", shooterkD);
-    SmartDashboard.setDefaultNumber("Shooter kF", shooterkF);
-
-    SmartDashboard.setDefaultNumber("Shooter Angle kP", anglekP);
-    SmartDashboard.setDefaultNumber("Shooter Angle kI", anglekI);
-    SmartDashboard.setDefaultNumber("Shooter Angle kD", anglekD);
-    SmartDashboard.setDefaultNumber("Shooter Angle kF", anglekF);
+    SmartDashboard.setDefaultNumber("Shooter kP", kP);
+    SmartDashboard.setDefaultNumber("Shooter kI", kI);
+    SmartDashboard.setDefaultNumber("Shooter kD", kD);
+    SmartDashboard.setDefaultNumber("Shooter kF", kF);
   }
 
   @Override
@@ -113,20 +96,15 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Current RPM", ticksPer100msToRPM(shooterLeader.getSelectedSensorVelocity()));
     SmartDashboard.putNumber("Shooter Raw Velocity", shooterLeader.getSelectedSensorVelocity());
     SmartDashboard.putNumber("Shooter Target RPM", shooterTargetRPM);
-    SmartDashboard.putNumber("Shooter Target Angle", targetAngle);
+    SmartDashboard.putNumber("Shooter Target Angle", shooterTargetAngle);
+    SmartDashboard.putNumber("Shooter Target Angle Offset", angleOffset);
 
-    double shooterP = SmartDashboard.getNumber("Shooter kP", 0);
-    double shooterI = SmartDashboard.getNumber("Shooter kI", 0);
-    double shooterD = SmartDashboard.getNumber("Shooter kD", 0);
-    double ShooterF = SmartDashboard.getNumber("Shooter kF", 0);
+    double p = SmartDashboard.getNumber("Shooter kP", 0);
+    double i = SmartDashboard.getNumber("Shooter kI", 0);
+    double d = SmartDashboard.getNumber("Shooter kD", 0);
+    double f = SmartDashboard.getNumber("Shooter kF", 0);
 
-    double angleP = SmartDashboard.getNumber("Shooter Angle kP", 0);
-    double angleI = SmartDashboard.getNumber("Shooter Angle kI", 0);
-    double angleD = SmartDashboard.getNumber("Shooter Angle kD", 0);
-    double angleF = SmartDashboard.getNumber("Shooter Angle kF", 0);
-
-    updateShooterPID(shooterP, shooterI, shooterD, ShooterF);
-    updateAnglePID(angleP, angleI, angleD, angleF);
+    updateShooterPID(p, i, d, f);
 
     filteredShooterRPM = shooterRPMFilter.calculate(getShooterRPM());
   }
@@ -136,13 +114,6 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterLeader.config_kI(0, kI);
     shooterLeader.config_kD(0, kD);
     shooterLeader.config_kF(0, kF);
-  }
-
-  public void updateAnglePID(double kP, double kI, double kD, double kF) {
-    hoodPIDController.setP(kP);
-    hoodPIDController.setI(kI);
-    hoodPIDController.setD(kD);
-    hoodPIDController.setFF(kF);
   }
 
   public void setKickerSpeed(double target) {
@@ -157,14 +128,18 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setHoodAngle(double target) {
-    targetAngle = target = clamp(target, ShooterConstants.minAngle, ShooterConstants.maxAngle);
-    hoodPIDController.setReference(hoodAngleDegreesToRotations(target), ControlType.kPosition);
+    target = clamp(target, -1.0, 1.0 - angleOffset);
+    angleLeft.setSpeed(target);
+    angleRight.setSpeed(target + angleOffset);
   }
+/*
+  public void setHoodAngleOffset(double target) {
+    angleOffset = target;
+  }*/
 
   public void stop() {
     shooterLeader.set(ControlMode.PercentOutput, 0);
     kickerWheel.set(ControlMode.PercentOutput, 0);
-    hoodMotor.stopMotor();
   }
 
   public void driverStationShooterRPM() {
@@ -173,14 +148,18 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void driverStationAngleControl() {
-    targetAngle = SmartDashboard.getNumber("Set Shooter Target Angle", 0);
-    setHoodAngle(targetAngle);
+    shooterTargetAngle = SmartDashboard.getNumber("Set Shooter Target Angle", 0);
+    setHoodAngle(shooterTargetAngle);
   }
 
   public void driverStationKickerWheelControl() {
     kickerTargetSpeed = SmartDashboard.getNumber("Set Kicker Wheel Target Speed", 0);
     setKickerSpeed(kickerTargetSpeed);
   }
+/*
+  public void driverStationAngleOffsetControl() {
+    angleOffset = SmartDashboard.getNumber("Set Shooter Angle Offset", 0);
+  }*/
 
   public double getShooterRPM() {
     return ticksPer100msToRPM(shooterLeader.getSelectedSensorVelocity());
@@ -194,28 +173,12 @@ public class ShooterSubsystem extends SubsystemBase {
     return shooterTargetRPM;
   }
 
-  public double getHoodAngleDegrees() {
-    return rotationsToHoodAngleDegrees(hoodEncoder.getPosition());
-  }
-
-  public double getHoodTargetAngleDegrees() {
-    return targetAngle;
-  }
-
   private double rpmToTicksPer100ms(double rpm) {
     return rpm * 2048.0 / 600.0;
   }
 
   private double ticksPer100msToRPM(double unitsPer100ms) {
     return unitsPer100ms * 600.0 / 2048.0;
-  }
-
-  private double rotationsToHoodAngleDegrees(double motorRotations) {
-    return motorRotations * ShooterConstants.motorRotationsToHoodDegreesMoved + ShooterConstants.minAngle;
-  }
-
-  private double hoodAngleDegreesToRotations(double hoodAngleDegrees) {
-    return (hoodAngleDegrees - ShooterConstants.minAngle) / ShooterConstants.motorRotationsToHoodDegreesMoved;
   }
 
   private double clamp(double value, double min, double max) {
@@ -225,3 +188,12 @@ public class ShooterSubsystem extends SubsystemBase {
     return Math.min(value, max);
   }
 }
+
+/*
+Equation for shooter RPM given target area gotten from limelight:
+2655 + -1379x + 866x^2
+Where x is ta from limelight and output is shooter RPM
+
+Equation for shooter servo position given area gotten from limelight:
+0.418 + -1.77x + 0.85x^2
+*/

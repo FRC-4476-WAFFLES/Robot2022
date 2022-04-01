@@ -61,8 +61,8 @@ public class IntakeSubsystem extends SubsystemBase {
     kD = 0; 
     kIz = 0; 
     kFF = 0; 
-    kMaxOutput = 0.35; 
-    kMinOutput = -0.35;
+    kMaxOutput = 0.25; 
+    kMinOutput = -0.25;
 
     // set PID coefficients
     leftPIDController.setP(kP);
