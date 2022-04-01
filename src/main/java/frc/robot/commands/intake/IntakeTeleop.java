@@ -21,19 +21,45 @@ public class IntakeTeleop extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
     double power = -operate.getLeftTriggerAxis() + operate.getRightTriggerAxis();
-    if (power > 0) {
+    if (power >= 0.01 && !conveyorSubsystem.getHighIR()) {
+      // for testing
+      // conveyorSubsystem.runConveyor(Math.min(power, 0.2)); 
+      // intakeSubsystem.runIntake(power);
+      // if (Math.abs(power) >= 0.01) {
+      //   intakeSubsystem.deployIntake();
+      //   conveyorSubsystem.runConveyor(Math.min(power, 0.2));
+      //   intakeSubsystem.runIntake(power);
+      // }else{
+      //   intakeSubsystem.retractIntake();
+      //   intakeSubsystem.runIntake(0.0);
+      //   conveyorSubsystem.runConveyor(0.0);
+      // }
+      
+      intakeSubsystem.deployIntake();
+    
       if (conveyorSubsystem.shouldRun()) {
-        conveyorSubsystem.runConveyor(Math.min(power, 0.2));
+        conveyorSubsystem.runConveyor(Math.min(power, 0.25));
       } else {
         conveyorSubsystem.stopConveyor();
       }
-    } else {
+      
+      intakeSubsystem.runIntake(power);
+      shooterSubsystem.setKickerSpeed(0.0);
+
+    } else if (power <= 0.01) {
+      intakeSubsystem.runIntake(0.0);
       conveyorSubsystem.runConveyor(power);
+      intakeSubsystem.retractIntake();
       shooterSubsystem.setKickerSpeed(power);
+
+    } else {
+      intakeSubsystem.retractIntake();
+      intakeSubsystem.runIntake(0.0);
+      conveyorSubsystem.runConveyor(0.0);
+      shooterSubsystem.setKickerSpeed(0.0);
     }
-    
-    intakeSubsystem.runIntake(power);
   }
 
   // Called once the command ends or is interrupted.

@@ -34,6 +34,8 @@ public class ConveyorSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Low IR", getLowIR());
     SmartDashboard.putBoolean("Low IR Stored State", lowIRPreviousState);
 
+    SmartDashboard.putNumber("Conveyor Encoder Position", conveyorSpin.getEncoder().getPosition());
+
     if (getLowIR()) {
       lowIRPreviousState = true;
     }
@@ -44,10 +46,13 @@ public class ConveyorSubsystem extends SubsystemBase {
   }
 
   public void runConveyor(double power) {
+    SmartDashboard.putNumber("Conveyor Power", power);
+    //System.err.println("Conveyor is being told to run at power " + String.valueOf(power));
     conveyorSpin.set(power);
   }
 
   public void stopConveyor() {
+    //System.err.println("Conveyor is being told to stop");
     conveyorSpin.set(0);
   }
 

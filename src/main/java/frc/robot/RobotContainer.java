@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import javax.tools.Diagnostic;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -11,21 +13,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autonomous.ThreeBallAutoPath;
 import frc.robot.commands.autonomous.TwoBallAutoComplete;
 import frc.robot.commands.autonomous.FenderHighShotComplete;
+import frc.robot.commands.autonomous.FenderHighShotSetup;
+import frc.robot.commands.autonomous.FiveBallAutoComplete;
 import frc.robot.commands.autonomous.ResetToRightAutoStartingPosition;
 import frc.robot.commands.autonomous.FiveBallAutoPath;
 import frc.robot.commands.autonomous.ThreeBallAutoComplete;
 import frc.robot.commands.autonomous.TwoBallAutoPath;
+import frc.robot.commands.autonomous.TwoBallExtendedAutoComplete;
 import frc.robot.commands.climber.ClimberAnalogStickControl;
+import frc.robot.commands.colourStuff.SetColourBasedOnRobotState;
 import frc.robot.commands.drive.DriveCameraAim;
 import frc.robot.commands.drive.DriveResetGyro;
 import frc.robot.commands.drive.DriveTeleop;
-import frc.robot.commands.intake.IntakeRetract;
-import frc.robot.commands.intake.IntakeDeploy;
 import frc.robot.commands.intake.IntakeTeleop;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.ShooterDriverStationControl;
@@ -36,6 +41,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ConveyorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LightController;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.triggers.ShooterReadyTrigger;
 
@@ -58,10 +64,13 @@ public class RobotContainer {
   public static final XboxController operate = new XboxController(2);
   public static final Camera vision = new Camera();
 
+  public static final LightController lightController = new LightController();
+
   private final DriveTeleop swerve = new DriveTeleop();
   private final ShooterStop shooterStop = new ShooterStop();
   private final IntakeTeleop intakeTeleop = new IntakeTeleop();
   private final ClimberAnalogStickControl climberAnalogStickControl = new ClimberAnalogStickControl();
+  private final SetColourBasedOnRobotState autoUpdateColour = new SetColourBasedOnRobotState();
   
   private final FenderHighShotComplete autoShot = new FenderHighShotComplete();
   private final TwoBallAutoPath twoBallAutoPath = new TwoBallAutoPath();
@@ -69,7 +78,9 @@ public class RobotContainer {
   private final FiveBallAutoPath fiveBallAutoPath = new FiveBallAutoPath();
   private final TwoBallAutoComplete twoBallAutoComplete = new TwoBallAutoComplete();
   private final ThreeBallAutoComplete threeBallAutoComplete = new ThreeBallAutoComplete();
+  private final FiveBallAutoComplete fiveBallAutoComplete = new FiveBallAutoComplete();
   private final ResetToRightAutoStartingPosition resetToAutoStartingPosition = new ResetToRightAutoStartingPosition();
+  private final TwoBallExtendedAutoComplete twoBallExtendedAutoComplete = new TwoBallExtendedAutoComplete();
   
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
@@ -80,6 +91,7 @@ public class RobotContainer {
     conveyorSubsystem.setDefaultCommand(intakeTeleop);
     shooterSubsystem.setDefaultCommand(shooterStop);
     climberSubsystem.setDefaultCommand(climberAnalogStickControl);
+    lightController.setDefaultCommand(autoUpdateColour);
     CommandScheduler.getInstance().registerSubsystem(vision);
 
     // Configure the button bindings
@@ -92,7 +104,9 @@ public class RobotContainer {
     autoChooser.addOption("5 Ball Auto Path", fiveBallAutoPath);
     autoChooser.addOption("2 Ball Auto Complete", twoBallAutoComplete);
     autoChooser.addOption("3 Ball Auto Complete", threeBallAutoComplete);
+    autoChooser.addOption("5 Ball Auto Complete", fiveBallAutoComplete);
     autoChooser.addOption("Reset Right Fender", resetToAutoStartingPosition);
+    autoChooser.addOption("2 Ball Extended Auto Complete", twoBallExtendedAutoComplete);
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     vision.setProcesingMode(Camera.ProcessingMode.Vision);
@@ -119,9 +133,9 @@ public class RobotContainer {
 
     final var povUp = new POVButton(operate, 0);
     //final var povRight = new POVButton(operate, 90);
-    //final var povDown = new POVButton(operate, 180);
+    final var povDown = new POVButton(operate, 180);
 
-    final var rightJoystickButton3 = new JoystickButton(rightJoystick, 3);
+    final var rightJoystickButton1 = new JoystickButton(rightJoystick, 1);
     final var rightJoystickButton7 = new JoystickButton(rightJoystick, 7);
     final var rightJoystickButton10 = new JoystickButton(rightJoystick, 10);
 
@@ -132,19 +146,23 @@ public class RobotContainer {
     x.whenPressed(new IntakeDeploy());
     y.whenPressed(new IntakeRetract());*/
 
-    a.whenPressed(new IntakeDeploy());
-    b.whenPressed(new IntakeRetract());
+    //a.whenPressed(new IntakeDeploy());
+    //b.whenPressed(new IntakeRetract());
+    a.whenPressed(new InstantCommand(climberSubsystem::nextSetpoint));
+    b.whenPressed(new InstantCommand(climberSubsystem::previousSetpoint));
 
-    povUp.toggleWhenPressed(new ShooterVisionSetup().perpetually());
-    //x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
-    x.whileActiveContinuous(new Shoot().perpetually());
+    povUp.whileActiveContinuous(new ShooterVisionSetup().perpetually());
+    povDown.whileActiveContinuous(new FenderHighShotSetup().perpetually());
+    
+    x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
+    //x.whileActiveContinuous(new Shoot().perpetually());
     back.toggleWhenPressed(new ShooterDriverStationControl());
 
     //rightJoystickButton3.whileHeld(new DriveCameraAim()).or(povUp).toggleWhenActive(new ShooterVisionSetup().perpetually());
 
-    rightJoystickButton3.whileHeld(new DriveCameraAim());
+    rightJoystickButton1.whileHeld(new DriveCameraAim().perpetually());
     
-    rightJoystickButton7.and(rightJoystickButton10).debounce(0.1).whenActive(new DriveResetGyro());
+    rightJoystickButton7.and(rightJoystickButton10).debounce(0.1).whenActive(new DriveResetGyro().alongWith(new InstantCommand(driveSubsystem::resetSteerEncoders)));
   }
 
   /**

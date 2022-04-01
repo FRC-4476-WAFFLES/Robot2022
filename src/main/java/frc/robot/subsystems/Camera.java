@@ -38,10 +38,12 @@ public class Camera extends SubsystemBase {
   //LinearFilter linearFilter = new LinearFilter(1, 2);
 
   private final LinearFilter taFilter = LinearFilter.movingAverage(100);
-  private final LinearFilter txFilter = LinearFilter.movingAverage(20);
+  private final LinearFilter txFilter = LinearFilter.movingAverage(10);
+  private final LinearFilter tyFilter = LinearFilter.movingAverage(20);
 
   private double taFiltered = 0;
   private double txFiltered = 0;
+  private double tyFiltered = 0;
 
   /**
    * Creates a new CameraSubsystem.
@@ -55,10 +57,12 @@ public class Camera extends SubsystemBase {
     super.periodic();
     taFiltered = taFilter.calculate(getArea());
     txFiltered = txFilter.calculate(getHorizontal());
+    tyFiltered = tyFilter.calculate(getVertical());
     // camera.getEntry("ledMode").setNumber(ledMode.ordinal());
     // camera.getEntry("camMode").setNumber(1);
     SmartDashboard.putBoolean("Camera has target", getHasTarget());
     SmartDashboard.putNumber("Camera tx", getHorizontal());
+    SmartDashboard.putNumber("Camera ty", getVertical());
   }
 
   public void setLEDMode(CameraLEDMode mode) {
@@ -93,6 +97,10 @@ public class Camera extends SubsystemBase {
     // ty: Vertical Offset From Crosshair To Target (LL1: -20.5 degrees to 20.5
     // degrees | LL2: -24.85 to 24.85 degrees)
     return camera.getEntry("ty").getDouble(0);
+  }
+
+  public double getFilteredVertical() {
+    return tyFiltered;
   }
 
   public double getArea() {

@@ -5,25 +5,23 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.drive.DriveCameraAim;
+import frc.robot.commands.intake.IntakeAuto;
+import frc.robot.commands.intake.IntakeDeploy;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class FiveBallAutoPath extends SequentialCommandGroup {
-  /** Creates a new TheAutoToRuleAllAutos. */
-  public FiveBallAutoPath() {
+public class TwoBallExtendedAutoComplete extends SequentialCommandGroup {
+  /** Creates a new TwoBallWithBallDefenceComplete. */
+  public TwoBallExtendedAutoComplete() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new FiveBallAutoPathPart1(),
-      new WaitCommand(0.25),
-      new DriveCameraAim(),
-      new WaitCommand(2),
-      new FiveBallAutoPathPart2(),
-      new WaitCommand(0.25),
-      new DriveCameraAim()
-    ); // -6.67, 0.90, -176.5
+      new IntakeDeploy().withTimeout(1.0),
+      new TwoBallExtendedAutoPathPart1().deadlineWith(new IntakeAuto(1.0)),
+      new DriveCameraAim().withTimeout(4.0),
+      new VisionHighShotComplete()
+    );
   }
 }

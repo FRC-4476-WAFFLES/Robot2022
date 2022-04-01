@@ -20,10 +20,7 @@ import edu.wpi.first.wpilibj.SPI;
 public final class Constants {
     // TODO: set ports of all motors and actuators
     // PWM
-    public static final int shooterHoodAngle1 = 0; // am-3517 Linear Servo
-    public static final int shooterHoodAngle2 = 1; // am-3517 Linear Servo
-    // See https://andymark-weblinc.netdna-ssl.com/media/W1siZiIsIjIwMTkvMDMvMjIvMTAvMjcvNTgvMDMxOTQ4ODUtYmM5Yi00M2UyLWE1NDAtZGNiMWVhNzEzMDEzL1VzaW5nIEwxNiBMaW5lYXIgU2Vydm8gMDMtMjAxOS5wZGYiXV0/Using%20L16%20Linear%20Servo%2003-2019.pdf?sha=ee4c9607408cc835
-    // for information on calibrating the linear servos
+    public static final int lightsBlinkin = 0; // Blinkin for controlling aRGB lights
 
     // CAN bus
     public static final int swerveModule1Angle = 6; // FX Front Left 2
@@ -45,6 +42,7 @@ public final class Constants {
     public static final int climbRight = 15; // FX
     public static final int climbPivotLeft = 19; // FX
     public static final int climbPivotRight = 20; // FX
+    public static final int shooterAngle = 60; // Spark Max
 
     // I2C Bus
     public static final int MPUAddress = 0x68;
@@ -98,9 +96,9 @@ public final class Constants {
         
         public final double metersPerSecondToTicksPer100ms = CPR * driveOverallRatio / wheelCircumfrence / 10.0;
 
-        public static final double maxAttainableSpeedMetersPerSecond = 4.0;
+        public static final double maxAttainableSpeedMetersPerSecond = 4.1;
         public static final double maxAttainableRotationRateRadiansPerSecond = 8.0;
-        public static final double maxAccelerationMetersPerSecondSquared = 2.2;
+        public static final double maxAccelerationMetersPerSecondSquared = 2.9;
 
         // The number of ticks of the motor's built-in encoder per revolution of the steering module
         public final double ticksPerSteeringRevolution = 26214.4;
@@ -139,15 +137,27 @@ public final class Constants {
     }
 
     public static final class ShooterConstants {
-        public final double kP = 0.05;
-        public final double kI = 0.0;
-        public final double kD = 0.0;
+        public static final double shooterkP = 0.05;
+        public static final double shooterkI = 0.0;
+        public static final double shooterkD = 0.0;
+        public static final double shooterkF = 0.0505; //0.053
         // public final double kF = 1023.0/20660.0; // kF: 1023 represents output value to Talon at 100%, 20660 represents Velocity units at 100% output
         // 1023.0/20660.0 = 0.04951597
-        public final double kF = 0.0505; //0.053
-        public final int kIzone = 300;
-        public final double kPeakOutput = 1.00;
+        
+        public static final double anglekP = 20.0;
+        public static final double anglekI = 0.0;
+        public static final double anglekD = 0.0;
+        public static final double anglekF = 0.0;
 
-        public final static double RPMTolerance = 75;
+        public static final double RPMTolerance = 75;
+        public static final double angleTolerance = 0.25;
+
+        //TODO: change following variables to reflect actual design
+        public static final double minAngle = 10;
+        public static final double maxAngle = 30;
+
+        public static final double stage1AngleRatio = 12/24;
+        public static final double stage2AngleRatio = 20/432;
+        public static final double motorRotationsToHoodDegreesMoved = 1 / (stage1AngleRatio * stage2AngleRatio * 360);
     }
 }

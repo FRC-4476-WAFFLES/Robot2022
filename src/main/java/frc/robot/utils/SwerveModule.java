@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 
@@ -56,15 +57,18 @@ public class SwerveModule {
         driveMotor.setNeutralMode(NeutralMode.Brake);
         angleMotor.setNeutralMode(NeutralMode.Brake);
 
+        driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100, 100);
+        angleMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100, 100);
+
         angleMotor.config_kP(0, 0.07);
         angleMotor.config_kI(0, 0);
         angleMotor.config_kD(0, 0.2);
         angleMotor.configNeutralDeadband(0.02);
 
-        driveMotor.config_kP(0, 0.1);
-        driveMotor.config_kI(0, 0);
-        driveMotor.config_kD(0, 0.1);
-        driveMotor.config_kF(0, 0);
+        driveMotor.config_kP(0, 0.1); // 0.1
+        driveMotor.config_kI(0, 0); // 0
+        driveMotor.config_kD(0, 0.1); // 0.1
+        driveMotor.config_kF(0, 0.1); // 0
 
         angleEncoder.setDistancePerRotation(360);
         angleMotor.setSelectedSensorPosition((angleEncoder.getDistance() - constants.calibration) * constants.steeringDegreesToTicks); 
@@ -96,6 +100,10 @@ public class SwerveModule {
         angleMotor.set(ControlMode.Position, targetAngle * constants.steeringDegreesToTicks);
         driveMotor.set(ControlMode.Velocity, optimizedState.speedMetersPerSecond * constants.metersPerSecondToTicksPer100ms - velocityOffset);
         //driveMotor.set(ControlMode.Velocity, -velocityOffset);
+    }
+
+    public void resetSteerEncoder() {
+        angleMotor.setSelectedSensorPosition((angleEncoder.getDistance() - constants.calibration) * constants.steeringDegreesToTicks);
     }
 
     /**

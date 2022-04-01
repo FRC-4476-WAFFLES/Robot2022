@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -37,18 +39,23 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     intakeSpin.configFactoryDefault();
-    intakeSpin.configContinuousCurrentLimit(20);
-    intakeSpin.configPeakCurrentLimit(20);
+    intakeSpin.configContinuousCurrentLimit(15);
+    intakeSpin.configPeakCurrentLimit(15);
     intakeSpin.enableCurrentLimit(true);
-    intakeSpin.setInverted(true);
+    intakeSpin.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100, 100);
+    intakeSpin.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, 100);
+    intakeSpin.setControlFramePeriod(ControlFrame.Control_3_General, 100);
+    intakeSpin.setInverted(false);
 
     deployLeft.restoreFactoryDefaults();
     deployLeft.setSmartCurrentLimit(20);
     deployLeft.setIdleMode(IdleMode.kBrake);
+    deployLeft.setControlFramePeriodMs(40);
 
     deployRight.restoreFactoryDefaults();
     deployRight.setSmartCurrentLimit(20);
     deployRight.setIdleMode(IdleMode.kBrake);
+    deployRight.setControlFramePeriodMs(40);
     deployRight.setInverted(true);
 
     encoderLeft.setPosition(0);
@@ -61,8 +68,8 @@ public class IntakeSubsystem extends SubsystemBase {
     kD = 0; 
     kIz = 0; 
     kFF = 0; 
-    kMaxOutput = 0.25; 
-    kMinOutput = -0.25;
+    kMaxOutput = 0.50; 
+    kMinOutput = -0.50;
 
     // set PID coefficients
     leftPIDController.setP(kP);
