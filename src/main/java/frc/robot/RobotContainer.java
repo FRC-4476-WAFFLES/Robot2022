@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.autonomous.ThreeBallAutoPath;
 import frc.robot.commands.autonomous.TwoBallAutoComplete;
 import frc.robot.commands.autonomous.FenderHighShotComplete;
@@ -23,6 +24,7 @@ import frc.robot.commands.autonomous.FenderHighShotSetup;
 import frc.robot.commands.autonomous.FiveBallAutoComplete;
 import frc.robot.commands.autonomous.ResetToRightAutoStartingPosition;
 import frc.robot.commands.autonomous.FiveBallAutoPath;
+import frc.robot.commands.autonomous.ResetToLeftAutoStartingPosition;
 import frc.robot.commands.autonomous.ThreeBallAutoComplete;
 import frc.robot.commands.autonomous.TwoBallAutoPath;
 import frc.robot.commands.autonomous.TwoBallExtendedAutoComplete;
@@ -79,7 +81,8 @@ public class RobotContainer {
   private final TwoBallAutoComplete twoBallAutoComplete = new TwoBallAutoComplete();
   private final ThreeBallAutoComplete threeBallAutoComplete = new ThreeBallAutoComplete();
   private final FiveBallAutoComplete fiveBallAutoComplete = new FiveBallAutoComplete();
-  private final ResetToRightAutoStartingPosition resetToAutoStartingPosition = new ResetToRightAutoStartingPosition();
+  private final ResetToRightAutoStartingPosition resetToRightFender = new ResetToRightAutoStartingPosition();
+  private final ResetToLeftAutoStartingPosition resetToLeftFender = new ResetToLeftAutoStartingPosition();
   private final TwoBallExtendedAutoComplete twoBallExtendedAutoComplete = new TwoBallExtendedAutoComplete();
   
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
@@ -105,7 +108,8 @@ public class RobotContainer {
     autoChooser.addOption("2 Ball Auto Complete", twoBallAutoComplete);
     autoChooser.addOption("3 Ball Auto Complete", threeBallAutoComplete);
     autoChooser.addOption("5 Ball Auto Complete", fiveBallAutoComplete);
-    autoChooser.addOption("Reset Right Fender", resetToAutoStartingPosition);
+    autoChooser.addOption("Reset Right Fender", resetToRightFender);
+    autoChooser.addOption("Reset Left Fender", resetToLeftFender);
     autoChooser.addOption("2 Ball Extended Auto Complete", twoBallExtendedAutoComplete);
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -135,9 +139,16 @@ public class RobotContainer {
     //final var povRight = new POVButton(operate, 90);
     final var povDown = new POVButton(operate, 180);
 
-    final var rightJoystickButton1 = new JoystickButton(rightJoystick, 1);
-    final var rightJoystickButton7 = new JoystickButton(rightJoystick, 7);
-    final var rightJoystickButton10 = new JoystickButton(rightJoystick, 10);
+    final var right1 = new JoystickButton(rightJoystick, 1);
+    final var right7 = new JoystickButton(rightJoystick, 7);
+    final var right10 = new JoystickButton(rightJoystick, 10);
+
+    final Trigger[] aimOverrideTriggers = new Trigger[] {
+      new JoystickButton(rightJoystick, 2),
+      new JoystickButton(rightJoystick, 3),
+      new JoystickButton(rightJoystick, 4),
+      new JoystickButton(rightJoystick, 5),
+    };
 
     final var shooterReadyTrigger = new ShooterReadyTrigger();
 /*
@@ -160,9 +171,9 @@ public class RobotContainer {
 
     //rightJoystickButton3.whileHeld(new DriveCameraAim()).or(povUp).toggleWhenActive(new ShooterVisionSetup().perpetually());
 
-    rightJoystickButton1.whileHeld(new DriveCameraAim().perpetually());
+    right1.whileHeld(new DriveCameraAim(aimOverrideTriggers).perpetually());
     
-    rightJoystickButton7.and(rightJoystickButton10).debounce(0.1).whenActive(new DriveResetGyro().alongWith(new InstantCommand(driveSubsystem::resetSteerEncoders)));
+    right7.and(right10).debounce(0.1).whenActive(new DriveResetGyro().alongWith(new InstantCommand(driveSubsystem::resetSteerEncoders)));
   }
 
   /**

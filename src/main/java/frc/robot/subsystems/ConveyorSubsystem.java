@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -14,9 +16,13 @@ import frc.robot.Constants;
 
 public class ConveyorSubsystem extends SubsystemBase {
   private final CANSparkMax conveyorSpin = new CANSparkMax(Constants.conveyorSpin, MotorType.kBrushless);
+  private final SparkMaxPIDController pidController = conveyorSpin.getPIDController();
+
   private final DigitalInput lowIR = new DigitalInput(Constants.lowIR);
   private final DigitalInput midIR = new DigitalInput(Constants.midIR);
   private final DigitalInput highIR = new DigitalInput(Constants.highIR);
+
+  private final double maxRPM = 11000;
 
   private boolean lowIRPreviousState = false;
   
@@ -24,6 +30,11 @@ public class ConveyorSubsystem extends SubsystemBase {
   public ConveyorSubsystem() {
     conveyorSpin.restoreFactoryDefaults();
     conveyorSpin.setSmartCurrentLimit(30);
+
+    pidController.setP(0);
+    pidController.setI(0);
+    pidController.setD(0);
+    pidController.setFF(0.001);
   }
 
   @Override
@@ -34,7 +45,7 @@ public class ConveyorSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Low IR", getLowIR());
     SmartDashboard.putBoolean("Low IR Stored State", lowIRPreviousState);
 
-    SmartDashboard.putNumber("Conveyor Encoder Position", conveyorSpin.getEncoder().getPosition());
+    SmartDashboard.putNumber("Conveyor Encoder Speed", conveyorSpin.getEncoder().getVelocity());
 
     if (getLowIR()) {
       lowIRPreviousState = true;
@@ -45,10 +56,12 @@ public class ConveyorSubsystem extends SubsystemBase {
     }
   }
 
-  public void runConveyor(double power) {
-    SmartDashboard.putNumber("Conveyor Power", power);
+  public void runConveyor(double speed) {
+    SmartDashboard.putNumber("Conveyor Power", speed);
+    SmartDashboard.putNumber("Conveyor Target Speed", speed * maxRPM);
     //System.err.println("Conveyor is being told to run at power " + String.valueOf(power));
-    conveyorSpin.set(power);
+    conveyorSpin.set(speed);
+    //pidController.setReference(speed * maxRPM, ControlType.kVelocity);
   }
 
   public void stopConveyor() {

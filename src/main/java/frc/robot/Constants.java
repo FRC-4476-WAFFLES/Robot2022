@@ -137,19 +137,19 @@ public final class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final double shooterkP = 0.05;
+        public static final double shooterkP = 0.15;
         public static final double shooterkI = 0.0;
         public static final double shooterkD = 0.0;
-        public static final double shooterkF = 0.0505; //0.053
+        public static final double shooterkF = 0.049; //0.053
         // public final double kF = 1023.0/20660.0; // kF: 1023 represents output value to Talon at 100%, 20660 represents Velocity units at 100% output
         // 1023.0/20660.0 = 0.04951597
         
-        public static final double anglekP = 20.0;
+        public static final double anglekP = 0.4;
         public static final double anglekI = 0.0;
-        public static final double anglekD = 0.0;
+        public static final double anglekD = 0.4;
         public static final double anglekF = 0.0;
 
-        public static final double RPMTolerance = 75;
+        public static final double RPMTolerance = 50;
         public static final double angleTolerance = 0.25;
 
         //TODO: change following variables to reflect actual design

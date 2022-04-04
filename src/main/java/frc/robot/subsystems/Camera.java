@@ -63,6 +63,9 @@ public class Camera extends SubsystemBase {
     SmartDashboard.putBoolean("Camera has target", getHasTarget());
     SmartDashboard.putNumber("Camera tx", getHorizontal());
     SmartDashboard.putNumber("Camera ty", getVertical());
+    SmartDashboard.putNumber("Calculated Diagonal Distance", 1.83 / Math.sin(Math.toRadians(tyFiltered + 36.7)));
+    SmartDashboard.putNumber("Calculated Horisontal Distance", getHorisontalFieldDistanceToGoal());
+    SmartDashboard.putNumber("Sin ratio", Math.sin(Math.toRadians(tyFiltered + 36.7)));
   }
 
   public void setLEDMode(CameraLEDMode mode) {
@@ -143,6 +146,9 @@ public class Camera extends SubsystemBase {
     return camera.getEntry("tvert").getDouble(0);
   }
 
+  public double getHorisontalFieldDistanceToGoal() {
+    return 1.83 / Math.tan(Math.toRadians(tyFiltered + 36.7));
+  }
   
   public Pipeline getActivePipeline() {
     // getpipe: True active pipeline index of the camera (0 .. 9)

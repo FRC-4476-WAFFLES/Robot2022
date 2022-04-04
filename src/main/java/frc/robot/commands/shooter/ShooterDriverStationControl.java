@@ -27,7 +27,7 @@ public class ShooterDriverStationControl extends CommandBase {
   public void execute() {
     //shooterSubsystem.driverStationAngleControl();
     vision.setLEDMode(CameraLEDMode.On);
-    shooterSubsystem.setHoodAngle(-0.144 * vision.getFilteredVertical() + 11.82);
+    shooterSubsystem.setHoodAngle(3.78 * vision.getHorisontalFieldDistanceToGoal() - 0.45);
     shooterSubsystem.driverStationShooterRPM();
     shooterSubsystem.driverStationKickerWheelControl();
     //shooterSubsystem.driverStationAngleOffsetControl();

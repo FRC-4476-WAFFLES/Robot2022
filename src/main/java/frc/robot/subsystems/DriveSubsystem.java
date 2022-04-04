@@ -35,6 +35,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final ADXRS450_Gyro ADXRS450Gyro = new ADXRS450_Gyro(Constants.gyroPort);
   private final AHRS ahrsIMU = new AHRS(SPI.Port.kMXP);
+
+  private Translation2d goalOffsetFromStartingPosition = new Translation2d();
+
   public final Field2d field = new Field2d();
 
   public DriveSubsystem() {
@@ -94,6 +97,8 @@ public class DriveSubsystem extends SubsystemBase {
     if(Robot.isReal()) {
       field.setRobotPose(this.getOdometryLocation());
     }
+
+    SmartDashboard.putNumber("Drive Target Heading (Degrees)", Math.toDegrees(Math.atan2(-getOdometryLocation().getY(), getOdometryLocation().getX())));
   }
 
   public void robotDrive(double forward, double right, double rotation, boolean fieldCentric){
@@ -132,6 +137,14 @@ public class DriveSubsystem extends SubsystemBase {
       odometry.getPoseMeters().getRotation());
   }
 
+  public Pose2d getGoalOdometryLocation() {
+    return new Pose2d(
+      -odometry.getPoseMeters().getX() + goalOffsetFromStartingPosition.getX(), 
+      odometry.getPoseMeters().getY() - goalOffsetFromStartingPosition.getY(), 
+      odometry.getPoseMeters().getRotation()
+    );
+  }
+
   public ChassisSpeeds getChassisSpeeds() {
     SwerveModuleState[] moduleStates = new SwerveModuleState[4];
     for(int x=0; x<modules.length; x++){
@@ -153,6 +166,10 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetOdometry(Pose2d robotPose) {
     odometry.resetPosition(robotPose, Rotation2d.fromDegrees(-ahrsIMU.getAngle()));
+  }
+
+  public void setGoalOffset(Translation2d newGoalOffset) {
+    this.goalOffsetFromStartingPosition = newGoalOffset;
   }
 
   public void resetSteerEncoders() {

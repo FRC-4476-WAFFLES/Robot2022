@@ -14,7 +14,7 @@ import static frc.robot.RobotContainer.*;
 public class ShooterVisionSetup extends CommandBase {
   private Timer timeSinceLastHasTarget = new Timer();
   private Timer startTimer = new Timer();
-  private double savedLimelightTY = 0; // Set the savedLimelightTY to be a value to get the hood to go to fender shot angle
+  private double savedDistanceToGoal = 0;
 
   /** Creates a new ShooterSetup. */
   public ShooterVisionSetup() {
@@ -43,20 +43,21 @@ public class ShooterVisionSetup extends CommandBase {
     if (vision.getHasTarget()) {
       //System.err.println("Shooter has target");
       timeSinceLastHasTarget.reset();
-      double limelightTY = vision.getFilteredVertical();
-      savedLimelightTY = limelightTY;
-      shooterTargetRPM = 2702 - 56.7 * limelightTY + 1.26 * Math.pow(limelightTY, 2);
-      shooterTargetAngle = -0.144 * limelightTY + 11.82;
+      double distanceToGoal = vision.getHorisontalFieldDistanceToGoal();
+      savedDistanceToGoal = distanceToGoal;
+      shooterTargetRPM = calculateShooterTargetSpeed(distanceToGoal);
+      shooterTargetAngle = calculateShooterTargetAngle(distanceToGoal);
 
     } else if (timeSinceLastHasTarget.get() < 0.5) {
       if (startTimer.get() < 0.5) {
         //System.err.println("1");
         shooterTargetRPM = 2050.0;
         shooterTargetAngle = 0.0;
+
       } else {
         //System.err.println("2");
-        shooterTargetRPM = 2702 - 56.7 * savedLimelightTY + 1.26 * Math.pow(savedLimelightTY, 2); // was 2702.0 for c value, a = 1.26, b = 56.7
-        shooterTargetAngle = -0.144 * savedLimelightTY + 11.82;
+        shooterTargetRPM = calculateShooterTargetSpeed(savedDistanceToGoal); // was 2702.0 for c value, a = 1.26, b = 56.7
+        shooterTargetAngle = calculateShooterTargetAngle(savedDistanceToGoal);
       }
 
     } else {
@@ -83,4 +84,14 @@ public class ShooterVisionSetup extends CommandBase {
     return Math.abs(shooterSubsystem.getShooterRPM() - shooterSubsystem.getShooterTargetRPM()) <= ShooterConstants.RPMTolerance
     && Math.abs(shooterSubsystem.getHoodMotorPosition() - shooterSubsystem.getHoodMotorTargetPosition()) <= ShooterConstants.angleTolerance;
   }
+
+  private double calculateShooterTargetAngle(double distance) {
+    return 3.78 * distance - 0.45;
+  }
+
+  private double calculateShooterTargetSpeed(double distance) {
+    return 0;
+  }
 }
+
+// 2702 - 56.7 * distanceToGoal + 1.26 * Math.pow(distanceToGoal, 2)

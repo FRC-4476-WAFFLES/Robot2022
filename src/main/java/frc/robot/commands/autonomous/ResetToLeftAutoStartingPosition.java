@@ -6,6 +6,7 @@ package frc.robot.commands.autonomous;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
@@ -20,6 +21,7 @@ public class ResetToLeftAutoStartingPosition extends CommandBase {
   @Override
   public void initialize() {
     driveSubsystem.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(-200.0)));
+    driveSubsystem.setGoalOffset(new Translation2d(-1.23, 0.381));
   }
 
   // Called every time the scheduler runs while the command is scheduled.

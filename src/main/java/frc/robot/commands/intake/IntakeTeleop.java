@@ -23,6 +23,7 @@ public class IntakeTeleop extends CommandBase {
   public void execute() {
     
     double power = -operate.getLeftTriggerAxis() + operate.getRightTriggerAxis();
+    
     if (power >= 0.01 && !conveyorSubsystem.getHighIR()) {
       // for testing
       // conveyorSubsystem.runConveyor(Math.min(power, 0.2)); 
@@ -37,7 +38,7 @@ public class IntakeTeleop extends CommandBase {
       //   conveyorSubsystem.runConveyor(0.0);
       // }
       
-      intakeSubsystem.deployIntake();
+      //intakeSubsystem.deployIntake();
     
       if (conveyorSubsystem.shouldRun()) {
         conveyorSubsystem.runConveyor(Math.min(power, 0.25));
@@ -51,11 +52,11 @@ public class IntakeTeleop extends CommandBase {
     } else if (power <= 0.01) {
       intakeSubsystem.runIntake(0.0);
       conveyorSubsystem.runConveyor(power);
-      intakeSubsystem.retractIntake();
+      //intakeSubsystem.retractIntake();
       shooterSubsystem.setKickerSpeed(power);
 
     } else {
-      intakeSubsystem.retractIntake();
+      //intakeSubsystem.retractIntake();
       intakeSubsystem.runIntake(0.0);
       conveyorSubsystem.runConveyor(0.0);
       shooterSubsystem.setKickerSpeed(0.0);

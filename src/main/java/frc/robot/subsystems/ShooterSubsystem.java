@@ -48,14 +48,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private double shooterkD = ShooterConstants.shooterkD;
   private double shooterkF = ShooterConstants.shooterkF;
 
-  //private double kP = ShooterConstants.anglekP;
-  /*
-  Tuned PID values:
-  p = 0.4
-  i = 0
-  d = 0.4
-  */
-  private double kP = 5;
+  private double kP = ShooterConstants.anglekP;
   private double kI = ShooterConstants.anglekI;
   private double kD = ShooterConstants.anglekD;
   private double kF = ShooterConstants.anglekF;
