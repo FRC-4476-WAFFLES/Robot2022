@@ -63,13 +63,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // PID coefficients
     // TODO: set these values to better values determined through testing. 
-    kP = 0.1; 
+    kP = 0.04; 
     kI = 0;
     kD = 0; 
     kIz = 0; 
     kFF = 0; 
-    kMaxOutput = 0.50; 
-    kMinOutput = -0.50;
+    kMaxOutput = 1; 
+    kMinOutput = -1;
 
     // set PID coefficients
     leftPIDController.setP(kP);
