@@ -4,6 +4,7 @@
 
 package frc.robot.commands.drive;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -67,11 +68,14 @@ public class DriveCameraAim extends CommandBase {
     double forward = leftJoystick.getY();
     double right = leftJoystick.getX();
 
-    SmartDashboard.putNumber("Left Joystick Y", forward);
-    SmartDashboard.putNumber("Left Joystick X", right);
+    forward = MathUtil.applyDeadband(forward, 0.05);
+    right = MathUtil.applyDeadband(right, 0.05);
 
     forward *= Constants.SwerveConstants.maxAttainableSpeedMetersPerSecond;
     right *= Constants.SwerveConstants.maxAttainableSpeedMetersPerSecond;
+
+    SmartDashboard.putNumber("Left Joystick Y", forward);
+    SmartDashboard.putNumber("Left Joystick X", right);
 
     driveSubsystem.robotDrive(forward, right, turnSpeed, true);
 
