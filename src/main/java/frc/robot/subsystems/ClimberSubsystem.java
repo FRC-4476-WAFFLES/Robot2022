@@ -32,6 +32,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private final int rotHookOnBar = 0;
   private final int rotHookRobotToNextBar = 57000;
   private final int rotHookRobotOnNextBar = 19000;
+  private final int rotHookRobotToTraverseBar = 2000; // TODO: Change this number
 
   private final ClimberState climbStates[] = new ClimberState[] {
     // Start
@@ -52,13 +53,17 @@ public class ClimberSubsystem extends SubsystemBase {
     new ClimberState(telHookMinExt, rotHookOnBar),
 
     // Go to traverse bar
+    /*
     new ClimberState(telHookAboveBar, rotHookOnBar),
     new ClimberState(telHookAboveBar, rotHookRobotToNextBar),
     new ClimberState(telHookMaxExt, rotHookRobotToNextBar),
     new ClimberState(telHookMaxExt, rotHookRobotOnNextBar),
     new ClimberState(telHookPulledOffBar, rotHookRobotOnNextBar),
     new ClimberState(telHookMinExt, rotHookOutOfWay),
-    new ClimberState(telHookMinExt, rotHookOnBar)
+    new ClimberState(telHookMinExt, rotHookOnBar)*/
+    new ClimberState(telHookMaxExt, rotHookOnBar),
+    new ClimberState(telHookMaxExt, rotHookRobotToTraverseBar),
+    new ClimberState(telHookPulledOffBar, rotHookRobotToTraverseBar)
 
     // Max telescoping tube extention = 260 000 ticks with 20:1 gearbox
     // Rotating hooks out of way = -29 000 ticks
