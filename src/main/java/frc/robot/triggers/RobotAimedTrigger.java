@@ -14,6 +14,10 @@ public class RobotAimedTrigger extends Trigger {
   @Override
   public boolean get() {
     //return false;
-    return vision.getHasTarget() && Math.abs(vision.getHorizontal()) < SwerveConstants.aimToleranceDegrees;
+    return vision.getHasTarget()
+    && Math.abs(vision.getHorizontal()) < SwerveConstants.aimToleranceDegrees
+    && Math.abs(driveSubsystem.getChassisSpeeds().vxMetersPerSecond) <= 0.1
+    && Math.abs(driveSubsystem.getChassisSpeeds().vyMetersPerSecond) <= 0.1
+    && Math.abs(driveSubsystem.getChassisSpeeds().omegaRadiansPerSecond) <= 0.1;
   }
 }

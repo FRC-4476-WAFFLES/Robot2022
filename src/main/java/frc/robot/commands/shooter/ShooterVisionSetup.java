@@ -40,6 +40,7 @@ public class ShooterVisionSetup extends CommandBase {
     double shooterTargetAngle;
     vision.setLEDMode(CameraLEDMode.On);
     
+    /*
     if (vision.getHasTarget()) {
       //System.err.println("Shooter has target");
       timeSinceLastHasTarget.reset();
@@ -64,6 +65,24 @@ public class ShooterVisionSetup extends CommandBase {
       //System.err.println("3");
       shooterTargetRPM = 2050.0;
       shooterTargetAngle = 0.0;
+    }*/
+
+    if (vision.getHasTarget()) {
+      //System.err.println("Shooter has target");
+      timeSinceLastHasTarget.reset();
+      double distanceToGoal = vision.getHorisontalFieldDistanceToGoal();
+      savedDistanceToGoal = distanceToGoal;
+      shooterTargetRPM = calculateShooterTargetSpeed(distanceToGoal);
+      shooterTargetAngle = calculateShooterTargetAngle(distanceToGoal);
+
+    } else if (timeSinceLastHasTarget.get() < 0.2) {
+      shooterTargetRPM = calculateShooterTargetSpeed(savedDistanceToGoal);
+      shooterTargetAngle = calculateShooterTargetAngle(savedDistanceToGoal);
+
+    } else {
+      double odometryDistanceToGoal = Math.sqrt(Math.pow(driveSubsystem.getGoalOdometryLocation().getX(), 2) + Math.pow(driveSubsystem.getGoalOdometryLocation().getY(), 2));
+      shooterTargetRPM = calculateShooterTargetSpeed(odometryDistanceToGoal);
+      shooterTargetAngle = calculateShooterTargetAngle(odometryDistanceToGoal);
     }
 
     shooterSubsystem.setShooterSpeed(shooterTargetRPM);

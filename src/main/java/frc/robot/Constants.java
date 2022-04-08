@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.SPI;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    // TODO: set ports of all motors and actuators
     // PWM
     public static final int lightsBlinkin = 0; // Blinkin for controlling aRGB lights
 
