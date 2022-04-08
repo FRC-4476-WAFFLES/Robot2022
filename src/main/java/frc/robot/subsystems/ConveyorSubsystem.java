@@ -9,6 +9,8 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -16,6 +18,8 @@ import frc.robot.Constants;
 public class ConveyorSubsystem extends SubsystemBase {
   private final CANSparkMax conveyorSpin = new CANSparkMax(Constants.conveyorSpin, MotorType.kBrushless);
   private final SparkMaxPIDController pidController = conveyorSpin.getPIDController();
+
+  private final SPI arduino = new SPI(Port.kOnboardCS0);
 
   private final DigitalInput lowIR = new DigitalInput(Constants.lowIR);
   private final DigitalInput midIR = new DigitalInput(Constants.midIR);
@@ -68,6 +72,13 @@ public class ConveyorSubsystem extends SubsystemBase {
     conveyorSpin.set(0);
   }
 
+  public double getDataFromArduino(int sensor) {
+    byte[] data = new byte[2];
+    arduino.write(new byte[] {(byte) sensor}, 2);
+    arduino.read(false, data, 2);
+    return (data[1] << 8) | data[0];
+  }
+
   public boolean getHighIR() {
     return !highIR.get();
   }
@@ -82,6 +93,22 @@ public class ConveyorSubsystem extends SubsystemBase {
 
   public boolean getLowIRPreviousState() {
     return lowIRPreviousState;
+  }
+
+  public double getColourIR() {
+    return getDataFromArduino(0);
+  }
+
+  public double getColourRed() {
+    return getDataFromArduino(1);
+  }
+
+  public double getColourGreen() {
+    return getDataFromArduino(2);
+  }
+
+  public double getColourBlue() {
+    return getDataFromArduino(3);
   }
 
   public boolean shouldRun() {

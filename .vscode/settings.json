@@ -14,6 +14,9 @@
     "**/.factorypath": true,
     "**/*~": true
   },
+  "files.associations": {
+    "*.ino": "cpp"
+  },
   "java.test.config": [
     {
       "name": "WPIlibUnitTests",
@@ -25,5 +28,6 @@
       }
     },
   ],
-  "java.test.defaultConfig": "WPIlibUnitTests"
+  "java.test.defaultConfig": "WPIlibUnitTests",
+  "C_Cpp.errorSquiggles": "Enabled"
 }
