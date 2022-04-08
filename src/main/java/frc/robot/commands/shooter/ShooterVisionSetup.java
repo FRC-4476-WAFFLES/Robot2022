@@ -48,8 +48,8 @@ public class ShooterVisionSetup extends CommandBase {
       shooterTargetRPM = calculateShooterTargetSpeed(distanceToGoal);
       shooterTargetAngle = calculateShooterTargetAngle(distanceToGoal);
 
-    } else if (timeSinceLastHasTarget.get() < 0.5) {
-      if (startTimer.get() < 0.5) {
+    } else if (timeSinceLastHasTarget.get() < 0.2) {
+      if (startTimer.get() < 0.2) {
         //System.err.println("1");
         shooterTargetRPM = 2050.0;
         shooterTargetAngle = 0.0;
@@ -90,7 +90,7 @@ public class ShooterVisionSetup extends CommandBase {
   }
 
   private double calculateShooterTargetSpeed(double distance) {
-    return 30.8 * Math.pow(distance, 2) + 106 * distance + 1698;
+    return 23.7 * Math.pow(distance, 2) + 140 * distance + 1668;
   }
 }
 

@@ -23,16 +23,18 @@ public class ClimberSubsystem extends SubsystemBase {
   private final TalonFX climbPivotLeft = new TalonFX(Constants.climbPivotLeft);
   private final TalonFX climbPivotRight = new TalonFX(Constants.climbPivotRight);
 
-  private final int telHookMaxExt = 270000;
+  private final int telHookMaxExt = 280000;
   private final int telHookMinExt = -6000;
   private final int telHookAboveBar = 60000;
   private final int telHookPulledOffBar = 160000;
 
   private final int rotHookOutOfWay = -29000;
-  private final int rotHookOnBar = 0;
+  private final int rotHookTraverseLock = -10000;
+  private final int rotHookOnBar = -200;
   private final int rotHookRobotToNextBar = 57000;
   private final int rotHookRobotOnNextBar = 19000;
-  private final int rotHookRobotToTraverseBar = 2000; // TODO: Change this number
+  private final int rotHookRobotToTraverseBarPrep = 6000;
+  private final int rotHookRobotToTraverseBar = 38000; // TODO: Change this number
 
   private final ClimberState climbStates[] = new ClimberState[] {
     // Start
@@ -61,9 +63,14 @@ public class ClimberSubsystem extends SubsystemBase {
     new ClimberState(telHookPulledOffBar, rotHookRobotOnNextBar),
     new ClimberState(telHookMinExt, rotHookOutOfWay),
     new ClimberState(telHookMinExt, rotHookOnBar)*/
-    new ClimberState(telHookMaxExt, rotHookOnBar),
+    new ClimberState(telHookAboveBar, rotHookOnBar),
+    new ClimberState(telHookAboveBar, rotHookRobotToTraverseBarPrep),
+    new ClimberState(telHookMaxExt, rotHookRobotToTraverseBarPrep),
     new ClimberState(telHookMaxExt, rotHookRobotToTraverseBar),
-    new ClimberState(telHookPulledOffBar, rotHookRobotToTraverseBar)
+    new ClimberState(telHookPulledOffBar, rotHookRobotToTraverseBar),
+    new ClimberState(telHookPulledOffBar, rotHookOutOfWay),
+    new ClimberState(telHookMinExt, rotHookOutOfWay),
+    new ClimberState(telHookMinExt, rotHookTraverseLock)
 
     // Max telescoping tube extention = 260 000 ticks with 20:1 gearbox
     // Rotating hooks out of way = -29 000 ticks
