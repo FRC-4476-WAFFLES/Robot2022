@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import javax.tools.Diagnostic;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -45,6 +43,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightController;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.triggers.RobotAimedTrigger;
 import frc.robot.triggers.ShooterReadyTrigger;
 
 /**
@@ -151,27 +150,26 @@ public class RobotContainer {
     };
 
     final var shooterReadyTrigger = new ShooterReadyTrigger();
-/*
-    a.whileHeld(new Intake2Balls());
-    b.whileHeld(new IntakeOut().alongWith(new ConveyorOut()));
-    x.whenPressed(new IntakeDeploy());
-    y.whenPressed(new IntakeRetract());*/
+    final var robotAimedTrigger = new RobotAimedTrigger();
 
-    //a.whenPressed(new IntakeDeploy());
-    //b.whenPressed(new IntakeRetract());
+    final var fenderHighShotSetup = new FenderHighShotSetup();
+
     a.whenPressed(new InstantCommand(climberSubsystem::nextSetpoint));
     b.whenPressed(new InstantCommand(climberSubsystem::previousSetpoint));
 
-    povUp.whileActiveContinuous(new ShooterVisionSetup().perpetually());
-    povDown.whileActiveContinuous(new FenderHighShotSetup().perpetually());
+    povUp.whileActiveContinuous(new ShooterVisionSetup());
+    povDown.whileActiveContinuous(fenderHighShotSetup);
     
-    x.and(shooterReadyTrigger.or(y)).whileActiveContinuous(new Shoot().perpetually());
+    x.and(
+      y
+      .or(shooterReadyTrigger.and(robotAimedTrigger))
+      .or(shooterReadyTrigger.and(fenderHighShotSetup.getIsActiveTrigger()))
+    ).whileActiveContinuous(new Shoot());
     //x.whileActiveContinuous(new Shoot().perpetually());
+
     back.toggleWhenPressed(new ShooterDriverStationControl());
 
-    //rightJoystickButton3.whileHeld(new DriveCameraAim()).or(povUp).toggleWhenActive(new ShooterVisionSetup().perpetually());
-
-    right1.whileHeld(new DriveCameraAim(aimOverrideTriggers).perpetually());
+    right1.whileHeld(new DriveCameraAim(aimOverrideTriggers));
     
     right7.and(right10).debounce(0.1).whenActive(new DriveResetGyro().alongWith(new InstantCommand(driveSubsystem::resetSteerEncoders)));
   }

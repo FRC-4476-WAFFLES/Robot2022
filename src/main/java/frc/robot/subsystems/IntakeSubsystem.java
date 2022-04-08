@@ -31,6 +31,8 @@ public class IntakeSubsystem extends SubsystemBase {
   //private final double deployOvershootTarget = -50;
   private final double leftDeployedPosition = -22.12;
   private final double rightDeployedPosition = -21.1;
+  private final double leftSemiDeployedPosition = -10.0;
+  private final double rightSemiDeployedPosition = -10.0;
   private double deployTargetLeft = 0;
   private double deployTargetRight = 0;
   //private final double deployOvershootTarget = -21.14; // The approximate number of rotations of the deploy motors to deploy the intake
@@ -157,6 +159,11 @@ public class IntakeSubsystem extends SubsystemBase {
   public void deployIntake() {
     deployTargetLeft = leftDeployedPosition;
     deployTargetRight = rightDeployedPosition;
+  }
+
+  public void semiDeployIntake() {
+    deployTargetLeft = leftSemiDeployedPosition;
+    deployTargetRight = rightSemiDeployedPosition;
   }
 
   public void retractIntake() {

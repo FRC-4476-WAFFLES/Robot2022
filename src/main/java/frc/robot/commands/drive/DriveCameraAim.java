@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Camera.CameraLEDMode;
 
 import static frc.robot.RobotContainer.*;
@@ -71,8 +71,8 @@ public class DriveCameraAim extends CommandBase {
     forward = MathUtil.applyDeadband(forward, 0.05);
     right = MathUtil.applyDeadband(right, 0.05);
 
-    forward *= Constants.SwerveConstants.maxAttainableSpeedMetersPerSecond;
-    right *= Constants.SwerveConstants.maxAttainableSpeedMetersPerSecond;
+    forward *= SwerveConstants.maxAttainableSpeedMetersPerSecond;
+    right *= SwerveConstants.maxAttainableSpeedMetersPerSecond;
 
     SmartDashboard.putNumber("Left Joystick Y", forward);
     SmartDashboard.putNumber("Left Joystick X", right);
@@ -96,6 +96,6 @@ public class DriveCameraAim extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(vision.getHorizontal()) < 1.0 && vision.getHasTarget();
+    return Math.abs(vision.getHorizontal()) < SwerveConstants.aimToleranceDegrees && vision.getHasTarget();
   }
 }

@@ -100,6 +100,8 @@ public final class Constants {
         public static final double maxAttainableRotationRateRadiansPerSecond = 8.0;
         public static final double maxAccelerationMetersPerSecondSquared = 2.9;
 
+        public static final double aimToleranceDegrees = 1; // Tolerance of drive aiming, in degrees
+
         // The number of ticks of the motor's built-in encoder per revolution of the steering module
         public final double ticksPerSteeringRevolution = 26214.4;
         // Convert degrees to motor ticks

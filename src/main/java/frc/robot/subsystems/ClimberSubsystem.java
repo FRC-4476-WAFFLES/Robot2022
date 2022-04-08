@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -184,14 +185,14 @@ public class ClimberSubsystem extends SubsystemBase {
   
   public void nextSetpoint() {
     currentSetpoint++;
-    currentSetpoint = (int) (clamp(currentSetpoint, 0, climbStates.length));
+    currentSetpoint =  MathUtil.clamp(currentSetpoint, 0, climbStates.length - 1);
     targetSetpoint = climbStates[currentSetpoint].climbTargetSetpoint;
     targetPivotSetpoint = climbStates[currentSetpoint].climbPivotTargetSetpoint;
   }
 
   public void previousSetpoint() {
     currentSetpoint--;
-    currentSetpoint = (int) (clamp(currentSetpoint, 0, climbStates.length));
+    currentSetpoint =  MathUtil.clamp(currentSetpoint, 0, climbStates.length - 1);
     targetSetpoint = climbStates[currentSetpoint].climbTargetSetpoint;
     targetPivotSetpoint = climbStates[currentSetpoint].climbPivotTargetSetpoint;
   }
@@ -201,13 +202,6 @@ public class ClimberSubsystem extends SubsystemBase {
     climbRight.set(ControlMode.PercentOutput, 0);
     climbPivotLeft.set(ControlMode.PercentOutput, 0);
     climbPivotRight.set(ControlMode.PercentOutput, 0);
-  }
-
-  private double clamp(double value, double min, double max) {
-    if (value < min) {
-      return min;
-    }
-    return Math.min(value, max);
   }
 
   private static final class ClimberState {
