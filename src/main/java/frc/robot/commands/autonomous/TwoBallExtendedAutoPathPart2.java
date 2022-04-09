@@ -11,20 +11,17 @@ import frc.robot.commands.drive.DriveAuto.SwervePath;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TwoBallAutoPath extends SequentialCommandGroup {
-  /** Creates a new TwoBallAutoPath. */
-  public TwoBallAutoPath() {
+public class TwoBallExtendedAutoPathPart2 extends SequentialCommandGroup {
+  /** Creates a new TwoBallExtendedAutoPathPart2. */
+  public TwoBallExtendedAutoPathPart2() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new ResetToLeftFender(),
-
-      new DriveAuto(new SwervePath(0, 0, 160, 160)
-          .waypoint(-0.3, -0.3, 160)
-          .finish(-1.7, -1.6, 160, 160, 3.0)),
-
-      new DriveAuto(new SwervePath(-1.7, -1.6, 160, 160)
-          .finish(0, 0, 160, 160, 3.0))
+      new DriveAuto(
+        new SwervePath(-1.7, -1.3, 160, 160)
+        .waypoint(-1.0, -1.3, 110)
+        .finish(-1.2, -2.3, 90, 90 + 180, 3)
+      )
     );
   }
 }

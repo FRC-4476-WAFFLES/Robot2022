@@ -17,11 +17,11 @@ public class TwoBallExtendedAutoPathPart1 extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new ResetToLeftAutoStartingPosition(),
+      new ResetToLeftFender(),
 
       new DriveAuto(new SwervePath(0, 0, 160, 160)
-          .waypoint(-0.3, -0.3, 160)
-          .finish(-1.7, -1.6, 160, 160, 3.0))
+        .waypoint(-0.3, -0.3, 160)
+        .finish(-1.7, -1.3, 160, 160, 2.5))
     );
   }
 }

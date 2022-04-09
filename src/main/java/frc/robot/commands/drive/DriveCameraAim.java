@@ -16,7 +16,7 @@ import frc.robot.subsystems.Camera.CameraLEDMode;
 import static frc.robot.RobotContainer.*;
 
 public class DriveCameraAim extends CommandBase {
-  PIDController turnController = new PIDController(-4.0, 0, -0.2);
+  PIDController turnController = new PIDController(-5.0, 0, -0.2);
   Trigger[] overrideOdometryTriggers;
 
   /** Creates a new DriveCameraAim. */
@@ -56,7 +56,7 @@ public class DriveCameraAim extends CommandBase {
 
     double optimizedTargetAngle = currentHeading + new Rotation2d(targetHeading).minus(new Rotation2d(currentHeading)).getRadians();
 
-    if (Math.abs(optimizedTargetAngle - currentHeading) <= Math.toRadians(20) || vision.getHasTarget() || overrideOdometry) {
+    if (vision.getHasTarget() || overrideOdometry) {
       targetHeading = currentHeading - Math.toRadians(vision.getFilteredHorizontal());
       optimizedTargetAngle = currentHeading + new Rotation2d(targetHeading).minus(new Rotation2d(currentHeading)).getRadians();
     }
@@ -90,7 +90,7 @@ public class DriveCameraAim extends CommandBase {
   public void end(boolean interrupted) {
     //System.err.println("Drive aim supposedly finished");
     driveSubsystem.stop();
-    vision.setLEDMode(CameraLEDMode.Off);
+    vision.setLEDMode(CameraLEDMode.Off); // <-- THIS CAUSES LIMELIGHT TO TURN OFF
   }
 
   // Returns true when the command should end.

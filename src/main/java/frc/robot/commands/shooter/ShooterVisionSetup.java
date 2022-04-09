@@ -87,7 +87,7 @@ public class ShooterVisionSetup extends CommandBase {
 
     shooterSubsystem.setShooterSpeed(shooterTargetRPM);
     shooterSubsystem.setHoodAngle(shooterTargetAngle);
-    shooterSubsystem.setKickerSpeed(1.0);
+    shooterSubsystem.setKickerSpeed(0.8);
   }
 
   // Called once the command ends or is interrupted.

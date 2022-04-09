@@ -35,7 +35,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private final int rotHookRobotToNextBar = 57000;
   private final int rotHookRobotOnNextBar = 19000;
   private final int rotHookRobotToTraverseBarPrep = 6000;
-  private final int rotHookRobotToTraverseBar = 38000; // TODO: Change this number
+  private final int rotHookRobotToTraverseBar = 39000; // TODO: Change this number
 
   private final ClimberState climbStates[] = new ClimberState[] {
     // Start

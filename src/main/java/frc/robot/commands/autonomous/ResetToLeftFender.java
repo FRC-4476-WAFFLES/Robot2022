@@ -10,9 +10,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.RobotContainer.*;
 
-public class ResetToLeftAutoStartingPosition extends CommandBase {
+public class ResetToLeftFender extends CommandBase {
   /** Creates a new ResetToAutoStartingPosition. */
-  public ResetToLeftAutoStartingPosition() {
+  public ResetToLeftFender() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveSubsystem);
   }

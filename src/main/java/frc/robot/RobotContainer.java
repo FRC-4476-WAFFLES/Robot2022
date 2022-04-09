@@ -22,7 +22,7 @@ import frc.robot.commands.autonomous.FenderHighShotSetup;
 import frc.robot.commands.autonomous.FiveBallAutoComplete;
 import frc.robot.commands.autonomous.ResetToRightAutoStartingPosition;
 import frc.robot.commands.autonomous.FiveBallAutoPath;
-import frc.robot.commands.autonomous.ResetToLeftAutoStartingPosition;
+import frc.robot.commands.autonomous.ResetToLeftFender;
 import frc.robot.commands.autonomous.ThreeBallAutoComplete;
 import frc.robot.commands.autonomous.TwoBallAutoPath;
 import frc.robot.commands.autonomous.TwoBallExtendedAutoComplete;
@@ -81,7 +81,7 @@ public class RobotContainer {
   private final ThreeBallAutoComplete threeBallAutoComplete = new ThreeBallAutoComplete();
   private final FiveBallAutoComplete fiveBallAutoComplete = new FiveBallAutoComplete();
   private final ResetToRightAutoStartingPosition resetToRightFender = new ResetToRightAutoStartingPosition();
-  private final ResetToLeftAutoStartingPosition resetToLeftFender = new ResetToLeftAutoStartingPosition();
+  private final ResetToLeftFender resetToLeftFender = new ResetToLeftFender();
   private final TwoBallExtendedAutoComplete twoBallExtendedAutoComplete = new TwoBallExtendedAutoComplete();
   
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();

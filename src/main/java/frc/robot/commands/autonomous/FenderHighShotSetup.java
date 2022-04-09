@@ -20,7 +20,7 @@ public class FenderHighShotSetup extends ParallelCommandGroup {
   public FenderHighShotSetup() {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
-    addCommands(new ShooterWheelSpinup(2050), new ShooterAngleSet(0), new ShooterKickerWheelSpinup(1.0));
+    addCommands(new ShooterWheelSpinup(2050), new ShooterAngleSet(0), new ShooterKickerWheelSpinup(0.8));
   }
 
   @Override
