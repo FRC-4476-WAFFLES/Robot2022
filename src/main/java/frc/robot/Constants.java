@@ -145,7 +145,7 @@ public final class Constants {
         // public final double kF = 1023.0/20660.0; // kF: 1023 represents output value to Talon at 100%, 20660 represents Velocity units at 100% output
         // 1023.0/20660.0 = 0.04951597
         
-        public static final double anglekP = 0.4;
+        public static final double anglekP = 0.2;
         public static final double anglekI = 0.0;
         public static final double anglekD = 0.4;
         public static final double anglekF = 0.0;

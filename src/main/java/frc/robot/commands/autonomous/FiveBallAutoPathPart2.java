@@ -35,16 +35,16 @@ public class FiveBallAutoPathPart2 extends SequentialCommandGroup {
           -4.2, 
           0.7, 
           driveSubsystem.getOdometryLocation().getRotation().getDegrees(), 
-          -88 + 180
+          -88
           )
         .waypoint(-5.0, 0.8, -130)
-        .finish(-6.8, 1.55, -130, -130, 3.0) //1.35
+        .finish(-6.5, 1.45, -130, -130, 3.0) //1.35
       )),
 
       new WaitCommand(1.0),
 
       new DriveAuto(
-        new SwervePath(-6.8, 1.55, -130, -130 + 180)
+        new SwervePath(-6.5, 1.45, -130, -130 + 180)
         .waypoint(-5.0, 0.8, -130)
         .finish(-3.5, 0.7, -155, -155 + 180, 4.0)
       )

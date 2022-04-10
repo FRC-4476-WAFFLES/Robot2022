@@ -23,7 +23,9 @@ public class SetColourBasedOnRobotState extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (shooterSubsystem.getIsReady()) {
+    if (shooterSubsystem.getIsReady() && !vision.getHasTarget()) {
+      lightController.setLightColour(LightColours.RED);
+    } else if (shooterSubsystem.getIsReady()) {
       // System.err.println("Blinking because shooter is ready");
       lightController.blinkBetweenColours(LightColours.PINK, LightColours.BLACK);
     } else if (vision.getHasTarget()) {

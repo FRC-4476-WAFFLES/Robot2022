@@ -37,11 +37,11 @@ public class Camera extends SubsystemBase {
 
   //LinearFilter linearFilter = new LinearFilter(1, 2);
 
-  private final LinearFilter taFilter = LinearFilter.movingAverage(100);
+  //private final LinearFilter taFilter = LinearFilter.movingAverage(100);
   private final LinearFilter txFilter = LinearFilter.movingAverage(10);
-  private final LinearFilter tyFilter = LinearFilter.movingAverage(20);
+  private final LinearFilter tyFilter = LinearFilter.movingAverage(10);
 
-  private double taFiltered = 0;
+  //private double taFiltered = 0;
   private double txFiltered = 0;
   private double tyFiltered = 0;
 
@@ -55,7 +55,7 @@ public class Camera extends SubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
-    taFiltered = taFilter.calculate(getArea());
+    //taFiltered = taFilter.calculate(getArea());
     txFiltered = txFilter.calculate(getHorizontal());
     tyFiltered = tyFilter.calculate(getVertical());
     // camera.getEntry("ledMode").setNumber(ledMode.ordinal());
@@ -111,9 +111,9 @@ public class Camera extends SubsystemBase {
     return camera.getEntry("ta").getDouble(0);
   }
 
-  public double getFilteredArea() {
+  /*public double getFilteredArea() {
     return taFiltered;
-  }
+  }*/
 
   public double getSkew() {
     // ts: Skew or rotation (-90 degrees to 0 degrees)

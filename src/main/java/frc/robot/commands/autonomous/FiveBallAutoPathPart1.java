@@ -17,11 +17,11 @@ public class FiveBallAutoPathPart1 extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new ResetToRightAutoStartingPosition(),
+      //new ResetToRightAutoStartingPosition(),
       // new FenderHighShotComplete()
       // Get to first ball
       new DriveAuto(
-        new SwervePath(0, 0, -110, -110 + 180)
+        new SwervePath(0.0, 0.2, -110, -110 + 180)
         .waypoint(-0.15, 1.025, -110)
         .finish(-0.3, 2.05, -88, -88 + 180, 3.0)
       ),

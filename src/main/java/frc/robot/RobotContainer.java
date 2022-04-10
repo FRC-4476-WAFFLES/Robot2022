@@ -20,7 +20,9 @@ import frc.robot.commands.autonomous.TwoBallAutoComplete;
 import frc.robot.commands.autonomous.FenderHighShotComplete;
 import frc.robot.commands.autonomous.FenderHighShotSetup;
 import frc.robot.commands.autonomous.FiveBallAutoComplete;
+import frc.robot.commands.autonomous.FiveBallAutoCompleteVersion2;
 import frc.robot.commands.autonomous.ResetToRightAutoStartingPosition;
+import frc.robot.commands.autonomous.StupidAuto;
 import frc.robot.commands.autonomous.FiveBallAutoPath;
 import frc.robot.commands.autonomous.ResetToLeftFender;
 import frc.robot.commands.autonomous.ThreeBallAutoComplete;
@@ -83,6 +85,8 @@ public class RobotContainer {
   private final ResetToRightAutoStartingPosition resetToRightFender = new ResetToRightAutoStartingPosition();
   private final ResetToLeftFender resetToLeftFender = new ResetToLeftFender();
   private final TwoBallExtendedAutoComplete twoBallExtendedAutoComplete = new TwoBallExtendedAutoComplete();
+  private final StupidAuto stupidAuto = new StupidAuto();
+  private final FiveBallAutoCompleteVersion2 newFiveBall = new FiveBallAutoCompleteVersion2();
   
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
@@ -110,6 +114,8 @@ public class RobotContainer {
     autoChooser.addOption("Reset Right Fender", resetToRightFender);
     autoChooser.addOption("Reset Left Fender", resetToLeftFender);
     autoChooser.addOption("2 Ball Extended Auto Complete", twoBallExtendedAutoComplete);
+    autoChooser.addOption("Stupid Auto", stupidAuto);
+    autoChooser.addOption("5 Ball Other Version", newFiveBall);
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     vision.setProcesingMode(Camera.ProcessingMode.Vision);
@@ -157,19 +163,19 @@ public class RobotContainer {
     a.whenPressed(new InstantCommand(climberSubsystem::nextSetpoint));
     b.whenPressed(new InstantCommand(climberSubsystem::previousSetpoint));
 
-    povUp.whileActiveContinuous(new ShooterVisionSetup());
-    povDown.whileActiveContinuous(fenderHighShotSetup);
+    povUp.whileActiveContinuous(new ShooterVisionSetup().perpetually());
+    povDown.whileActiveContinuous(fenderHighShotSetup.perpetually());
     
     x.and(
       y
       .or(shooterReadyTrigger.and(robotAimedTrigger))
       .or(shooterReadyTrigger.and(fenderHighShotSetup.getIsActiveTrigger()))
-    ).whileActiveContinuous(new Shoot());
+    ).whileActiveContinuous(new Shoot().perpetually());
     //x.whileActiveContinuous(new Shoot().perpetually());
 
     back.toggleWhenPressed(new ShooterDriverStationControl());
 
-    right1.whileHeld(new DriveCameraAim(aimOverrideTriggers));
+    right1.whileHeld(new DriveCameraAim(aimOverrideTriggers).perpetually());
     
     right7.and(right10).debounce(0.1).whenActive(new DriveResetGyro().alongWith(new InstantCommand(driveSubsystem::resetSteerEncoders)));
   }

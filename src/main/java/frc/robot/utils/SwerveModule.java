@@ -65,7 +65,7 @@ public class SwerveModule {
         angleMotor.config_kD(0, 0.2);
         angleMotor.configNeutralDeadband(0.02);
 
-        driveMotor.config_kP(0, 0.1); // 0.1
+        driveMotor.config_kP(0, 0.03); // 0.1
         driveMotor.config_kI(0, 0); // 0
         driveMotor.config_kD(0, 0.1); // 0.1
         driveMotor.config_kF(0, 0.1); // 0

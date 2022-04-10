@@ -6,7 +6,9 @@ package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.drive.DriveAuto;
 import frc.robot.commands.drive.DriveCameraAim;
+import frc.robot.commands.drive.DriveAuto.SwervePath;
 import frc.robot.commands.intake.IntakeAuto;
 import frc.robot.commands.intake.IntakeDeploy;
 import frc.robot.commands.shooter.Shoot;
@@ -23,8 +25,11 @@ public class FiveBallAutoComplete extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      new ResetToRightAutoStartingPosition(),
+      new FenderHighShotSetup(),
+      new DriveAuto(new SwervePath(0.0, 0.0, -110, -110 + 180).finish(0.0, 0.2, -110, -110, 2.0)),
+      new Shoot().withTimeout(3.0),
       new IntakeDeploy(),
-      new FenderHighShotComplete(),
       new FiveBallAutoPathPart1().deadlineWith(new IntakeAuto(1.0)),
       new InstantCommand(() -> intakeSubsystem.runIntake(1.0)),
       new DriveCameraAim().withTimeout(2),

@@ -19,15 +19,15 @@ public class ShooterDriverStationControl extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    vision.setLEDMode(CameraLEDMode.On);
+    //vision.setLEDMode(CameraLEDMode.On);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //shooterSubsystem.driverStationAngleControl();
-    vision.setLEDMode(CameraLEDMode.On);
-    shooterSubsystem.setHoodAngle(3.78 * vision.getHorisontalFieldDistanceToGoal() - 0.45);
+    shooterSubsystem.driverStationAngleControl();
+    //vision.setLEDMode(CameraLEDMode.On);
+    //shooterSubsystem.setHoodAngle(3.78 * vision.getHorisontalFieldDistanceToGoal() - 0.45);
     shooterSubsystem.driverStationShooterRPM();
     shooterSubsystem.driverStationKickerWheelControl();
     //shooterSubsystem.driverStationAngleOffsetControl();

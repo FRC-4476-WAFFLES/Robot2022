@@ -16,7 +16,7 @@ import frc.robot.subsystems.Camera.CameraLEDMode;
 import static frc.robot.RobotContainer.*;
 
 public class DriveCameraAim extends CommandBase {
-  PIDController turnController = new PIDController(-5.0, 0, -0.2);
+  PIDController turnController = new PIDController(-5.5, 0, -0.4); // -5.0, 0, -0.2
   Trigger[] overrideOdometryTriggers;
 
   /** Creates a new DriveCameraAim. */
@@ -68,8 +68,8 @@ public class DriveCameraAim extends CommandBase {
     double forward = leftJoystick.getY();
     double right = leftJoystick.getX();
 
-    forward = MathUtil.applyDeadband(forward, 0.05);
-    right = MathUtil.applyDeadband(right, 0.05);
+    forward = MathUtil.applyDeadband(forward, 0.1);
+    right = MathUtil.applyDeadband(right, 0.1);
 
     forward *= SwerveConstants.maxAttainableSpeedMetersPerSecond;
     right *= SwerveConstants.maxAttainableSpeedMetersPerSecond;

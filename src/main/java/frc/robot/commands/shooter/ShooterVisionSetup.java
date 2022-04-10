@@ -109,7 +109,7 @@ public class ShooterVisionSetup extends CommandBase {
   }
 
   private double calculateShooterTargetSpeed(double distance) {
-    return 23.7 * Math.pow(distance, 2) + 140 * distance + 1668;
+    return 1.63 * Math.pow(distance, 2) + 263 * distance + 1566;
   }
 }
 
