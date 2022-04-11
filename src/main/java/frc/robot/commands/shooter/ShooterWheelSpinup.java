@@ -26,7 +26,6 @@ public class ShooterWheelSpinup extends CommandBase {
   @Override
   public void execute() {
     shooterSubsystem.setShooterSpeed(targetRPM);
-    System.err.println("Other spin!");
   }
 
   // Called once the command ends or is interrupted.

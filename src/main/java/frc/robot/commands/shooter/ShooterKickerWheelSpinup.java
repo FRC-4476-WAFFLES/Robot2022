@@ -24,7 +24,6 @@ public class ShooterKickerWheelSpinup extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.err.println("Spin!");
     shooterSubsystem.setKickerSpeed(power);
     isDone = true;
   }

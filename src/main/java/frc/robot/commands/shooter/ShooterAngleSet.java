@@ -26,7 +26,6 @@ public class ShooterAngleSet extends CommandBase {
   @Override
   public void execute() {
     shooterSubsystem.setHoodAngle(targetAngle);
-    System.err.println("Angle Shooter");
   }
 
   // Called once the command ends or is interrupted.

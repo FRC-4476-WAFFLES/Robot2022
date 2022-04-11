@@ -33,6 +33,7 @@ import frc.robot.commands.colourStuff.SetColourBasedOnRobotState;
 import frc.robot.commands.drive.DriveCameraAim;
 import frc.robot.commands.drive.DriveResetGyro;
 import frc.robot.commands.drive.DriveTeleop;
+import frc.robot.commands.drive.DriveTurnToNearest90;
 import frc.robot.commands.intake.IntakeTeleop;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.ShooterDriverStationControl;
@@ -144,6 +145,8 @@ public class RobotContainer {
     //final var povRight = new POVButton(operate, 90);
     final var povDown = new POVButton(operate, 180);
 
+    final var left1 = new JoystickButton(leftJoystick, 1);
+
     final var right1 = new JoystickButton(rightJoystick, 1);
     final var right7 = new JoystickButton(rightJoystick, 7);
     final var right10 = new JoystickButton(rightJoystick, 10);
@@ -174,6 +177,8 @@ public class RobotContainer {
     //x.whileActiveContinuous(new Shoot().perpetually());
 
     back.toggleWhenPressed(new ShooterDriverStationControl());
+
+    left1.whileHeld(new DriveTurnToNearest90().perpetually());
 
     right1.whileHeld(new DriveCameraAim(aimOverrideTriggers).perpetually());
     

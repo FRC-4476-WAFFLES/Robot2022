@@ -84,6 +84,10 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Gyro Rate", -ADXRS450Gyro.getRate());
     SmartDashboard.putNumber("New Gyro Angle", ahrsIMU.getAngle());
     SmartDashboard.putNumber("New Gyro Rate", ahrsIMU.getRate());
+    SmartDashboard.putNumber("Vx", getChassisSpeeds().vxMetersPerSecond);
+    SmartDashboard.putNumber("Vy", getChassisSpeeds().vyMetersPerSecond);
+    SmartDashboard.putNumber("Vomega", getChassisSpeeds().omegaRadiansPerSecond);
+
     for (int x = 0; x < modules.length; x++) {
       SmartDashboard.putNumber("Module " + String.valueOf(x) + " Speed", moduleStates[x].speedMetersPerSecond);
     }
@@ -97,6 +101,7 @@ public class DriveSubsystem extends SubsystemBase {
     if(Robot.isReal()) {
       field.setRobotPose(this.getOdometryLocation());
     }
+    //field.setRobotPose(this.getOdometryLocation());
 
     SmartDashboard.putNumber("Drive Target Heading (Degrees)", Math.toDegrees(Math.atan2(-getOdometryLocation().getY(), getOdometryLocation().getX())));
   }
