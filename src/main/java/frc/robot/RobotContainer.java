@@ -34,6 +34,7 @@ import frc.robot.commands.drive.DriveCameraAim;
 import frc.robot.commands.drive.DriveResetGyro;
 import frc.robot.commands.drive.DriveTeleop;
 import frc.robot.commands.drive.DriveTurnToNearest90;
+import frc.robot.commands.drive.ShootingWhileMovingSetup;
 import frc.robot.commands.intake.IntakeTeleop;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.ShooterDriverStationControl;
@@ -146,6 +147,10 @@ public class RobotContainer {
     final var povDown = new POVButton(operate, 180);
 
     final var left1 = new JoystickButton(leftJoystick, 1);
+    final var left2 = new JoystickButton(leftJoystick, 2);
+    final var left3 = new JoystickButton(leftJoystick, 3);
+    final var left4 = new JoystickButton(leftJoystick, 4);
+    final var left5 = new JoystickButton(leftJoystick, 5);
 
     final var right1 = new JoystickButton(rightJoystick, 1);
     final var right7 = new JoystickButton(rightJoystick, 7);
@@ -158,21 +163,26 @@ public class RobotContainer {
       new JoystickButton(rightJoystick, 5),
     };
 
+    // previous name: theDriverWantsToShootWhileMovingAndBecauseTheDriverIsTheProgrammerSaidDriverCanWriteCodeToOverrideTheOperatorWhichIsWhatThisTriggerDoes
+    final Trigger left2To5 = new Trigger(() -> left2.get() || left3.get() || left4.get() || left5.get());
+
     final var shooterReadyTrigger = new ShooterReadyTrigger();
     final var robotAimedTrigger = new RobotAimedTrigger();
 
     final var fenderHighShotSetup = new FenderHighShotSetup();
+    final var shootingWhileMovingSetup = new ShootingWhileMovingSetup();
 
     a.whenPressed(new InstantCommand(climberSubsystem::nextSetpoint));
     b.whenPressed(new InstantCommand(climberSubsystem::previousSetpoint));
 
-    povUp.whileActiveContinuous(new ShooterVisionSetup().perpetually());
-    povDown.whileActiveContinuous(fenderHighShotSetup.perpetually());
+    povUp.and(left2To5.negate()).whileActiveContinuous(new ShooterVisionSetup().perpetually());
+    povDown.and(left2To5.negate()).whileActiveContinuous(fenderHighShotSetup.perpetually());
     
     x.and(
       y
       .or(shooterReadyTrigger.and(robotAimedTrigger))
       .or(shooterReadyTrigger.and(fenderHighShotSetup.getIsActiveTrigger()))
+      .or(shooterReadyTrigger.and(shootingWhileMovingSetup.getIsReadyTrigger()))
     ).whileActiveContinuous(new Shoot().perpetually());
     //x.whileActiveContinuous(new Shoot().perpetually());
 
@@ -181,6 +191,8 @@ public class RobotContainer {
     left1.whileHeld(new DriveTurnToNearest90().perpetually());
 
     right1.whileHeld(new DriveCameraAim(aimOverrideTriggers).perpetually());
+
+    left2To5.whileActiveContinuous(shootingWhileMovingSetup);
     
     right7.and(right10).debounce(0.1).whenActive(new DriveResetGyro().alongWith(new InstantCommand(driveSubsystem::resetSteerEncoders)));
   }

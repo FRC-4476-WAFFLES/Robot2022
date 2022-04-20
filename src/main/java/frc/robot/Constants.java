@@ -158,7 +158,10 @@ public final class Constants {
         public static final double maxAngle = 30;
 
         public static final double stage1AngleRatio = 12/24;
-        public static final double stage2AngleRatio = 20/432;
-        public static final double motorRotationsToHoodDegreesMoved = 1 / (stage1AngleRatio * stage2AngleRatio * 360);
+        public static final double stage2AngleRatio = 1/5;
+        public static final double stage3AngleRatio = 20/432;
+        public static final double motorRotationsToHoodDegreesMoved = 1 / (stage1AngleRatio * stage2AngleRatio * stage3AngleRatio * 360);
+
+        public static final double goalHeightAboveShooter = 1.83;
     }
 }

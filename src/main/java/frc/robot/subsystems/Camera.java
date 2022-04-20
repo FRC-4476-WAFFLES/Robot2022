@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterConstants;
 
 public class Camera extends SubsystemBase {
   public enum CameraLEDMode {
@@ -147,7 +148,7 @@ public class Camera extends SubsystemBase {
   }
 
   public double getHorisontalFieldDistanceToGoal() {
-    return 1.83 / Math.tan(Math.toRadians(tyFiltered + 36.7));
+    return ShooterConstants.goalHeightAboveShooter / Math.tan(Math.toRadians(tyFiltered + 36.7));
   }
   
   public Pipeline getActivePipeline() {

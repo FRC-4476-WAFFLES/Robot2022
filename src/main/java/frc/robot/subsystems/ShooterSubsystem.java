@@ -25,6 +25,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -258,19 +259,35 @@ public class ShooterSubsystem extends SubsystemBase {
     && Math.abs(getShooterRPM()) >= 1000;
   }
 
-  private double rpmToTicksPer100ms(double rpm) {
+  public double calculateShooterTargetAngle(double distance) {
+    return 3.78 * distance - 0.45;
+  }
+
+  public double calculateShooterTargetSpeed(double distance) {
+    return -18.2 * Math.pow(distance, 2) + 382 * distance + 1433;
+  }
+
+  public double rpmToTicksPer100ms(double rpm) {
     return rpm * 2048.0 / 600.0;
   }
 
-  private double ticksPer100msToRPM(double unitsPer100ms) {
+  public double ticksPer100msToRPM(double unitsPer100ms) {
     return unitsPer100ms * 600.0 / 2048.0;
   }
 
-  private double rotationsToHoodAngleDegrees(double motorRotations) {
+  public double rpmToMetersPerSecond(double rpm) {
+    return rpm * Units.inchesToMeters(4) * Math.PI / 60;
+  }
+
+  public double metersPerSecondToRPM(double metersPerSecond) {
+    return metersPerSecond * 60 / (Units.inchesToMeters(4) * Math.PI);
+  }
+
+  public double rotationsToHoodAngleDegrees(double motorRotations) {
     return motorRotations * ShooterConstants.motorRotationsToHoodDegreesMoved + ShooterConstants.minAngle;
   }
 
-  private double hoodAngleDegreesToRotations(double hoodAngleDegrees) {
+  public double hoodAngleDegreesToRotations(double hoodAngleDegrees) {
     return (hoodAngleDegrees - ShooterConstants.minAngle) / ShooterConstants.motorRotationsToHoodDegreesMoved;
   }
 
